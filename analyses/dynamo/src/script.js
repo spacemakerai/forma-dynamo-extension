@@ -2,10 +2,10 @@ import { Forma } from "https://esm.sh/forma-embedded-view-sdk/auto";
 import { h, render } from "https://esm.sh/preact";
 import { useState, useCallback, useEffect } from "https://esm.sh/preact/compat";
 import htm from "https://esm.sh/htm";
-import { generateGeometry } from "./service/render.js";
+import { generateGeometry } from "../service/render.js";
 import { download } from "./util/download.js";
 import * as template from "./templates/template.js";
-import { callDynamo } from "./service/dynamo.js";
+import { run } from "./service/dynamo.js";
 import {
   getConstraints,
   getProposal,
@@ -15,9 +15,7 @@ import {
 const html = htm.bind(h);
 
 async function runProgram(url, code) {
-  const result = await callDynamo(url, code);
-
-  console.log(result.info);
+  const result = await run(url, code);
 
   if (result.geometry) {
     for (const geometry of result.geometry) {
