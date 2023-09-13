@@ -3,14 +3,14 @@ import { h, render } from "https://esm.sh/preact";
 import { useState, useCallback, useEffect } from "https://esm.sh/preact/compat";
 import htm from "https://esm.sh/htm";
 import { generateGeometry } from "../service/render.js";
-import { download } from "./util/download.js";
+import { download } from "../util/download.js";
 import * as template from "./templates/template.js";
 import { run } from "./service/dynamo.js";
 import {
   getConstraints,
   getProposal,
   getSurroundings,
-} from "./util/geometry.js";
+} from "../util/geometry.js";
 
 const html = htm.bind(h);
 

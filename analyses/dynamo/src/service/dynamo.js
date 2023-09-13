@@ -2,7 +2,7 @@ import {
   getConstraints,
   getProposal,
   getSurroundings,
-} from "../util/geometry.js";
+} from "../../util/geometry.js";
 import { Forma } from "https://esm.sh/forma-embedded-view-sdk/auto";
 
 async function evaluate(name, value) {
