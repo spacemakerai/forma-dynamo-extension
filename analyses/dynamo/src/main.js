@@ -1,50 +1,28 @@
-import { Forma } from "https://esm.sh/forma-embedded-view-sdk/auto";
 import { h, render } from "https://esm.sh/preact";
 import { useState, useCallback, useEffect } from "https://esm.sh/preact/compat";
 import htm from "https://esm.sh/htm";
-import { generateGeometry } from "../service/render.js";
 import { download } from "../util/download.js";
-import * as template from "./templates/template.js";
-import { run } from "./service/dynamo.js";
-import {
-  getConstraints,
-  getProposal,
-  getSurroundings,
-} from "../util/geometry.js";
+import { RunScript } from "./pages/RunScript.js";
 
 const html = htm.bind(h);
 
-async function runProgram(url, code) {
-  const result = await run(url, code);
-
-  if (result.geometry) {
-    for (const geometry of result.geometry) {
-      for (const entry of geometry.geometryEntries) {
-        const geometryData = await generateGeometry(entry);
-
-        if (geometryData) {
-          await Forma.render.updateMesh({
-            id: geometry.id,
-            geometryData,
-          });
-        }
-      }
-    }
-  }
-}
-
-function App(props) {
-  const [url, setUrl] = useState(localStorage.getItem("dynamo-url") || null);
-
-  const onChange = useCallback((e) => {
-    const { value } = e.target;
-    localStorage.setItem("dynamo-url", value);
-    setUrl(value);
-  });
-
+function ScriptList({ setScript, setPage }) {
   const [programs, setPrograms] = useState(
     JSON.parse(localStorage.getItem("dynamo-programs") || "{}")
   );
+
+  useEffect(async () => {
+    const templates = Object.fromEntries(
+      await Promise.all(
+        ["Primitives", "ExtrudePolygon"].map(async (name) => [
+          name,
+          await fetch(`templates/${name}.json`).then((res) => res.text()),
+        ])
+      )
+    );
+
+    setPrograms((programs) => ({ ...programs, ...templates }));
+  });
 
   const update = useCallback(({ name, code }) => {
     setPrograms((programs) => {
@@ -110,29 +88,22 @@ function App(props) {
     <div>
       <h1>Dynamo</h1>
 
-      <input defaultValue=${url} onchange=${onChange} />
-
-      <button
-        onclick=${async () =>
-          download(
-            "Constraints",
-            template.render(
-              await getProposal(),
-              await getConstraints(),
-              await getSurroundings()
-            )
-          )}
-      >
-        Download Constraints template
-      </button>
-
       ${Object.entries(programs).map(
         ([name, code]) => html`
           <div>
             ${name}
-            <button onclick=${() => download(name, code)}>Download</button>
-            <button onclick=${() => deleteProgram(name)}>Delete</button>
-            <button onclick=${() => runProgram(url, code)}>Run</button>
+            <div>
+              <button
+                onclick=${() => {
+                  setScript({ name, code });
+                  setPage("RunScript");
+                }}
+              >
+                Open
+              </button>
+              <button onclick=${() => download(name, code)}>Download</button>
+              <button onclick=${() => deleteProgram(name)}>Delete</button>
+            </div>
           </div>
         `
       )}
@@ -152,6 +123,19 @@ function App(props) {
       </div>
     </div>
   `;
+}
+
+function App(props) {
+  const [page, setPage] = useState("ScriptList");
+  const [script, setScript] = useState({});
+
+  if (page === "ScriptList") {
+    return html`<${ScriptList} setPage=${setPage} setScript=${setScript} />`;
+  } else if (page === "RunScript") {
+    return html`<${RunScript} setPage=${setPage} script=${script} />`;
+  } else {
+    return html`<div>Not found</div>`;
+  }
 }
 
 render(html`<${App} />`, document.body);
