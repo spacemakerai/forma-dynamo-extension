@@ -1,33 +1,41 @@
-name: Deploy static content to Pages
+name: Build static files and deploy to GitHub Pages
 
-on:
-  push:
-    branches: [$default-branch]
-
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+on: [workflow_dispatch, push]
 
 jobs:
+  build-shadow-study:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: analyses/shadow-study
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - run: yarn install --frozen-lockfile
+      - run: yarn typecheck
+      - run: yarn build
   deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build-shadow-study
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+      - uses: actions/checkout@v3
+      - uses: actions/configure-pages@v3
+      - uses: actions/upload-pages-artifact@v2
         with:
           path: "analyses"
       - name: Deploy to GitHub Pages
