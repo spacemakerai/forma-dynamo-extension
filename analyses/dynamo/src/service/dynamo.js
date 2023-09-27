@@ -1,4 +1,5 @@
-const dynamoUrl = "https://app.dynaas-c-uw2.cloudos.autodesk.com/v1/graph";
+//const dynamoUrl = "https://app.dynaas-c-uw2.cloudos.autodesk.com/v1/graph";
+const dynamoUrl = "http://localhost:55000/v1/graph";
 
 export async function run(code, inputs) {
   try {
