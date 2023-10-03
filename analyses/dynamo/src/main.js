@@ -1,138 +1,102 @@
 import { h, render } from "https://esm.sh/preact";
-import { useState, useCallback, useEffect } from "https://esm.sh/preact/compat";
+import { useState, useCallback } from "https://esm.sh/preact/compat";
 import htm from "https://esm.sh/htm";
-import { download } from "../util/download.js";
 import { RunScript } from "./pages/RunScript.js";
+import { LocalScript } from "./pages/LocalScript.js";
+import { ErrorPage } from "./pages/ErrorPage.js";
+import * as Dynamo from "./service/dynamo.js";
 
 const html = htm.bind(h);
+
+let storedProgram = {};
+try {
+  storedProgram = JSON.parse(localStorage.getItem("dynamo-program") || "{}");
+} catch (e) {
+  console.error(e);
+}
+
+let dynamoFolder = "";
+try {
+  dynamoFolder = localStorage.getItem("dynamo-folder") || "";
+} catch (e) {
+  console.error(e);
+}
 
 function ScriptList({ setScript, setPage }) {
   const [programs, setPrograms] = useState(
     JSON.parse(localStorage.getItem("dynamo-programs") || "{}")
   );
+  const [folder, setFolder] = useState(dynamoFolder);
 
-  useEffect(async () => {
-    const templates = Object.fromEntries(
-      await Promise.all(
-        ["Primitives", "ExtrudePolygon"].map(async (name) => [
-          name,
-          await fetch(`templates/${name}.json`).then((res) => res.text()),
-        ])
-      )
-    );
+  const reload = useCallback(async () => {
+    try {
+      const localFiles = await Dynamo.graphFolderInfo(folder);
 
-    setPrograms((programs) => ({ ...programs, ...templates }));
-  });
-
-  const update = useCallback(({ name, code }) => {
-    setPrograms((programs) => {
-      const updated = { ...programs, [name]: code };
-      if (!code) {
-        delete update[name];
-      }
-      localStorage.setItem("dynamo-programs", JSON.stringify(updated));
-      return updated;
-    });
-  });
-
-  const deleteProgram = useCallback(
-    (name) => {
-      update({ name, code: undefined });
-    },
-    [update]
-  );
-
-  const ondrop = useCallback(
-    async (ev) => {
-      ev.preventDefault();
-      if (ev.dataTransfer.items) {
-        console.log("datatransferitemlist interface");
-        // Use DataTransferItemList interface to access the file(s)
-        const files = await Promise.all(
-          [...ev.dataTransfer.items].map(async (item, i) => {
-            // If dropped items aren't files, reject them
-            if (item.kind === "file") {
-              const file = item.getAsFile();
-
-              const reader = new FileReader();
-
-              const contentP = new Promise((resolve) =>
-                reader.addEventListener(
-                  "load",
-                  () => {
-                    // this will then display a text file
-                    resolve(reader.result);
-                  },
-                  false
-                )
-              );
-
-              reader.readAsText(file);
-
-              return { name: file.name, code: await contentP };
-            }
-          })
-        );
-
-        files.map(update);
-      }
-    },
-    [update]
-  );
-
-  const ondropover = useCallback((e) => {
-    e.preventDefault();
-  });
+      const localPrograms = Object.fromEntries(
+        localFiles.map((file) => [file.name, file])
+      );
+      setPrograms((programs) => {
+        const newPrograms = { ...programs, ...localPrograms };
+        localStorage.setItem("dynamo-programs", JSON.stringify(newPrograms));
+        return newPrograms;
+      });
+    } catch (e) {
+      console.error(e);
+      setPage("Error");
+    }
+  }, [folder]);
 
   return html`
     <div>
       <h1>Dynamo</h1>
 
-      ${Object.entries(programs).map(
-        ([name, code]) => html`
-          <div>
-            ${name}
-            <div>
-              <button
-                onclick=${() => {
-                  setScript({ name, code });
-                  setPage("RunScript");
-                }}
-              >
-                Open
-              </button>
-              <button onclick=${() => download(name, code)}>Download</button>
-              <button onclick=${() => deleteProgram(name)}>Delete</button>
-            </div>
-          </div>
-        `
-      )}
-
-      <div
-        style=${{
-          height: "100px",
-          border: "1px solid gray",
-          margin: "5px",
-          padding: "5px",
-          borderRadius: "3px",
+      Folder:
+      <input
+        defaultValue=${folder}
+        onChange=${(e) => {
+          const folder = e.target.value;
+          localStorage.setItem("dynamo-folder", folder);
+          setFolder(folder);
         }}
-        ondrop=${ondrop}
-        ondragover=${ondropover}
-      >
-        > drop your dynamo app here
-      </div>
+      />
+      ${folder
+        ? html`
+            <button onClick=${reload}>reload files</button>
+
+            ${Object.entries(programs).map(
+              ([name, code]) => html`
+                <div>
+                  ${name}
+
+                  <button
+                    onclick=${() => {
+                      setScript({ name, code });
+                      setPage("RunScript");
+                    }}
+                  >
+                    Open
+                  </button>
+                </div>
+              `
+            )}
+          `
+        : html`<div>Select trusted Dynamo folder</div>`}
     </div>
   `;
 }
 
-function App(props) {
+function App() {
   const [page, setPage] = useState("ScriptList");
   const [script, setScript] = useState({});
 
   if (page === "ScriptList") {
     return html`<${ScriptList} setPage=${setPage} setScript=${setScript} />`;
+  } else if (page === "RunScript" && !!script.code.id) {
+    return html`<${LocalScript} setPage=${setPage} script=${script} />`;
   } else if (page === "RunScript") {
     return html`<${RunScript} setPage=${setPage} script=${script} />`;
+  } else if (page === "Error") {
+    return html`<${ErrorPage} />`;
   } else {
     return html`<div>Not found</div>`;
   }

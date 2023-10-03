@@ -5,84 +5,75 @@ import { Forma } from "https://esm.sh/forma-embedded-view-sdk/auto";
 
 const html = htm.bind(h);
 
-function DynamoSelection({ code, input, value, setValue }) {
+function DynamoSelection({ input, value, setValue }) {
   const onSelect = useCallback(async () => {
-    setValue(input.Id, await Forma.selection.getSelection());
+    setValue(input.id, await Forma.selection.getSelection());
   }, [input]);
-
-  console.log(value, typeof value, value.length);
 
   return html`<button onClick=${onSelect}>Select</button> ${value &&
     html`<span>Selected ${value.length}</span>`}`;
 }
 
-function DynamoInputComponent({ code, input, value, setValue }) {
-  if (input.Name === "Triangles" || input.Name === "Footprint") {
+function DynamoInputComponent({ input, value, setValue }) {
+  if (input.name === "Triangles" || input.name === "Footprint") {
     return html`<${DynamoSelection} input=${input} setValue=${setValue} value=${value}>Select</button>`;
-  } else if (input.Type === "string") {
+  } else if (input.type === "StringInput") {
     return html`<input
       type="text"
       defaultValue=${value}
-      onChange=${(ev) => setValue(input.Id, ev.target.value)}
+      onChange=${(ev) => setValue(input.id, ev.target.value)}
     />`;
-  } else if (input.Type === "boolean") {
+  } else if (input.type === "BoolSelector") {
     return html`<input
       type="checkbox"
       defaultChecked=${value}
-      onChange=${(ev) => setValue(input.Id, ev.target.checked)}
+      onChange=${(ev) => setValue(input.id, ev.target.checked)}
     />`;
-  } else if (input.hasOwnProperty("StepValue")) {
+  } else if (input.type === "DoubleSlider") {
     return html`<input
         type="range"
-        min=${input.MinimumValue}
-        max=${input.MaximumValue}
-        step=${input.StepValue}
+        min=${input.minimumValue}
+        max=${input.maximumValue}
+        step=${input.stepValue}
         defaultValue=${value}
-        onChange=${(ev) => setValue(input.Id, ev.target.value)}
+        onChange=${(ev) => setValue(input.id, ev.target.value)}
       />
       <span>${value}</span>`;
-  } else if (input.Type === "number") {
+  } else if (input.type === "DoubleInput") {
     return html`<input
       type="number"
       defaultValue=${value}
-      onChange=${(ev) => setValue(input.Id, ev.target.value)}
+      onChange=${(ev) => setValue(input.id, ev.target.value)}
     />`;
-  } else if (input.Type === "selection") {
-    const node = code.Nodes.find((node) => node.Id === input.Id);
-
+  } else if (input.type === "DSDropDownBase") {
     return html` <select
-      onChange=${(ev) => setValue(input.Id, ev.target.value)}
+      onChange=${(ev) => setValue(input.id, ev.target.value)}
     >
-      defaultValue=${value}/>
-      ${node.SerializedItems.map(
-        (item) => html`<option value="${item.Item}">${item.Name}</option>`
+      defaultValue=${input.value.split(":")[1]}/>
+      ${input.nodeTypeProperties.options.map(
+        (name) => html`<option value="${name}">${name}</option>`
       )}
     </select>`;
   } else {
-    console.log(input, node);
+    console.log(input);
   }
 }
 
 export function DynamoInput({ code, state, setValue }) {
-  const inputs = code.Inputs || [];
-
-  console.log(state);
-
-  return inputs.map(
+  return code.inputs.map(
     (input) => html`<div
       style=${{
         borderBottom: "1px solid gray",
         marginBottom: "5px",
         paddingBottom: "5px",
       }}
-      key=${input.Id}
+      key=${input.id}
     >
-      ${input.Name} - ${input.Type}:
+      ${input.name} - ${input.type}:
       <br />
       <${DynamoInputComponent}
-        code=${code}
         input=${input}
-        value=${state[input.Id]}
+        value=${state[input.id]}
         setValue=${setValue}
       />
     </div>`

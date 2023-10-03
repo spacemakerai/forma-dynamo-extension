@@ -9,27 +9,51 @@ import { generateGeometry } from "../service/render.js";
 
 const html = htm.bind(h);
 
-function getDefaultValues(code) {
-  const inputs = JSON.parse(code).Inputs;
-  const state = {};
-  for (const input of inputs) {
-    if (input.Value) {
-      if (input.Type === "boolean") {
-        state[input.Id] = input.Value === "true";
-      } else if (input.Name === "Triangles" || input.Name === "Footprint") {
-        state[input.Id] = JSON.parse(input.Value.replace("\r\n", ""));
-      } else {
-        state[input.Id] = input.Value;
+function getDefaultValues(scriptInfo) {
+  if (scriptInfo.type === "loaded") {
+    const inputs = scriptInfo.data.inputs; // JSON.parse(code).Inputs;
+    const state = {};
+
+    for (const input of inputs) {
+      if (input.value) {
+        if (input.type === "boolean") {
+          state[input.id] = input.value === "true";
+        } else if (input.name === "Triangles" || input.name === "Footprint") {
+          state[input.id] = JSON.parse(input.value.replace("\r\n", ""));
+        } else {
+          state[input.id] = input.value;
+        }
       }
     }
+    return state;
+  } else {
+    return {};
   }
-  return state;
 }
 
-export function RunScript({ script }) {
-  const code = JSON.parse(script.code);
+function useScript(script) {
+  const [state, setState] = useState({ type: "init" });
 
-  const [state, setState] = useState(getDefaultValues(script.code));
+  const reload = useCallback(() => {
+    setState({ type: "loading" });
+    Dynamo.info(script.code).then((data) => {
+      setState({ type: "loaded", data });
+    });
+  }, [script]);
+
+  useEffect(() => {
+    reload();
+  }, [reload]);
+
+  return [state, reload];
+}
+
+export function LocalScript({ script, setPage }) {
+  const code = script.code;
+
+  const [scriptInfo, reload] = useScript(script);
+
+  const [state, setState] = useState(getDefaultValues(scriptInfo));
   const [output, setOutput] = useState({ type: "init" });
 
   const setValue = useCallback((id, value) =>
@@ -42,11 +66,9 @@ export function RunScript({ script }) {
       const urn = await Forma.proposal.getRootUrn();
       const inputs = await Promise.all(
         Object.entries(state).map(async ([id, value]) => {
-          console.log(code.inputs);
           const input = code.inputs.find((input) => input.id === id);
 
           if (input.name === "Triangles") {
-            console.log("Triangles", input.name);
             return {
               nodeId: id,
               value: JSON.stringify(
@@ -74,7 +96,6 @@ export function RunScript({ script }) {
               ),
             };
           } else {
-            console.log("Triangles", input.name, id);
             return {
               nodeId: id,
               value: value,
@@ -107,9 +128,15 @@ export function RunScript({ script }) {
     }
   }, [output]);
 
+  if (scriptInfo.type !== "loaded") {
+    return html`<div>Loading...</div>`;
+  }
+
   return html`
     <div>
       <h1>Run</h1>
+      <button onClick=${() => setPage("ScriptList")}>back</button>
+      <button onClick=${() => reload()}>Reload</button>
       <div
         style=${{
           borderBottom: "1px solid gray",
