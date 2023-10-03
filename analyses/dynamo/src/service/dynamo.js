@@ -25,6 +25,16 @@ function createTarget(code) {
   }
 }
 
+export async function health() {
+  try {
+    const response = await fetch(dynamoUrl + "/v1/health");
+    await response.json();
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 export async function run(code, inputs) {
   const target = createTarget(code);
 

@@ -1,5 +1,5 @@
 import { h, render } from "https://esm.sh/preact";
-import { useState, useCallback } from "https://esm.sh/preact/compat";
+import { useState, useCallback, useEffect } from "https://esm.sh/preact/compat";
 import htm from "https://esm.sh/htm";
 import { LocalScript } from "./pages/LocalScript.js";
 import { ErrorPage } from "./pages/ErrorPage.js";
@@ -84,9 +84,32 @@ function ScriptList({ setScript, setPage }) {
   `;
 }
 
+function useIsDynamoAccessible() {
+  const [state, setState] = useState({ state: "init" });
+
+  useEffect(async () => {
+    try {
+      setState({ state: "success", health: await Dynamo.health() });
+    } catch (e) {
+      console.error(e);
+      setState({ state: "success", health: false });
+    }
+  }, []);
+
+  return state;
+}
+
 function App() {
   const [page, setPage] = useState("ScriptList");
   const [script, setScript] = useState({});
+
+  const isAccessible = useIsDynamoAccessible();
+
+  if (isAccessible.state === "init") {
+    return html`<div>Looking for Dynamo...</div>`;
+  } else if (isAccessible.state === "success" && !isAccessible.health) {
+    return html`<${ErrorPage} />`;
+  }
 
   if (page === "ScriptList") {
     return html`<${ScriptList} setPage=${setPage} setScript=${setScript} />`;
