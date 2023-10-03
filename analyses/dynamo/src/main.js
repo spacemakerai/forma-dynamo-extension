@@ -34,11 +34,8 @@ function ScriptList({ setScript, setPage }) {
       const localPrograms = Object.fromEntries(
         localFiles.map((file) => [file.name, file])
       );
-      setPrograms((programs) => {
-        const newPrograms = { ...programs, ...localPrograms };
-        localStorage.setItem("dynamo-programs", JSON.stringify(newPrograms));
-        return newPrograms;
-      });
+      localStorage.setItem("dynamo-programs", JSON.stringify(localPrograms));
+      setPrograms(localPrograms);
     } catch (e) {
       console.error(e);
       setPage("Error");
