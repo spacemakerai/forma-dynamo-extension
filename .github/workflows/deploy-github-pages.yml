@@ -27,6 +27,7 @@ jobs:
           cd analyses/dynamo
           yarn install --frozen-lockfile
           yarn build
+          rm -rf node_modules
           cd ../..
       # end build dynamo
       - uses: actions/configure-pages@v3
