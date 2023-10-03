@@ -1,6 +1,14 @@
-//const dynamoUrl = "https://app.dynaas-c-uw2.cloudos.autodesk.com/v1/graph";
-const dynamoUrl = "http://localhost:55000/v1";
-// const dynamoUrl = "https://cb5e-20-126-50-171.ngrok.io/v1";
+let dynamoUrl = "http://localhost:55000";
+
+try {
+  const url = sessionStorage.getItem("dynamo-url");
+  if (url && url.startsWith("http")) {
+    dynamoUrl = url;
+    console.log("Overriding dynamo url: " + dynamoUrl);
+  }
+} catch (e) {
+  console.error(e);
+}
 
 function createTarget(code) {
   if (code.id) {
@@ -21,7 +29,7 @@ export async function run(code, inputs) {
   const target = createTarget(code);
 
   try {
-    const response = await fetch(dynamoUrl + "/graph/run", {
+    const response = await fetch(dynamoUrl + "/v1/graph/run", {
       method: "POST",
       body: JSON.stringify({
         target: target,
@@ -40,7 +48,7 @@ export async function run(code, inputs) {
 }
 
 export async function graphFolderInfo(path) {
-  return fetch(dynamoUrl + "/graph-folder/info", {
+  return fetch(dynamoUrl + "/v1/graph-folder/info", {
     method: "POST",
     body: JSON.stringify({
       path: path.replaceAll(/\\/g, "\\\\"),
@@ -52,7 +60,7 @@ export async function info(code) {
   const target = createTarget(code);
 
   try {
-    const response = await fetch(dynamoUrl + "/graph/info", {
+    const response = await fetch(dynamoUrl + "/v1/graph/info", {
       method: "POST",
       body: JSON.stringify({
         target: target,

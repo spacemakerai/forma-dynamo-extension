@@ -1,7 +1,6 @@
 import { h, render } from "https://esm.sh/preact";
 import { useState, useCallback } from "https://esm.sh/preact/compat";
 import htm from "https://esm.sh/htm";
-import { RunScript } from "./pages/RunScript.js";
 import { LocalScript } from "./pages/LocalScript.js";
 import { ErrorPage } from "./pages/ErrorPage.js";
 import * as Dynamo from "./service/dynamo.js";
@@ -93,8 +92,6 @@ function App() {
     return html`<${ScriptList} setPage=${setPage} setScript=${setScript} />`;
   } else if (page === "RunScript" && !!script.code.id) {
     return html`<${LocalScript} setPage=${setPage} script=${script} />`;
-  } else if (page === "RunScript") {
-    return html`<${RunScript} setPage=${setPage} script=${script} />`;
   } else if (page === "Error") {
     return html`<${ErrorPage} />`;
   } else {
