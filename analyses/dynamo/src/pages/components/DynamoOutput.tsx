@@ -18,12 +18,14 @@ export function DynamoOutput({ output }: any) {
         .map((output) => (
           <div
             style={{
-              borderBottom: "1px solid gray",
+              display: "flex",
+              justifyContent: "space-between",
               marginBottom: "5px",
               paddingBottom: "5px",
             }}
           >
-            {output.name} {output.value}
+            <span>{output.name}</span>
+            <span> {output.value}</span>
           </div>
         ))}
     </div>

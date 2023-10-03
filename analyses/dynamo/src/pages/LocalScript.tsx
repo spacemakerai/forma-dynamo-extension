@@ -5,6 +5,7 @@ import { DynamoOutput } from "./components/DynamoOutput.js";
 import { DynamoInput } from "./components/DynamoInput.js";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { generateGeometry } from "../service/render.js";
+import { Back } from "../icons/Back.js";
 
 function getDefaultValues(scriptInfo: any) {
   if (scriptInfo.type === "loaded") {
@@ -143,30 +144,57 @@ export function LocalScript({ script, setPage }: any) {
     }
   }, [output]);
 
-  if (scriptInfo.type !== "loaded") {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div>
-      <h1>Run</h1>
-      <button onClick={() => setPage("ScriptList")}>back</button>
-      <button onClick={() => reload()}>Reload</button>
-      <div
-        style={{
-          borderBottom: "1px solid gray",
-          marginBottom: "5px",
-          paddingBottom: "5px",
-        }}
-      >
-        {script.name}
-      </div>
-      <DynamoInput code={code} state={state} setValue={setValue} />
-      <button disabled={output.type === "running"} onClick={onRun}>
-        Run
-      </button>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Back onClick={() => setPage("ScriptList")} />
+        <h1
+          onClick={() => reload()}
+          style={{
+            cursor: "pointer",
+            fontFamily: "Artifact Element",
+            marginLeft: "5px",
+            fontSize: "12px",
+          }}
+        >
+          {script.name}
+        </h1>
 
-      <DynamoOutput output={output} />
+        <img src="src/icons/dynamo.png" />
+      </div>
+      <div></div>
+
+      {scriptInfo.type !== "loaded" ? (
+        <div> Opening script in dynamo ... </div>
+      ) : (
+        <div>
+          <div
+            style={{
+              marginBottom: "5px",
+              paddingBottom: "5px",
+            }}
+          ></div>
+          <DynamoInput code={code} state={state} setValue={setValue} />
+          <button
+            style={{
+              width: "100%",
+              backgroundColor: "#0696D7",
+              border: "none",
+              borderRadius: "2px",
+              height: "24px",
+              color: "white",
+              padding: "4px, 12px, 4px, 12px",
+              cursor: "pointer",
+            }}
+            disabled={output.type === "running"}
+            onClick={onRun}
+          >
+            Run
+          </button>
+
+          <DynamoOutput output={output} />
+        </div>
+      )}
     </div>
   );
 }

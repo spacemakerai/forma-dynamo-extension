@@ -8,8 +8,8 @@ function DynamoSelection({ input, value, setValue }: any) {
 
   return (
     <>
+      {value && <span>{value.length} Selected</span>}
       <button onClick={onSelect}>Select</button>
-      {value && <span>Selected {value.length}</span>}
     </>
   );
 }
@@ -100,14 +100,14 @@ export function DynamoInput({ code, state, setValue }: any) {
   return code.inputs.map((input: Input) => (
     <div
       style={{
-        borderBottom: "1px solid gray",
+        display: "flex",
+        justifyContent: "space-between",
         marginBottom: "5px",
         paddingBottom: "5px",
       }}
       key={input.id}
     >
-      {input.name} - {input.type}:
-      <br />
+      {input.name}
       <DynamoInputComponent
         input={input}
         value={state[input.id]}
