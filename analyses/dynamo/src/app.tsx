@@ -2,12 +2,40 @@ import { useState, useCallback, useEffect } from "preact/compat";
 import { LocalScript } from "./pages/LocalScript";
 import { ErrorPage } from "./pages/ErrorPage";
 import * as Dynamo from "./service/dynamo";
+import { Next } from "./icons/Next";
 
 let dynamoFolder = "";
 try {
   dynamoFolder = localStorage.getItem("dynamo-folder") || "";
 } catch (e) {
   console.error(e);
+}
+
+function ScriptListItem({ name, code, setScript, setPage }: any) {
+  const [hover, setHover] = useState(false);
+
+  return (
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onClick={() => {
+        setScript({ name, code });
+        setPage("RunScript");
+      }}
+      style={{
+        backgroundColor: hover ? "#80808020" : "#fff",
+        cursor: "pointer",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        height: "40px",
+        padding: "0 10px",
+      }}
+    >
+      {name}
+      {hover && <Next />}
+    </div>
+  );
 }
 
 function ScriptList({ setScript, setPage }: any) {
@@ -33,8 +61,20 @@ function ScriptList({ setScript, setPage }: any) {
 
   return (
     <div>
-      <h1>Dynamo</h1>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <img src="src/icons/dynamo.png" />
+        <h1
+          style={{
+            fontFamily: "Artifact Element",
+            marginLeft: "5px",
+            fontSize: "12px",
+          }}
+        >
+          Dynamo Player
+        </h1>
+      </div>
       Folder:
+      <br />
       <input
         defaultValue={folder}
         onChange={(e: any) => {
@@ -43,23 +83,17 @@ function ScriptList({ setScript, setPage }: any) {
           setFolder(folder);
         }}
       />
+      <button onClick={reload}>reload files</button>
       {folder ? (
         <div>
-          <button onClick={reload}>reload files</button>
-
           {Object.entries(programs).map(([name, code]) => (
-            <div>
-              {name}
-
-              <button
-                onClick={() => {
-                  setScript({ name, code });
-                  setPage("RunScript");
-                }}
-              >
-                Open
-              </button>
-            </div>
+            <ScriptListItem
+              key={name}
+              name={name}
+              code={code}
+              setScript={setScript}
+              setPage={setPage}
+            />
           ))}
         </div>
       ) : (
