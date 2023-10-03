@@ -10,7 +10,7 @@ try {
   console.error(e);
 }
 
-function createTarget(code) {
+function createTarget(code: any) {
   if (code.id) {
     return {
       type: "PathGraphTarget",
@@ -35,7 +35,7 @@ export async function health() {
   }
 }
 
-export async function run(code, inputs) {
+export async function run(code: any, inputs: any) {
   const target = createTarget(code);
 
   try {
@@ -57,7 +57,7 @@ export async function run(code, inputs) {
   }
 }
 
-export async function graphFolderInfo(path) {
+export async function graphFolderInfo(path: string) {
   return fetch(dynamoUrl + "/v1/graph-folder/info", {
     method: "POST",
     body: JSON.stringify({
@@ -66,7 +66,7 @@ export async function graphFolderInfo(path) {
   }).then((res) => res.json());
 }
 
-export async function info(code) {
+export async function info(code: any) {
   const target = createTarget(code);
 
   try {

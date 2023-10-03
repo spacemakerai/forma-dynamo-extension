@@ -1,18 +1,15 @@
-import { useState, useCallback, useEffect } from "https://esm.sh/preact/compat";
-import { h } from "https://esm.sh/preact";
-import htm from "https://esm.sh/htm";
+import { useState, useCallback, useEffect } from "preact/compat";
+
 import * as Dynamo from "../service/dynamo.js";
 import { DynamoOutput } from "./components/DynamoOutput.js";
 import { DynamoInput } from "./components/DynamoInput.js";
-import { Forma } from "https://esm.sh/forma-embedded-view-sdk/auto";
+import { Forma } from "forma-embedded-view-sdk/auto";
 import { generateGeometry } from "../service/render.js";
 
-const html = htm.bind(h);
-
-function getDefaultValues(scriptInfo) {
+function getDefaultValues(scriptInfo: any) {
   if (scriptInfo.type === "loaded") {
     const inputs = scriptInfo.data.inputs; // JSON.parse(code).Inputs;
-    const state = {};
+    const state: any = {};
 
     for (const input of inputs) {
       if (input.value) {
@@ -31,8 +28,13 @@ function getDefaultValues(scriptInfo) {
   }
 }
 
-function useScript(script) {
-  const [state, setState] = useState({ type: "init" });
+type ScriptResult =
+  | { type: "init" }
+  | { type: "loading" }
+  | { type: "loaded"; data: any };
+
+function useScript(script: any): [ScriptResult, () => void] {
+  const [state, setState] = useState<ScriptResult>({ type: "init" });
 
   const reload = useCallback(() => {
     setState({ type: "loading" });
@@ -48,16 +50,26 @@ function useScript(script) {
   return [state, reload];
 }
 
-export function LocalScript({ script, setPage }) {
+type Output =
+  | { type: "init" }
+  | { type: "running" }
+  | { type: "success"; data: any }
+  | { type: "error"; data: any };
+
+export function LocalScript({ script, setPage }: any) {
   const code = script.code;
 
   const [scriptInfo, reload] = useScript(script);
 
-  const [state, setState] = useState(getDefaultValues(scriptInfo));
-  const [output, setOutput] = useState({ type: "init" });
+  const [state, setState] = useState<Record<string, any>>(
+    getDefaultValues(scriptInfo)
+  );
+  const [output, setOutput] = useState<Output>({ type: "init" });
 
-  const setValue = useCallback((id, value) =>
-    setState((state) => ({ ...state, [id]: value }))
+  const setValue = useCallback(
+    (id: string, value: any) =>
+      setState((state) => ({ ...state, [id]: value })),
+    []
   );
 
   const onRun = useCallback(async () => {
@@ -66,14 +78,16 @@ export function LocalScript({ script, setPage }) {
       const urn = await Forma.proposal.getRootUrn();
       const inputs = await Promise.all(
         Object.entries(state).map(async ([id, value]) => {
-          const input = code.inputs.find((input) => input.id === id);
+          const input = code.inputs.find(
+            (input: { id: string }) => input.id === id
+          );
 
           if (input.name === "Triangles") {
             return {
               nodeId: id,
               value: JSON.stringify(
                 await Promise.all(
-                  value.map(async (path) => {
+                  (value as string[]).map(async (path) => {
                     return [
                       ...(await Forma.geometry.getTriangles({ urn, path })),
                     ];
@@ -86,8 +100,9 @@ export function LocalScript({ script, setPage }) {
               nodeId: id,
               value: JSON.stringify(
                 await Promise.all(
-                  value.map(async (path) => {
+                  (value as string[]).map(async (path) => {
                     return [
+                      // @ts-ignore
                       ...(await Forma.geometry.getFootprint({ urn, path }))
                         .coordinates,
                     ];
@@ -117,41 +132,41 @@ export function LocalScript({ script, setPage }) {
   useEffect(() => {
     if (output.type === "success") {
       output.data.info.outputs
-        .filter(({ type }) => type === "Watch3D")
-        .filter(({ value }) => !!value)
-        .forEach(async (output) => {
-          Forma.render.updateMesh({
-            id: output.Id,
-            geometryData: await generateGeometry(output.value),
-          });
+        .filter(({ type }: any) => type === "Watch3D")
+        .filter(({ value }: any) => !!value)
+        .forEach(async (output: any) => {
+          const geometryData = await generateGeometry(output.value);
+          if (geometryData) {
+            Forma.render.updateMesh({ id: output.Id, geometryData });
+          }
         });
     }
   }, [output]);
 
   if (scriptInfo.type !== "loaded") {
-    return html`<div>Loading...</div>`;
+    return <div>Loading...</div>;
   }
 
-  return html`
+  return (
     <div>
       <h1>Run</h1>
-      <button onClick=${() => setPage("ScriptList")}>back</button>
-      <button onClick=${() => reload()}>Reload</button>
+      <button onClick={() => setPage("ScriptList")}>back</button>
+      <button onClick={() => reload()}>Reload</button>
       <div
-        style=${{
+        style={{
           borderBottom: "1px solid gray",
           marginBottom: "5px",
           paddingBottom: "5px",
         }}
       >
-        ${script.name}
+        {script.name}
       </div>
-      <${DynamoInput} code=${code} state=${state} setValue=${setValue} />
-      <button disabled=${output.type === "running"} onClick=${onRun}>
+      <DynamoInput code={code} state={state} setValue={setValue} />
+      <button disabled={output.type === "running"} onClick={onRun}>
         Run
       </button>
 
-      <${DynamoOutput} output=${output} />
+      <DynamoOutput output={output} />
     </div>
-  `;
+  );
 }
