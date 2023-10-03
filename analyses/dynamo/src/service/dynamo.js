@@ -1,6 +1,6 @@
 //const dynamoUrl = "https://app.dynaas-c-uw2.cloudos.autodesk.com/v1/graph";
-//const dynamoUrl = "http://localhost:55000/v1/graph";
-const dynamoUrl = "https://cb5e-20-126-50-171.ngrok.io/v1";
+const dynamoUrl = "http://localhost:55000/v1";
+// const dynamoUrl = "https://cb5e-20-126-50-171.ngrok.io/v1";
 
 function createTarget(code) {
   if (code.id) {
