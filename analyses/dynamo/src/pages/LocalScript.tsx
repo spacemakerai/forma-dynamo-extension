@@ -6,6 +6,7 @@ import { DynamoInput } from "./components/DynamoInput.js";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { generateGeometry } from "../service/render.js";
 import { Back } from "../icons/Back.js";
+import dynamoIconUrn from "../icons/dynamo.png";
 
 function getDefaultValues(scriptInfo: any) {
   if (scriptInfo.type === "loaded") {
@@ -160,7 +161,7 @@ export function LocalScript({ script, setPage }: any) {
           {script.name}
         </h1>
 
-        <img src="src/icons/dynamo.png" />
+        <img src={dynamoIconUrn} />
       </div>
       <div></div>
 

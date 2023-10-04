@@ -1,11 +1,14 @@
 import { useCallback, useState } from "preact/hooks";
+import dynamoIconUrn from "../icons/dynamo.png";
+import dynamoSandboxExtensionUrl from "../assets/DynamoPlayerExtension3.0.7z?url";
+import dynamoRevitExtensionUrl from "../assets/DynamoPlayerPackage2.18.7z?url";
 
 export function ErrorPage() {
   const downloadDynamoPlayerExtension = useCallback(() => {
-    window.open("./assets/DynamoPlayerExtension3.0.7.7z", "_blank");
+    window.open(dynamoSandboxExtensionUrl, "_blank");
   }, []);
   const downloadDynamoPlayerExtensionRevit = useCallback(() => {
-    window.open("./assets/DynamoPlayerPackage2.18.7z", "_blank");
+    window.open(dynamoRevitExtensionUrl, "_blank");
   }, []);
 
   const [app, setApp] = useState("sandbox");
@@ -13,7 +16,7 @@ export function ErrorPage() {
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center" }}>
-        <img src="src/icons/dynamo.png" />
+        <img src={dynamoIconUrn} />
         <h1
           style={{
             fontFamily: "Artifact Element",
@@ -56,7 +59,7 @@ export function ErrorPage() {
             <li>
               3. Extract DynamoPlayerExtension3.0.7.7z to{" "}
               <span style={{ background: "#80808040", fontFamily: "Monaco" }}>
-                %AppData%\Roaming\Dynamo\Dynamo Core\3.0\packages
+                %AppData%\Dynamo\Dynamo Core\3.0\packages
               </span>
             </li>
             <br />
@@ -79,7 +82,7 @@ export function ErrorPage() {
             <li>
               3. Extract DynamoPlayerPackage2.18.7z to{" "}
               <span style={{ background: "#80808040", fontFamily: "Monaco" }}>
-                %AppData%\Roaming\Dynamo\Dynamo Revit\2.18\packages
+                %AppData%\Dynamo\Dynamo Revit\2.18\packages
               </span>
             </li>
             <br />
@@ -91,5 +94,3 @@ export function ErrorPage() {
     </div>
   );
 }
-
-//<li> Extract DynamoPlayerExtension.7z to %AppData%\Roaming\Dynamo\Dynamo Core\3.0\packages </li>

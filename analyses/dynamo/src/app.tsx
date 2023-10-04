@@ -3,6 +3,7 @@ import { LocalScript } from "./pages/LocalScript";
 import { ErrorPage } from "./pages/ErrorPage";
 import * as Dynamo from "./service/dynamo";
 import { Next } from "./icons/Next";
+import dynamoIconUrn from "./icons/dynamo.png";
 
 let dynamoFolder = "";
 try {
@@ -62,7 +63,7 @@ function ScriptList({ setScript, setPage }: any) {
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center" }}>
-        <img src="src/icons/dynamo.png" />
+        <img src={dynamoIconUrn} />
         <h1
           style={{
             fontFamily: "Artifact Element",
