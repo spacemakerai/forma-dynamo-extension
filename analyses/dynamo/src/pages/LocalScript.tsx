@@ -59,8 +59,6 @@ type Output =
   | { type: "error"; data: any };
 
 export function LocalScript({ script, setPage }: any) {
-  const code = script.code;
-
   const [scriptInfo, reload] = useScript(script);
 
   const [state, setState] = useState<Record<string, any>>(
@@ -76,6 +74,10 @@ export function LocalScript({ script, setPage }: any) {
 
   const onRun = useCallback(async () => {
     try {
+      if (scriptInfo.type !== "loaded") {
+        return;
+      }
+      const code = scriptInfo.data;
       setOutput({ type: "running" });
       const urn = await Forma.proposal.getRootUrn();
       const inputs = await Promise.all(
@@ -125,7 +127,7 @@ export function LocalScript({ script, setPage }: any) {
     } catch (e) {
       setOutput({ type: "error", data: e });
     }
-  }, [code, state]);
+  }, [scriptInfo, state]);
 
   useEffect(() => {
     setOutput({ type: "init" });
@@ -144,6 +146,10 @@ export function LocalScript({ script, setPage }: any) {
         });
     }
   }, [output]);
+
+  if (scriptInfo.type !== "loaded") {
+    return <div> Loading script ... </div>;
+  }
 
   return (
     <div>
@@ -175,7 +181,11 @@ export function LocalScript({ script, setPage }: any) {
               paddingBottom: "5px",
             }}
           ></div>
-          <DynamoInput code={code} state={state} setValue={setValue} />
+          <DynamoInput
+            code={scriptInfo.data}
+            state={state}
+            setValue={setValue}
+          />
           <button
             style={{
               width: "100%",
