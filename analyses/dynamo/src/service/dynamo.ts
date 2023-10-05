@@ -1,4 +1,4 @@
-let dynamoUrl = "http://localhost:55000";
+let dynamoUrl = "http://localhost:55100";
 
 try {
   const url = sessionStorage.getItem("dynamo-url");
@@ -28,8 +28,7 @@ function createTarget(code: any) {
 export async function health() {
   try {
     const response = await fetch(dynamoUrl + "/v1/health");
-    await response.json();
-    return true;
+    return response.status === 200;
   } catch (e) {
     return false;
   }
