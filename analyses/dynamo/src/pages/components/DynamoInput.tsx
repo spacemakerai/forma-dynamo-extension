@@ -14,7 +14,15 @@ function DynamoSelection({ input, value, setValue }: any) {
   );
 }
 
-function DynamoInputComponent({ input, value, setValue }: any) {
+function DynamoInputComponent({
+  input,
+  value,
+  setValue,
+}: {
+  input: Input;
+  value: any;
+  setValue: (v: any) => void;
+}) {
   if (input.name === "Triangles" || input.name === "Footprint") {
     return (
       <DynamoSelection
@@ -46,9 +54,24 @@ function DynamoInputComponent({ input, value, setValue }: any) {
       <>
         <input
           type="range"
-          min={input.minimumValue}
-          max={input.maximumValue}
-          step={input.stepValue}
+          min={input.nodeTypeProperties.minimumValue}
+          max={input.nodeTypeProperties.maximumValue}
+          step={input.nodeTypeProperties.stepValue}
+          defaultValue={value}
+          // @ts-ignore
+          onChange={(ev) => setValue(input.id, ev.target.value)}
+        />
+        <span>{value}</span>
+      </>
+    );
+  } else if (input.type === "IntegerSlider64Bit") {
+    return (
+      <>
+        <input
+          type="range"
+          min={input.nodeTypeProperties.minimumValue}
+          max={input.nodeTypeProperties.maximumValue}
+          step={input.nodeTypeProperties.stepValue}
           defaultValue={value}
           // @ts-ignore
           onChange={(ev) => setValue(input.id, ev.target.value)}
@@ -72,8 +95,8 @@ function DynamoInputComponent({ input, value, setValue }: any) {
         onChange={(ev) => setValue(input.id, ev.target.value)}
         defaultValue={input.value.split(":")[1]}
       >
-        {input.nodeTypeProperties.options.map((name: string) => (
-          <option value="{name}">{name}</option>
+        {input.nodeTypeProperties.options.map((name: string, i) => (
+          <option value={i}>{name}</option>
         ))}
       </select>
     );
@@ -88,11 +111,11 @@ type Input = {
   name: string;
   type: string;
   value: string;
-  minimumValue: number;
-  maximumValue: number;
-  stepValue: number;
   nodeTypeProperties: {
     options: string[];
+    minimumValue: number;
+    maximumValue: number;
+    stepValue: number;
   };
 };
 

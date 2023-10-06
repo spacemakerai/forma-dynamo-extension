@@ -61,9 +61,14 @@ type Output =
 export function LocalScript({ script, setPage }: any) {
   const [scriptInfo, reload] = useScript(script);
 
-  const [state, setState] = useState<Record<string, any>>(
-    getDefaultValues(scriptInfo)
-  );
+  const [state, setState] = useState<Record<string, any>>({});
+
+  useEffect(() => {
+    if (scriptInfo.type === "loaded") {
+      setState(getDefaultValues(scriptInfo));
+    }
+  }, [scriptInfo]);
+
   const [output, setOutput] = useState<Output>({ type: "init" });
 
   const setValue = useCallback(
