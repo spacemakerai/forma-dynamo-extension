@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "forma-embedded-view-sdk": "^0.10.2",
+    "forma-embedded-view-sdk": "0.14.0",
     "preact": "^10.17.1",
     "three": "^0.157.0"
   },

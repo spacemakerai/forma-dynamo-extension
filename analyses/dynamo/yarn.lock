@@ -529,10 +529,10 @@ estree-walker@^2.0.1:
   resolved "https://registry.yarnpkg.com/estree-walker/-/estree-walker-2.0.2.tgz#52f010178c2a4c117a7757cfe942adb7d2da4cac"
   integrity sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==
 
-forma-embedded-view-sdk@^0.10.2:
-  version "0.10.2"
-  resolved "https://registry.yarnpkg.com/forma-embedded-view-sdk/-/forma-embedded-view-sdk-0.10.2.tgz#e1029f3cdeb8acf8b643165e33bd375873f4c71f"
-  integrity sha512-B96BfJZRp9tkWa8L1ga4RScMyclgsHoAUQGDTLGNxTXJ+b6b+mSlR892cqBxd2R4m+KrTZadbTvNxacbwmpPFw==
+forma-embedded-view-sdk@0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/forma-embedded-view-sdk/-/forma-embedded-view-sdk-0.14.0.tgz#d54c55b3fc3d39d5a104cab25ba08673dd95f631"
+  integrity sha512-EPVHiiMe2J7T7fWs7JYCYZmIQHaQioapDG1nSNNVE/04gYrr5NXFC+puTa43YGuh0VzoVefWNwuTPpCuu5WF8g==
   dependencies:
     uuid "^9.0.0"
 
