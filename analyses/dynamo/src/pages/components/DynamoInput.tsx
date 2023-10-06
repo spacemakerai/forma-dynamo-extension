@@ -100,6 +100,24 @@ function DynamoInputComponent({
         ))}
       </select>
     );
+  } else if (input.type === "Filename") {
+    return (
+      <input
+        type="text"
+        defaultValue={value}
+        // @ts-ignore
+        onChange={(ev) => setValue(input.id, ev.target.value)}
+      />
+    );
+  } else if (input.type === "Directory") {
+    return (
+      <input
+        type="text"
+        defaultValue={value}
+        // @ts-ignore
+        onChange={(ev) => setValue(input.id, ev.target.value)}
+      />
+    );
   } else {
     console.log(input);
     return null;
