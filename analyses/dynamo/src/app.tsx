@@ -41,26 +41,27 @@ function ScriptListItem({ name, code, setScript, setPage }: any) {
 }
 
 function ScriptList({ setScript, setPage }: any) {
-  const [programs, setPrograms] = useState(
-    JSON.parse(localStorage.getItem("dynamo-programs") || "{}")
-  );
+  const [programs, setPrograms] = useState({});
   const [error, setError] = useState<string | null>(null);
   const [folder, setFolder] = useState(dynamoFolder);
 
-  const reload = useCallback(async () => {
-    try {
-      setError(null);
-      setPrograms([]);
-      const localFiles = await Dynamo.graphFolderInfo(folder);
+  useEffect(() => {
+    (async function () {
+      if (!folder) return;
 
-      const localPrograms = Object.fromEntries(
-        localFiles.map((file: any) => [file.name, file])
-      );
-      localStorage.setItem("dynamo-programs", JSON.stringify(localPrograms));
-      setPrograms(localPrograms);
-    } catch (e) {
-      setError("Could not load files");
-    }
+      try {
+        setError(null);
+        setPrograms([]);
+        const localFiles = await Dynamo.graphFolderInfo(folder);
+
+        const localPrograms = Object.fromEntries(
+          localFiles.map((file: any) => [file.name, file])
+        );
+        setPrograms(localPrograms);
+      } catch (e) {
+        setError("Could not load files");
+      }
+    })();
   }, [folder]);
 
   return (
@@ -87,7 +88,6 @@ function ScriptList({ setScript, setPage }: any) {
           setFolder(folder);
         }}
       />
-      <button onClick={reload}>reload files</button>
       {error && <div style={{ color: "red" }}>{error}</div>}
       {folder ? (
         <div>
