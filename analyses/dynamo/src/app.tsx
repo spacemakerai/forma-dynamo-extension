@@ -110,7 +110,10 @@ function useIsDynamoAccessible() {
   useEffect(() => {
     (async function () {
       try {
-        setState({ state: "success", health: await Dynamo.health() });
+        while (state) {
+          setState({ state: "success", health: await Dynamo.health() });
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
       } catch (e) {
         console.error(e);
         setState({ state: "success", health: false });

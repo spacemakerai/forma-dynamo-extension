@@ -1,13 +1,16 @@
-let dynamoUrl = "http://localhost:55100";
+function getDynamoUrl() {
+  let dynamoUrl = "http://localhost:55100";
 
-try {
-  const url = sessionStorage.getItem("dynamo-url");
-  if (url && url.startsWith("http")) {
-    dynamoUrl = url;
-    console.log("Overriding dynamo url: " + dynamoUrl);
+  try {
+    const url = localStorage.getItem("dynamo-url");
+    if (url && url.startsWith("http")) {
+      dynamoUrl = url;
+      console.log("Overriding dynamo url: " + dynamoUrl);
+    }
+  } catch (e) {
+    console.error(e);
   }
-} catch (e) {
-  console.error(e);
+  return dynamoUrl;
 }
 
 function createTarget(code: any) {
@@ -27,7 +30,7 @@ function createTarget(code: any) {
 
 export async function health() {
   try {
-    const response = await fetch(dynamoUrl + "/v1/health");
+    const response = await fetch(getDynamoUrl() + "/v1/health");
     return response.status === 200;
   } catch (e) {
     return false;
@@ -38,7 +41,7 @@ export async function run(code: any, inputs: any) {
   const target = createTarget(code);
 
   try {
-    const response = await fetch(dynamoUrl + "/v1/graph/run", {
+    const response = await fetch(getDynamoUrl() + "/v1/graph/run", {
       method: "POST",
       body: JSON.stringify({
         target: target,
@@ -57,7 +60,7 @@ export async function run(code: any, inputs: any) {
 }
 
 export async function graphFolderInfo(path: string) {
-  return fetch(dynamoUrl + "/v1/graph-folder/info", {
+  return fetch(getDynamoUrl() + "/v1/graph-folder/info", {
     method: "POST",
     body: JSON.stringify({
       path: path.replaceAll(/\\/g, "\\\\"),
@@ -69,7 +72,7 @@ export async function info(code: any) {
   const target = createTarget(code);
 
   try {
-    const response = await fetch(dynamoUrl + "/v1/graph/info", {
+    const response = await fetch(getDynamoUrl() + "/v1/graph/info", {
       method: "POST",
       body: JSON.stringify({
         target: target,
