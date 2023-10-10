@@ -28,12 +28,20 @@ function createTarget(code: any) {
   }
 }
 
-export async function health() {
+type Health = "READY" | "BLOCKED" | "UNAVAILABLE";
+
+export async function health(): Promise<Health> {
   try {
     const response = await fetch(getDynamoUrl() + "/v1/health");
-    return response.status === 200;
+    if (response.status === 200) {
+      return "READY";
+    } else if (response.status === 503) {
+      return "BLOCKED";
+    } else {
+      return "UNAVAILABLE";
+    }
   } catch (e) {
-    return false;
+    return "UNAVAILABLE";
   }
 }
 

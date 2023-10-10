@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from "preact/compat";
 import { LocalScript } from "./pages/LocalScript";
 import { ErrorPage } from "./pages/ErrorPage";
+import { BlockedPage } from "./pages/BlockedPage";
 import * as Dynamo from "./service/dynamo";
 import { Next } from "./icons/Next";
 import dynamoIconUrn from "./icons/dynamo.png";
@@ -105,20 +106,21 @@ function ScriptList({ setScript, setPage }: any) {
 }
 
 function useIsDynamoAccessible() {
-  const [state, setState] = useState({ state: "init", health: false });
+  const [state, setState] = useState({ state: "INIT" });
 
   useEffect(() => {
-    (async function () {
-      try {
-        while (state) {
-          setState({ state: "success", health: await Dynamo.health() });
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+    const intervalId = setInterval(() => {
+      (async function () {
+        try {
+          setState({ state: await Dynamo.health() });
+        } catch (e) {
+          console.error(e);
+          setState({ state: "UNAVAILABLE" });
         }
-      } catch (e) {
-        console.error(e);
-        setState({ state: "success", health: false });
-      }
-    })();
+      })();
+    }, 1000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   return state;
@@ -130,10 +132,12 @@ export function App() {
 
   const isAccessible = useIsDynamoAccessible();
 
-  if (isAccessible.state === "init") {
+  if (isAccessible.state === "INIT") {
     return <div>Looking for Dynamo...</div>;
-  } else if (isAccessible.state === "success" && !isAccessible.health) {
+  } else if (isAccessible.state === "UNAVAILABLE") {
     return <ErrorPage />;
+  } else if (isAccessible.state === "BLOCKED") {
+    return <BlockedPage />;
   }
 
   if (page === "ScriptList") {
