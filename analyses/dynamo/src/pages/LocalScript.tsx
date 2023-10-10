@@ -7,6 +7,7 @@ import { Forma } from "forma-embedded-view-sdk/auto";
 import { generateGeometry } from "../service/render.js";
 import { Back } from "../icons/Back.js";
 import dynamoIconUrn from "../icons/dynamo.png";
+import { StatusBlock } from "./components/StatusBlock.js";
 
 function getDefaultValues(scriptInfo: any) {
   if (scriptInfo.type === "loaded") {
@@ -52,13 +53,26 @@ function useScript(script: any): [ScriptResult, () => void] {
   return [state, reload];
 }
 
+function AnimatedLoading() {
+  const [dots, setDots] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDots((dots) => (dots + 1) % 4);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  return <div> Opening script in dynamo {Array(dots).fill(".").join("")} </div>;
+}
+
 type Output =
   | { type: "init" }
   | { type: "running" }
   | { type: "success"; data: any }
   | { type: "error"; data: any };
 
-export function LocalScript({ script, setPage }: any) {
+export function LocalScript({ script, setPage, isAccessible }: any) {
   const [scriptInfo, reload] = useScript(script);
 
   const [state, setState] = useState<Record<string, any>>({});
@@ -152,10 +166,6 @@ export function LocalScript({ script, setPage }: any) {
     }
   }, [output]);
 
-  if (scriptInfo.type !== "loaded") {
-    return <div> Loading script ... </div>;
-  }
-
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -174,10 +184,11 @@ export function LocalScript({ script, setPage }: any) {
 
         <img src={dynamoIconUrn} />
       </div>
-      <div></div>
+
+      <StatusBlock isAccessible={isAccessible} />
 
       {scriptInfo.type !== "loaded" ? (
-        <div> Opening script in dynamo ... </div>
+        <AnimatedLoading />
       ) : (
         <div>
           <div

@@ -1,10 +1,11 @@
 import { useState, useCallback, useEffect } from "preact/compat";
 import { LocalScript } from "./pages/LocalScript";
-import { ErrorPage } from "./pages/ErrorPage";
-import { BlockedPage } from "./pages/BlockedPage";
+import { ErrorPage } from "./pages/ErrorView";
+import { BlockedPage } from "./pages/components/BlockedView";
 import * as Dynamo from "./service/dynamo";
 import { Next } from "./icons/Next";
 import dynamoIconUrn from "./icons/dynamo.png";
+import { StatusBlock } from "./pages/components/StatusBlock";
 
 let dynamoFolder = "";
 try {
@@ -40,12 +41,12 @@ function ScriptListItem({ name, code, setScript, setPage }: any) {
   );
 }
 
-function ScriptList({ setScript, setPage }: any) {
+function ScriptList({ setScript, setPage, isAccessible }: any) {
   const [programs, setPrograms] = useState({});
   const [error, setError] = useState<string | null>(null);
   const [folder, setFolder] = useState(dynamoFolder);
 
-  useEffect(() => {
+  const reload = useCallback(() => {
     (async function () {
       if (!folder) return;
 
@@ -64,6 +65,10 @@ function ScriptList({ setScript, setPage }: any) {
     })();
   }, [folder]);
 
+  useEffect(() => {
+    reload();
+  }, [reload]);
+
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -78,6 +83,7 @@ function ScriptList({ setScript, setPage }: any) {
           Dynamo Player
         </h1>
       </div>
+      <StatusBlock isAccessible={isAccessible} />
       Folder:
       <br />
       <input
@@ -88,7 +94,12 @@ function ScriptList({ setScript, setPage }: any) {
           setFolder(folder);
         }}
       />
-      {error && <div style={{ color: "red" }}>{error}</div>}
+      {error && (
+        <div style={{ color: "red" }}>
+          {error}
+          <button onClick={reload}>Retry</button>
+        </div>
+      )}
       {folder ? (
         <div>
           {Object.entries(programs).map(([name, code]) => (
@@ -135,20 +146,22 @@ export function App() {
 
   const isAccessible = useIsDynamoAccessible();
 
-  if (isAccessible.state === "INIT") {
-    return <div>Looking for Dynamo...</div>;
-  } else if (isAccessible.state === "UNAVAILABLE") {
-    return <ErrorPage />;
-  } else if (isAccessible.state === "BLOCKED") {
-    return <BlockedPage />;
-  }
-
   if (page === "ScriptList") {
-    return <ScriptList setPage={setPage} setScript={setScript} />;
+    return (
+      <ScriptList
+        setPage={setPage}
+        setScript={setScript}
+        isAccessible={isAccessible}
+      />
+    );
   } else if (page === "RunScript" && !!script?.code?.id) {
-    return <LocalScript setPage={setPage} script={script} />;
-  } else if (page === "Error") {
-    return <ErrorPage />;
+    return (
+      <LocalScript
+        setPage={setPage}
+        script={script}
+        isAccessible={isAccessible}
+      />
+    );
   } else {
     return <div>Not found</div>;
   }
