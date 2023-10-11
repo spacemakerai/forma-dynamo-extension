@@ -3,10 +3,10 @@ import downloadMetrics from "../../../templates/Metrics.dyn?url";
 import downloadFootprint from "../../../templates/Footprint.dyn?url";
 import downloadTriangles from "../../../templates/Triangles.dyn?url";
 
-function download(url: string) {
+function download(url: string, name: string) {
   const a = document.createElement("a");
   a.href = url;
-  a.download = url.split("/").pop() || "template.dyn";
+  a.download = name;
   a.click();
 }
 
@@ -37,7 +37,7 @@ export function Templates() {
           <div style={{ margin: "5px 5px" }}>
             <h2
               style={{ cursor: "pointer" }}
-              onClick={() => download(downloadMetrics)}
+              onClick={() => download(downloadMetrics, "Metrics.dyn")}
             >
               Metrics
               <button
@@ -56,7 +56,7 @@ export function Templates() {
           <div style={{ margin: "5px 5px" }}>
             <h2
               style={{ cursor: "pointer" }}
-              onClick={() => download(downloadFootprint)}
+              onClick={() => download(downloadFootprint, "Footprint.dyn")}
             >
               Footprint
               <button
@@ -75,7 +75,7 @@ export function Templates() {
           <div style={{ margin: "5px 5px" }}>
             <h2
               style={{ cursor: "pointer" }}
-              onClick={() => download(downloadTriangles)}
+              onClick={() => download(downloadTriangles, "Triangles.dyn")}
             >
               Triangles
               <button
