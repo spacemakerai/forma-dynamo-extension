@@ -18,7 +18,11 @@ function getDefaultValues(scriptInfo: any) {
       if (input.value) {
         if (input.type === "boolean") {
           state[input.id] = input.value === "true";
-        } else if (input.name === "Triangles" || input.name === "Footprint") {
+        } else if (
+          input.name === "Triangles" ||
+          input.name === "Footprint" ||
+          input.name === "Metrics"
+        ) {
           state[input.id] = JSON.parse(input.value.replace("\r\n", ""));
         } else {
           state[input.id] = input.value;
@@ -131,6 +135,13 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
                     ];
                   })
                 )
+              ),
+            };
+          } else if (input.name === "Metrics") {
+            return {
+              nodeId: id,
+              value: JSON.stringify(
+                await Forma.areaMetrics.calculate({ paths: value as string[] })
               ),
             };
           } else {

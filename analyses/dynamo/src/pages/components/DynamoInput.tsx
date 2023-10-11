@@ -23,7 +23,11 @@ function DynamoInputComponent({
   value: any;
   setValue: (v: any) => void;
 }) {
-  if (input.name === "Triangles" || input.name === "Footprint") {
+  if (
+    input.name === "Triangles" ||
+    input.name === "Footprint" ||
+    input.name === "Metrics"
+  ) {
     return (
       <DynamoSelection
         input={input}
