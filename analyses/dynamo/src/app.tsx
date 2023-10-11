@@ -6,6 +6,7 @@ import * as Dynamo from "./service/dynamo";
 import { Next } from "./icons/Next";
 import dynamoIconUrn from "./icons/dynamo.png";
 import { StatusBlock } from "./pages/components/StatusBlock";
+import { Templates } from "./pages/components/Templates";
 
 let dynamoFolder = "";
 try {
@@ -84,6 +85,7 @@ function ScriptList({ setScript, setPage, isAccessible }: any) {
         </h1>
       </div>
       <StatusBlock isAccessible={isAccessible} />
+      <Templates />
       Folder:
       <br />
       <input
