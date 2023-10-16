@@ -1,12 +1,13 @@
 import { useState, useCallback, useEffect } from "preact/compat";
 import { LocalScript } from "./pages/LocalScript";
-import { ErrorPage } from "./pages/ErrorView";
-import { BlockedPage } from "./pages/components/BlockedView";
 import * as Dynamo from "./service/dynamo";
 import { Next } from "./icons/Next";
 import dynamoIconUrn from "./icons/dynamo.png";
 import { StatusBlock } from "./pages/components/StatusBlock";
 import { Templates } from "./pages/components/Templates";
+import { Forma } from "forma-embedded-view-sdk/auto";
+
+window.Forma = Forma;
 
 let dynamoFolder = "";
 try {

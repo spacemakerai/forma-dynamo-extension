@@ -5,7 +5,6 @@ function getDynamoUrl() {
     const url = localStorage.getItem("dynamo-url");
     if (url && url.startsWith("http")) {
       dynamoUrl = url;
-      console.log("Overriding dynamo url: " + dynamoUrl);
     }
   } catch (e) {
     console.error(e);

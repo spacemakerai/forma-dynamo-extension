@@ -4,7 +4,6 @@ import * as Dynamo from "../service/dynamo.js";
 import { DynamoOutput } from "./components/DynamoOutput.js";
 import { DynamoInput } from "./components/DynamoInput.js";
 import { Forma } from "forma-embedded-view-sdk/auto";
-import { generateGeometry } from "../service/render.js";
 import { Back } from "../icons/Back.js";
 import dynamoIconUrn from "../icons/dynamo.png";
 import { StatusBlock } from "./components/StatusBlock.js";
@@ -162,20 +161,6 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
   useEffect(() => {
     setOutput({ type: "init" });
   }, [state]);
-
-  useEffect(() => {
-    if (output.type === "success") {
-      output.data.info.outputs
-        .filter(({ type }: any) => type === "Watch3D")
-        .filter(({ value }: any) => !!value)
-        .forEach(async (output: any) => {
-          const geometryData = await generateGeometry(output.value);
-          if (geometryData) {
-            Forma.render.updateMesh({ id: output.Id, geometryData });
-          }
-        });
-    }
-  }, [output]);
 
   return (
     <div>
