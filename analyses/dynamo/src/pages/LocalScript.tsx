@@ -7,6 +7,7 @@ import { Forma } from "forma-embedded-view-sdk/auto";
 import { Back } from "../icons/Back.js";
 import dynamoIconUrn from "../icons/dynamo.png";
 import { StatusBlock } from "./components/StatusBlock.js";
+import { isSelect } from "../utils/node.js";
 
 function getDefaultValues(scriptInfo: any) {
   if (scriptInfo.type === "loaded") {
@@ -17,11 +18,7 @@ function getDefaultValues(scriptInfo: any) {
       if (input.value) {
         if (input.type === "boolean") {
           state[input.id] = input.value === "true";
-        } else if (
-          input.name === "Triangles" ||
-          input.name === "Footprint" ||
-          input.name === "Metrics"
-        ) {
+        } else if (isSelect(input)) {
           state[input.id] = JSON.parse(input.value.replace("\r\n", ""));
         } else {
           state[input.id] = input.value;
@@ -108,7 +105,10 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
             (input: { id: string }) => input.id === id
           );
 
-          if (input.name === "Triangles") {
+          if (
+            input.name === "Triangles" ||
+            input.type === "FormaSelectGeometry"
+          ) {
             return {
               nodeId: id,
               value: JSON.stringify(
@@ -121,7 +121,10 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
                 )
               ),
             };
-          } else if (input.name === "Footprint") {
+          } else if (
+            input.name === "Footprint" ||
+            input.type === "FormaSelectFootprints"
+          ) {
             return {
               nodeId: id,
               value: JSON.stringify(
@@ -136,7 +139,10 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
                 )
               ),
             };
-          } else if (input.name === "Metrics") {
+          } else if (
+            input.name === "Metrics" ||
+            input.type === "FormaSelectMetrics"
+          ) {
             return {
               nodeId: id,
               value: JSON.stringify(

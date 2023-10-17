@@ -1,5 +1,6 @@
 import { useCallback } from "preact/compat";
 import { Forma } from "forma-embedded-view-sdk/auto";
+import { isSelect } from "../../utils/node";
 
 function DynamoSelection({ input, value, setValue }: any) {
   const onSelect = useCallback(async () => {
@@ -23,11 +24,7 @@ function DynamoInputComponent({
   value: any;
   setValue: (v: any) => void;
 }) {
-  if (
-    input.name === "Triangles" ||
-    input.name === "Footprint" ||
-    input.name === "Metrics"
-  ) {
+  if (isSelect(input)) {
     return (
       <DynamoSelection
         input={input}
