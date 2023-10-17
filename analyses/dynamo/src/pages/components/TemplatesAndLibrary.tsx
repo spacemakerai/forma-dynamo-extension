@@ -1,7 +1,8 @@
 import { useState } from "preact/hooks";
-import downloadMetrics from "../../../templates/Metrics.dyn?url";
-import downloadFootprint from "../../../templates/Footprint.dyn?url";
-import downloadTriangles from "../../../templates/Triangles.dyn?url";
+import downloadMetrics from "../../assets/Metrics.dyn?url";
+import downloadFootprint from "../../assets/Footprint.dyn?url";
+import downloadTriangles from "../../assets/Triangles.dyn?url";
+import downloadAutodeskForma from "../../assets/AutodeskForma.7z?url";
 
 function download(url: string, name: string) {
   const a = document.createElement("a");
@@ -10,7 +11,7 @@ function download(url: string, name: string) {
   a.click();
 }
 
-export function Templates() {
+export function TemplatesAndLibrary() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -19,7 +20,7 @@ export function Templates() {
         style={{ cursor: "pointer" }}
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        Templates
+        Templates and Library
         <button
           style={{
             float: "right",
@@ -34,6 +35,27 @@ export function Templates() {
 
       {isExpanded && (
         <div>
+          <div style={{ margin: "5px 5px" }}>
+            <h2
+              style={{ cursor: "pointer" }}
+              onClick={() =>
+                download(downloadAutodeskForma, "AutodeskForma.7z")
+              }
+            >
+              AutodeskForma
+              <button
+                style={{
+                  float: "right",
+                  border: "none",
+                  background: "white",
+                  cursor: "pointer",
+                }}
+              >
+                Download
+              </button>
+            </h2>
+            <div>Node library for building graphs</div>
+          </div>
           <div style={{ margin: "5px 5px" }}>
             <h2
               style={{ cursor: "pointer" }}

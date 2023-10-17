@@ -4,7 +4,7 @@ import * as Dynamo from "./service/dynamo";
 import { Next } from "./icons/Next";
 import dynamoIconUrn from "./icons/dynamo.png";
 import { StatusBlock } from "./pages/components/StatusBlock";
-import { Templates } from "./pages/components/Templates";
+import { TemplatesAndLibrary } from "./pages/components/TemplatesAndLibrary";
 import { Forma } from "forma-embedded-view-sdk/auto";
 
 window.Forma = Forma;
@@ -86,7 +86,7 @@ function ScriptList({ setScript, setPage, isAccessible }: any) {
         </h1>
       </div>
       <StatusBlock isAccessible={isAccessible} />
-      <Templates />
+      <TemplatesAndLibrary />
       Folder:
       <br />
       <input
