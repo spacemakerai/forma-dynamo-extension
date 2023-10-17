@@ -1,5 +1,4 @@
 function getDynamoUrl() {
-  return "https://7f58-20-126-50-171.ngrok.io";
   let dynamoUrl = "http://localhost:55100";
 
   try {
