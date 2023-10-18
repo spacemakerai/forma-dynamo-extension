@@ -38,21 +38,12 @@ function DynamoOutputWatch3D({ output }: { output: Output }) {
   useEffect(() => {
     (async () => {
       if (shouldShow) {
-        const geometryData = await generateGeometry(output.value);
-        if (geometryData) {
-          await Forma.render.updateMesh({
-            id: output.id,
-            geometryData: geometryData,
-          });
-        }
-
-        /*await Forma.renderGlb.update({
+        await Forma.renderGlb.update({
           id: output.id,
           glb: base64ToArrayBuffer(output.value),
-        });*/
+        });
       } else {
-        await Forma.render.remove({ id: output.id });
-        //await Forma.renderGlb.remove({ id: output.id });
+        await Forma.renderGlb.remove({ id: output.id });
       }
     })();
   }, [shouldShow]);

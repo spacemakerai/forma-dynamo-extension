@@ -10,8 +10,7 @@
   },
   "dependencies": {
     "forma-embedded-view-sdk": "0.16.0",
-    "preact": "^10.17.1",
-    "three": "^0.157.0"
+    "preact": "^10.17.1"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.5.0",
