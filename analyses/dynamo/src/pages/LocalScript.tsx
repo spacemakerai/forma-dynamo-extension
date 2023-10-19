@@ -8,6 +8,7 @@ import { Back } from "../icons/Back.js";
 import dynamoIconUrn from "../icons/dynamo.png";
 import { StatusBlock } from "./components/StatusBlock.js";
 import { isSelect } from "../utils/node.js";
+import { NotTrustedGraph } from "./components/NotTrustedGraph.js";
 
 function getDefaultValues(scriptInfo: any) {
   if (scriptInfo.type === "loaded") {
@@ -33,9 +34,12 @@ function getDefaultValues(scriptInfo: any) {
   }
 }
 
+type Errors = "GRAPH_NOT_TRUSTED";
+
 type ScriptResult =
   | { type: "init" }
   | { type: "loading" }
+  | { type: "error"; data: any }
   | { type: "loaded"; data: any };
 
 function useScript(script: any): [ScriptResult, () => void] {
@@ -43,9 +47,18 @@ function useScript(script: any): [ScriptResult, () => void] {
 
   const reload = useCallback(() => {
     setState({ type: "loading" });
-    Dynamo.info(script.code).then((data) => {
-      setState({ type: "loaded", data });
-    });
+
+    Dynamo.info(script.code)
+      .then((data) => {
+        setState({ type: "loaded", data });
+      })
+      .catch((err) => {
+        if (err.status === 500 && err.message === "Graph is not trusted.") {
+          setState({ type: "error", data: "GRAPH_NOT_TRUSTED" });
+        } else {
+          setState({ type: "error", data: err.message });
+        }
+      });
   }, [script]);
 
   useEffect(() => {
@@ -200,10 +213,14 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
       </div>
 
       <StatusBlock isAccessible={isAccessible} />
+      {scriptInfo.type === "error" &&
+        scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
+          <NotTrustedGraph script={script} reload={reload} />
+        )}
 
-      {scriptInfo.type !== "loaded" ? (
-        <AnimatedLoading />
-      ) : (
+      {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
+
+      {scriptInfo.type === "loaded" && (
         <div>
           <div
             style={{

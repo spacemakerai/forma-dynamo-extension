@@ -1,3 +1,12 @@
+class FetchError extends Error {
+  status: number;
+  constructor(m: string, status: number) {
+    super(m);
+
+    this.status = status;
+  }
+}
+
 function getDynamoUrl() {
   let dynamoUrl = "http://localhost:55100";
 
@@ -78,24 +87,36 @@ export async function graphFolderInfo(path: string) {
 export async function info(code: any) {
   const target = createTarget(code);
 
-  try {
-    const response = await fetch(getDynamoUrl() + "/v1/graph/info", {
-      method: "POST",
-      body: JSON.stringify({
-        target: target,
-        options: {
-          metadata: true,
-          issues: true,
-          status: true,
-          inputs: true,
-          outputs: true,
-          dependencies: true,
-        },
-      }),
-    });
+  const response = await fetch(getDynamoUrl() + "/v1/graph/info", {
+    method: "POST",
+    body: JSON.stringify({
+      target: target,
+      options: {
+        metadata: true,
+        issues: true,
+        status: true,
+        inputs: true,
+        outputs: true,
+        dependencies: true,
+      },
+    }),
+  });
 
+  if (response.status === 200) {
     return await response.json();
-  } catch (e) {
-    console.error(e);
+  } else {
+    const body = await response.json();
+    throw new FetchError(body?.title || response.statusText, response.status);
   }
+}
+
+export async function trust(path: string) {
+  const response = await fetch(getDynamoUrl() + "/v1/settings/trusted-folder", {
+    method: "POST",
+    body: JSON.stringify({
+      path,
+    }),
+  });
+
+  console.log(response);
 }
