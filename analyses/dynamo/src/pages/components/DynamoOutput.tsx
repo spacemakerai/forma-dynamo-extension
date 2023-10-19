@@ -38,12 +38,12 @@ function DynamoOutputWatch3D({ output }: { output: Output }) {
   useEffect(() => {
     (async () => {
       if (shouldShow) {
-        await Forma.renderGlb.update({
+        await Forma.render.glb.update({
           id: output.id,
           glb: base64ToArrayBuffer(output.value),
         });
       } else {
-        await Forma.renderGlb.remove({ id: output.id });
+        await Forma.render.glb.remove({ id: output.id });
       }
     })();
   }, [shouldShow]);
