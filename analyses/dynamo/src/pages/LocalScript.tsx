@@ -16,7 +16,9 @@ function getDefaultValues(scriptInfo: any) {
 
     for (const input of inputs) {
       if (input.value) {
-        if (input.type === "boolean") {
+        if (input.type === "FormaTerrain") {
+          state[input.id] = "selected";
+        } else if (input.type === "boolean") {
           state[input.id] = input.value === "true";
         } else if (isSelect(input)) {
           state[input.id] = JSON.parse(input.value.replace("\r\n", ""));
@@ -105,7 +107,17 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
             (input: { id: string }) => input.id === id
           );
 
-          if (
+          if (input.type === "FormaTerrain") {
+            const [path] = await Forma.geometry.getPathsByCategory({
+              category: "terrain",
+            });
+            return {
+              nodeId: id,
+              value: JSON.stringify([
+                [...(await Forma.geometry.getTriangles({ path }))],
+              ]),
+            };
+          } else if (
             input.name === "Triangles" ||
             input.type === "FormaSelectGeometry"
           ) {

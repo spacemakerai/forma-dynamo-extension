@@ -22,9 +22,16 @@ function DynamoInputComponent({
 }: {
   input: Input;
   value: any;
-  setValue: (v: any) => void;
+  setValue: (id: string, v: any) => void;
 }) {
-  if (isSelect(input)) {
+  if (input.type === "FormaTerrain") {
+    return (
+      <div>
+        {value}
+        <button onClick={() => setValue(input.id, "selected")}>select</button>
+      </div>
+    );
+  } else if (isSelect(input)) {
     return (
       <DynamoSelection
         input={input}
