@@ -185,6 +185,7 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
 
       setOutput({ type: "success", data: await Dynamo.run(code, inputs) });
     } catch (e) {
+      console.error(e);
       setOutput({ type: "error", data: e });
     }
   }, [scriptInfo, state]);
