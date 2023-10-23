@@ -1,11 +1,10 @@
 import { useCallback, useState, useEffect } from "preact/hooks";
 import dynamoIconUrn from "../../icons/dynamo.png";
-import dynamoSandboxExtensionUrl from "../../assets/DynamoPlayerExtension3.0.7z?url";
 import dynamoRevitExtensionUrl from "../../assets/DynamoPlayerExtension2.18.7z?url";
 
 export function ErrorView() {
   const downloadDynamoPlayerExtension = useCallback(() => {
-    window.open(dynamoSandboxExtensionUrl, "_blank");
+    window.open(dynamoRevitExtensionUrl, "_blank");
   }, []);
   const downloadDynamoPlayerExtensionRevit = useCallback(() => {
     window.open(dynamoRevitExtensionUrl, "_blank");
@@ -60,9 +59,9 @@ export function ErrorView() {
           {app === "sandbox" ? (
             <ol>
               <li>
-                1. Download and extract Dynamo 3.0 from{" "}
+                1. Download and extract Dynamo 2.81.0 from{" "}
                 <a
-                  href="https://dyn-builds-data.s3-us-west-2.amazonaws.com/DynamoCoreRuntime_3.0.0.6366_20230929T1307.zip"
+                  href="https://dyn-builds-data.s3-us-west-2.amazonaws.com/DynamoCoreRuntime2.18.1.zip"
                   target="_blank"
                 >
                   Daily Builds
@@ -72,19 +71,19 @@ export function ErrorView() {
               <li>
                 2. Download{" "}
                 <button onClick={downloadDynamoPlayerExtension}>
-                  DynamoPlayerExtension3.0.7.7z
+                  DynamoPlayerExtension2.18.7z
                 </button>
               </li>
               <br />
               <li>
-                3. Extract DynamoPlayerExtension3.0.7.7z to{" "}
+                3. Extract DynamoPlayerExtension2.18.7z to{" "}
                 <span style={{ background: "#80808040", fontFamily: "Monaco" }}>
-                  %AppData%\Dynamo\Dynamo Core\3.0\packages
+                  %AppData%\Dynamo\Dynamo Core\2.18\packages
                 </span>
               </li>
               <br />
 
-              <li>4. Open DynamoSandbox.exe from downloaded Dynamo 3.0</li>
+              <li>4. Open DynamoSandbox.exe from downloaded Dynamo 2.18</li>
             </ol>
           ) : (
             <ol>
