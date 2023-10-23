@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "preact/hooks";
 import { addElement } from "../../service/element";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { Visibility } from "../../icons/Visibility";
-import { generateGeometry } from "../../service/render";
 
 type Output = {
   id: string;
