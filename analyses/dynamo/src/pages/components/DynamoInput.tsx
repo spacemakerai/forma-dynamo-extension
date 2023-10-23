@@ -1,17 +1,65 @@
-import { useCallback } from "preact/compat";
+import { useCallback, useEffect, useState } from "preact/compat";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { isSelect } from "../../utils/node";
 
-function DynamoSelection({ input, value, setValue }: any) {
-  const onSelect = useCallback(async () => {
+function useCurrentSelection() {
+  const [selection, setSelection] = useState<any>([]);
+
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      setSelection(await Forma.selection.getSelection());
+    }, 100);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  return selection;
+}
+
+function ActiveSelection({ input, setValue, setIsSelecting }: any) {
+  const currentSelection = useCurrentSelection();
+
+  const onFinishSelection = useCallback(async () => {
     setValue(input.id, await Forma.selection.getSelection());
+    setIsSelecting(false);
   }, [input]);
 
   return (
-    <>
+    <div>
+      <br />
+      <span>{currentSelection.length} Currently selected</span>
+      <button onClick={onFinishSelection}>Use Selection</button>
+    </div>
+  );
+}
+
+function DynamoSelection({ input, value, setValue }: any) {
+  const [isSelecting, setIsSelecting] = useState(false);
+
+  const onClick = useCallback(async () => {
+    if (isSelecting) {
+      setValue(input.id, await Forma.selection.getSelection());
+      setIsSelecting(false);
+    } else {
+      setIsSelecting(true);
+    }
+  }, [isSelecting, input]);
+
+  if (isSelecting) {
+    return (
+      <ActiveSelection
+        input={input}
+        setIsSelecting={setIsSelecting}
+        setValue={setValue}
+      />
+    );
+  }
+
+  return (
+    <div>
       {value && <span>{value.length} Selected</span>}
-      <button onClick={onSelect}>Select</button>
-    </>
+      <button onClick={onClick}>Select</button>
+    </div>
   );
 }
 

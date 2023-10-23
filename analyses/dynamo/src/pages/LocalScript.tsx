@@ -18,11 +18,15 @@ function getDefaultValues(scriptInfo: any) {
     for (const input of inputs) {
       if (input.value) {
         if (input.type === "FormaTerrain") {
-          state[input.id] = "selected";
+          //state[input.id] = "selected";
+          // Intentionally ignored does not work between sessions
+          state[input.id] = undefined;
         } else if (input.type === "boolean") {
           state[input.id] = input.value === "true";
         } else if (isSelect(input)) {
-          state[input.id] = JSON.parse(input.value.replace("\r\n", ""));
+          // state[input.id] = JSON.parse(input.value.replace("\r\n", ""));
+          // Intentionally ignored does not work between sessions
+          state[input.id] = undefined;
         } else {
           state[input.id] = input.value;
         }
