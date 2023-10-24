@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from "preact/hooks";
 import dynamoIconUrn from "../../icons/dynamo.png";
-import dynamoRevitExtensionUrl from "../../assets/DynamoPlayerExtension2.18.7z?url";
+import dynamoRevitExtensionUrl from "../../../assets/DynamoPlayerExtension2.18.7z?url";
 
 export function ErrorView() {
   const downloadDynamoPlayerExtension = useCallback(() => {

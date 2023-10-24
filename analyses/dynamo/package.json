@@ -15,6 +15,7 @@
   "devDependencies": {
     "@preact/preset-vite": "^2.5.0",
     "@types/file-saver": "^2.0.2",
+    "@types/node": "^20.8.8",
     "prettier": "3.0.3",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"

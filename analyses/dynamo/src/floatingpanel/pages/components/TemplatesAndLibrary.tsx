@@ -1,8 +1,8 @@
 import { useState } from "preact/hooks";
-import downloadMetrics from "../../assets/Metrics.dyn?url";
-import downloadFootprint from "../../assets/Footprint.dyn?url";
-import downloadTriangles from "../../assets/Triangles.dyn?url";
-import downloadAutodeskForma from "../../assets/AutodeskForma.7z?url";
+import downloadMetrics from "../../../assets/Metrics.dyn?url";
+import downloadFootprint from "../../../assets/Footprint.dyn?url";
+import downloadTriangles from "../../../assets/Triangles.dyn?url";
+import downloadAutodeskForma from "../../../assets/AutodeskForma.7z?url";
 
 function download(url: string, name: string) {
   const a = document.createElement("a");
