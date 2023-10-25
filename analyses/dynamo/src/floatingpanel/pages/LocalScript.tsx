@@ -126,17 +126,19 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
 
           if (input.type === "FormaSelectElements") {
             const paths = value as string[];
-            return {
-              nodeId: id,
-              value: {
-                triangles: await Promise.all(
-                  paths.map((path) => Forma.geometry.getTriangles({ path }))
-                ),
-                footprints: await Promise.all(
-                  paths.map((path) => Forma.geometry.getFootprint({ path }))
-                ),
-              },
-            };
+            const triangles = await Promise.all(
+              paths.map((path) => Forma.geometry.getTriangles({ path }))
+            );
+            const footprints = await Promise.all(
+              paths.map((path) => Forma.geometry.getFootprint({ path }))
+            );
+
+            const elements = paths.map((_, index) => ({
+              triangles: triangles[index],
+              footprints: footprints[index],
+            }));
+
+            return { nodeId: id, value: elements };
           } else if (input.type === "FormaTerrain") {
             const [path] = await Forma.geometry.getPathsByCategory({
               category: "terrain",
