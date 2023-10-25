@@ -133,14 +133,16 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
               paths.map((path) =>
                 Forma.geometry
                   .getTriangles({ path })
-                  .then((triangles) => [...triangles])
+                  .then((triangles) => (triangles ? [...triangles] : undefined))
               )
             );
             const footprints = await Promise.all(
               paths.map((path) =>
                 Forma.geometry
                   .getFootprint({ path })
-                  .then(({ coordinates }) => coordinates)
+                  .then((polygon) =>
+                    polygon ? polygon.coordinates : undefined
+                  )
               )
             );
 
