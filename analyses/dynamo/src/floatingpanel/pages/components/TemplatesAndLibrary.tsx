@@ -41,7 +41,7 @@ export function TemplatesAndLibrary() {
             <h2
               style={{ cursor: "pointer" }}
               onClick={() =>
-                download(downloadTerrain, "DynamoPlayerExtension2.18.7z")
+                download(downloadExtension, "DynamoPlayerExtension2.18.7z")
               }
             >
               Dynamo Extension
