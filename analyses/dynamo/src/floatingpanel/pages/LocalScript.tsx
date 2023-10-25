@@ -124,7 +124,10 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
             (input: { id: string }) => input.id === id
           );
 
-          if (input.type === "FormaSelectElements") {
+          if (
+            input.type === "FormaSelectElements" ||
+            input.type === "FormaSelectElement"
+          ) {
             const paths = value as string[];
             const triangles = await Promise.all(
               paths.map((path) => Forma.geometry.getTriangles({ path }))
