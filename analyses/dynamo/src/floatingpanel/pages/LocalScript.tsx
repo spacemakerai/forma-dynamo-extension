@@ -124,7 +124,20 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
             (input: { id: string }) => input.id === id
           );
 
-          if (input.type === "FormaTerrain") {
+          if (input.type === "FormaSelectElements") {
+            const paths = value as string[];
+            return {
+              nodeId: id,
+              value: {
+                triangles: await Promise.all(
+                  paths.map((path) => Forma.geometry.getTriangles({ path }))
+                ),
+                footprints: await Promise.all(
+                  paths.map((path) => Forma.geometry.getFootprint({ path }))
+                ),
+              },
+            };
+          } else if (input.type === "FormaTerrain") {
             const [path] = await Forma.geometry.getPathsByCategory({
               category: "terrain",
             });
