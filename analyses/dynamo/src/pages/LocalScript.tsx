@@ -1,12 +1,10 @@
 import { useState, useCallback, useEffect } from "preact/compat";
 
-import * as Dynamo from "../service/dynamo.js";
 import { DynamoOutput } from "./components/DynamoOutput.js";
 import { DynamoInput } from "./components/DynamoInput.js";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { Back } from "../icons/Back.js";
 import dynamoIconUrn from "../icons/dynamo.png";
-import { StatusBlock } from "./components/StatusBlock.js";
 import { isSelect } from "../utils/node.js";
 import { NotTrustedGraph } from "./components/NotTrustedGraph.js";
 
@@ -46,13 +44,16 @@ type ScriptResult =
   | { type: "error"; data: any }
   | { type: "loaded"; data: any };
 
-function useScript(script: any): [ScriptResult, () => void] {
+function useScript(
+  script: any,
+  dynamoHandler: any,
+): [ScriptResult, () => void] {
   const [state, setState] = useState<ScriptResult>({ type: "init" });
 
   const reload = useCallback(() => {
     setState({ type: "loading" });
 
-    Dynamo.info(script.code)
+    dynamoHandler("getGraphInfo", { code: script.code })
       .then((data) => {
         setState({ type: "loaded", data });
       })
@@ -91,8 +92,8 @@ type Output =
   | { type: "success"; data: any }
   | { type: "error"; data: any };
 
-export function LocalScript({ script, setPage, isAccessible }: any) {
-  const [scriptInfo, reload] = useScript(script);
+export function LocalScript({ script, setScript, dynamoHandler }: any) {
+  const [scriptInfo, reload] = useScript(script, dynamoHandler);
 
   const [state, setState] = useState<Record<string, any>>({});
 
@@ -107,7 +108,7 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
   const setValue = useCallback(
     (id: string, value: any) =>
       setState((state) => ({ ...state, [id]: value })),
-    []
+    [],
   );
 
   const onRun = useCallback(async () => {
@@ -121,7 +122,7 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
       const inputs = await Promise.all(
         Object.entries(state).map(async ([id, value]) => {
           const input = code.inputs.find(
-            (input: { id: string }) => input.id === id
+            (input: { id: string }) => input.id === id,
           );
 
           if (input.type === "FormaTerrain") {
@@ -146,8 +147,8 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
                     return [
                       ...(await Forma.geometry.getTriangles({ urn, path })),
                     ];
-                  })
-                )
+                  }),
+                ),
               ),
             };
           } else if (
@@ -164,8 +165,8 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
                       ...(await Forma.geometry.getFootprint({ urn, path }))
                         .coordinates,
                     ];
-                  })
-                )
+                  }),
+                ),
               ),
             };
           } else if (
@@ -175,7 +176,7 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
             return {
               nodeId: id,
               value: JSON.stringify(
-                await Forma.areaMetrics.calculate({ paths: value as string[] })
+                await Forma.areaMetrics.calculate({ paths: value as string[] }),
               ),
             };
           } else {
@@ -184,10 +185,13 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
               value: value,
             };
           }
-        })
+        }),
       );
 
-      setOutput({ type: "success", data: await Dynamo.run(code, inputs) });
+      setOutput({
+        type: "success",
+        data: await dynamoHandler("runGraph", { code, inputs }),
+      });
     } catch (e) {
       console.error(e);
       setOutput({ type: "error", data: e });
@@ -201,7 +205,7 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center" }}>
-        <Back onClick={() => setPage("ScriptList")} />
+        <Back onClick={() => setScript(undefined)} />
         <h1
           onClick={() => reload()}
           style={{
@@ -217,7 +221,6 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
         <img src={dynamoIconUrn} />
       </div>
 
-      <StatusBlock isAccessible={isAccessible} />
       {scriptInfo.type === "error" &&
         scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
           <NotTrustedGraph script={script} reload={reload} />

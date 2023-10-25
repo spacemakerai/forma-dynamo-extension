@@ -1,14 +1,13 @@
 import { useCallback } from "preact/hooks";
-import * as Dynamo from "../../service/dynamo";
 
-export function NotTrustedGraph({ script, reload }: any) {
+export function NotTrustedGraph({ script, reload, dynamoHandler }: any) {
   const trust = useCallback(async () => {
     const { id } = script.code;
 
     const parts = id.split("\\");
     parts.pop();
 
-    await Dynamo.trust(parts.join("\\"));
+    await dynamoHandler("trustFolder", { path: parts.join("\\") });
     reload();
   }, [script, reload]);
 
