@@ -151,7 +151,7 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
               footprints: footprints[index],
             }));
 
-            return { nodeId: id, value: elements };
+            return { nodeId: id, value: JSON.stringify(elements) };
           } else if (input.type === "FormaTerrain") {
             const [path] = await Forma.geometry.getPathsByCategory({
               category: "terrain",
