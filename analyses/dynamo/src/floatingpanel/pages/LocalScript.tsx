@@ -130,10 +130,18 @@ export function LocalScript({ script, setPage, isAccessible }: any) {
           ) {
             const paths = value as string[];
             const triangles = await Promise.all(
-              paths.map((path) => Forma.geometry.getTriangles({ path }))
+              paths.map((path) =>
+                Forma.geometry
+                  .getTriangles({ path })
+                  .then((triangles) => [...triangles])
+              )
             );
             const footprints = await Promise.all(
-              paths.map((path) => Forma.geometry.getFootprint({ path }))
+              paths.map((path) =>
+                Forma.geometry
+                  .getFootprint({ path })
+                  .then(({ coordinates }) => coordinates)
+              )
             );
 
             const elements = paths.map((_, index) => ({
