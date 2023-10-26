@@ -10,7 +10,7 @@ import { NotTrustedGraph } from "./components/NotTrustedGraph.js";
 
 function getDefaultValues(scriptInfo: any) {
   if (scriptInfo.type === "loaded") {
-    const inputs = scriptInfo.data.inputs; // JSON.parse(code).Inputs;
+    const inputs = scriptInfo?.data?.inputs || []; // JSON.parse(code).Inputs;
     const state: any = {};
 
     for (const input of inputs) {

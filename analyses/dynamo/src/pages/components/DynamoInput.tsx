@@ -194,7 +194,7 @@ type Input = {
 };
 
 export function DynamoInput({ code, state, setValue }: any) {
-  return (code.inputs || []).map((input: Input) => (
+  return (code?.inputs || []).map((input: Input) => (
     <div
       style={{
         display: "flex",
