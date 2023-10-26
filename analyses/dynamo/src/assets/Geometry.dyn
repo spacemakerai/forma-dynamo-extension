@@ -1,0 +1,339 @@
+{
+  "Uuid": "e2129bcb-107b-42e1-a417-b79eb4183caf",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Geometry",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "4149414f931c45c99bcc0bf5496ff2b9",
+      "Name": "Geometry",
+      "Type": "string",
+      "Type2": "string",
+      "Value": "",
+      "Description": "Selection Forma Geometry",
+      "SelectedIndex": 0
+    },
+    {
+      "Id": "ab55b73e31ca4a63a9d09824cb988a72",
+      "Name": "Color Palette",
+      "Type": "color",
+      "Type2": "color",
+      "Value": "{\"Red\":0,\"Blue\":153,\"Green\":78,\"Alpha\":255}",
+      "Description": "Select a Color from the palette",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [
+    {
+      "Id": "067906499d1e4d0699a40d9dcb798a3c",
+      "Name": "Watch 3D",
+      "Type": "unknown",
+      "InitialValue": "",
+      "Description": "Shows a dynamic preview of geometry"
+    }
+  ],
+  "Nodes": [
+    {
+      "ConcreteType": "DynamoForma.NodeModels.FormaSelectGeometry, DynamoForma.NodeModels",
+      "Id": "4149414f931c45c99bcc0bf5496ff2b9",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6c0e574110b343bda0789ffafb55758a",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection Forma Geometry",
+      "InputValue": ""
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "c3018c6a94b4403a8252aa784fbf6ef7",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "95ed9da6e6624eeb8a8ce1a36b7b9acc",
+          "Name": "formaElement",
+          "Description": "DynamoForma.FormaElement",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3ab5c5cc71fb4cf898571650b8780f17",
+          "Name": "Solid",
+          "Description": "Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DynamoForma.FormaElement.MeshToSolid",
+      "Replication": "Auto",
+      "Description": "FormaElement.MeshToSolid: Solid"
+    },
+    {
+      "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "WasExecuted": true,
+      "Camera": {
+        "Name": "06790649-9d1e-4d06-99a4-0d9dcb798a3c Preview",
+        "EyeX": -17.0,
+        "EyeY": 24.0,
+        "EyeZ": 50.0,
+        "LookX": 12.0,
+        "LookY": -13.0,
+        "LookZ": -58.0,
+        "UpX": 0.0,
+        "UpY": 1.0,
+        "UpZ": 0.0
+      },
+      "Id": "067906499d1e4d0699a40d9dcb798a3c",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "852f33f8bff541ce9c38673e513cd75a",
+          "Name": "",
+          "Description": "Incoming geometry objects.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "58a33c6734ba44f7b78e0c91763c65dd",
+          "Name": "",
+          "Description": "Incoming geometry objects.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Shows a dynamic preview of geometry"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "2bbcc81b1beb4da7af28447a2705a899",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "24e87143dd3a4a3e8a7894d5b53a22c2",
+          "Name": "geometry",
+          "Description": "The geometry to which you would like to apply color.\n\nGeometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9585851f79184144a3041adda4f949a1",
+          "Name": "color",
+          "Description": "The color.\n\nColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c62a362b2708434a88bf55bfcd795c12",
+          "Name": "GeometryColor",
+          "Description": "A Display object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Modifiers.GeometryColor.ByGeometryColor@Autodesk.DesignScript.Geometry.Geometry,DSCore.Color",
+      "Replication": "Auto",
+      "Description": "Display geometry using a color.\n\nGeometryColor.ByGeometryColor (geometry: Geometry, color: Color): GeometryColor"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 0,
+        "G": 78,
+        "B": 153,
+        "A": 255
+      },
+      "Id": "ab55b73e31ca4a63a9d09824cb988a72",
+      "NodeType": "ColorInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8864a7a034f342598fea847adbf590e5",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6c0e574110b343bda0789ffafb55758a",
+      "End": "95ed9da6e6624eeb8a8ce1a36b7b9acc",
+      "Id": "f8a248ba99fb485d9259a481b8b8f4e3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3ab5c5cc71fb4cf898571650b8780f17",
+      "End": "24e87143dd3a4a3e8a7894d5b53a22c2",
+      "Id": "d270f7e15f2d47e897c8f7fc925f0892",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c62a362b2708434a88bf55bfcd795c12",
+      "End": "852f33f8bff541ce9c38673e513cd75a",
+      "Id": "2d27f46c76cc44ae84b54e128fb63828",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8864a7a034f342598fea847adbf590e5",
+      "End": "9585851f79184144a3041adda4f949a1",
+      "Id": "64aef465a0464ec18e53761141208f36",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "DynamoForma",
+      "Version": "1.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "4149414f931c45c99bcc0bf5496ff2b9",
+        "c3018c6a94b4403a8252aa784fbf6ef7"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.18",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "6.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.18.1.5096",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 1525.1854248046875,
+      "EyeY": 533.45355224609375,
+      "EyeZ": -370.021240234375,
+      "LookX": -1530.1854248046875,
+      "LookY": -522.45355224609375,
+      "LookZ": 362.021240234375,
+      "UpX": -0.1017201766371727,
+      "UpY": 0.994521975517273,
+      "UpZ": 0.024065729230642319
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "4149414f931c45c99bcc0bf5496ff2b9",
+        "Name": "Geometry",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 230.10981251427927,
+        "Y": 25.567654773635581
+      },
+      {
+        "Id": "c3018c6a94b4403a8252aa784fbf6ef7",
+        "Name": "FormaElement.MeshToSolid",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 554.03940023511188,
+        "Y": 25.567654773635581
+      },
+      {
+        "Id": "067906499d1e4d0699a40d9dcb798a3c",
+        "Name": "Watch 3D",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1051.3196587767916,
+        "Y": -3.8058203632572258
+      },
+      {
+        "Id": "2bbcc81b1beb4da7af28447a2705a899",
+        "Name": "GeometryColor.ByGeometryColor",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 705.93778047842,
+        "Y": 311.54285112656
+      },
+      {
+        "Id": "ab55b73e31ca4a63a9d09824cb988a72",
+        "Name": "Color Palette",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 242.56830400358706,
+        "Y": 418.80430401425269
+      }
+    ],
+    "Annotations": [],
+    "X": 75.926618336241518,
+    "Y": 268.77408577862639,
+    "Zoom": 0.46615068744548938
+  }
+}

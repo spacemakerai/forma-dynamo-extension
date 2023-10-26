@@ -1,5 +1,5 @@
 {
-  "Uuid": "ee51f67d-4f78-41c7-8197-ff7c05630810",
+  "Uuid": "0eb1032a-b716-495c-8d11-0ed781c07053",
   "IsCustomNode": false,
   "Description": "",
   "Name": "Footprint",
@@ -8,26 +8,26 @@
   },
   "Inputs": [
     {
-      "Id": "27ffaa2d895f4d91b925e629893d83da",
-      "Name": "Footprint",
+      "Id": "69071ee923de49d1bb3d8834532d7f58",
+      "Name": "Footprints",
       "Type": "string",
       "Type2": "string",
       "Value": "",
-      "Description": "Creates a string",
+      "Description": "Selection Forma Footprints",
       "SelectedIndex": 0
     }
   ],
   "Outputs": [],
   "Nodes": [
     {
-      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
-      "Id": "27ffaa2d895f4d91b925e629893d83da",
-      "NodeType": "StringInputNode",
+      "ConcreteType": "DynamoForma.NodeModels.FormaSelectFootprints, DynamoForma.NodeModels",
+      "Id": "69071ee923de49d1bb3d8834532d7f58",
+      "NodeType": "ExtensionNode",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "c6550b31f78949fd8d17ac8fa9e8c19e",
-          "Name": "",
+          "Id": "d19314dc0fb64587bb616da54f888295",
+          "Name": "FormaElement",
           "Description": "String",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -36,26 +36,182 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
+      "Description": "Selection Forma Footprints",
       "InputValue": ""
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "4ea784b4d7df4405bccda8e791dd49e5",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c75cb59a2e984569b61c1b62c11b5165",
+          "Name": "formaElement",
+          "Description": "DynamoForma.FormaElement",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "afcb44b63884496ea601325b843e4e0a",
+          "Name": "Curve",
+          "Description": "Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DynamoForma.FormaElement.Footprint",
+      "Replication": "Auto",
+      "Description": "FormaElement.Footprint: Curve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "b8b67c275fe6400d831119121cb0957e",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "ff89d00d9f204af3a67ab33bb3d038c8",
+          "Name": "surface",
+          "Description": "Autodesk.DesignScript.Geometry.Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2bfe9666eb674edeb93359b6b58fd282",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Area",
+      "Replication": "Auto",
+      "Description": "Returns the total surface area.\n\nSurface.Area: double"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "Id": "a314f9abe605428daca21928a6665d31",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "9627d814ea1143aba363733eeb65205e",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d7055499ccbc407abba51c8e7e611e51",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "42f8be9889c34e2f9e3a815f3c091716",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "1274269c90f94dbbabc05eebeb81b81b",
+          "Name": "closedCurve",
+          "Description": "Closed curve used as surface boundary\n\nCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "204fe39048554fe4ba0d277dedd8f500",
+          "Name": "Surface",
+          "Description": "Surface created by patch",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.ByPatch@Autodesk.DesignScript.Geometry.Curve",
+      "Replication": "Auto",
+      "Description": "Create a Surface by filling in the interior of a closed boundary defined by input Curves.\n\nSurface.ByPatch (closedCurve: Curve): Surface"
     }
   ],
-  "Connectors": [],
+  "Connectors": [
+    {
+      "Start": "d19314dc0fb64587bb616da54f888295",
+      "End": "c75cb59a2e984569b61c1b62c11b5165",
+      "Id": "a9190cc55f684c8ba86e2d11d930c323",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "afcb44b63884496ea601325b843e4e0a",
+      "End": "1274269c90f94dbbabc05eebeb81b81b",
+      "Id": "8e6f6604875b4ef88b943d48c2ef53e0",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2bfe9666eb674edeb93359b6b58fd282",
+      "End": "9627d814ea1143aba363733eeb65205e",
+      "Id": "ba4c9383de6f46e587c82de83ec7e13d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "204fe39048554fe4ba0d277dedd8f500",
+      "End": "ff89d00d9f204af3a67ab33bb3d038c8",
+      "Id": "90e126271b1143fb872f922564bd4589",
+      "IsHidden": "False"
+    }
+  ],
   "Dependencies": [],
-  "NodeLibraryDependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "DynamoForma",
+      "Version": "1.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "69071ee923de49d1bb3d8834532d7f58",
+        "4ea784b4d7df4405bccda8e791dd49e5"
+      ]
+    }
+  ],
   "Thumbnail": "",
   "GraphDocumentationURL": null,
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
       "Name": "Properties",
-      "Version": "2.17",
+      "Version": "2.18",
       "Data": {}
     },
     {
       "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
       "Name": "Generative Design",
-      "Version": "4.0",
+      "Version": "6.0",
       "Data": {}
     }
   ],
@@ -72,8 +228,8 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "3.0.0.6366",
-      "RunType": "Manual",
+      "Version": "2.18.1.5096",
+      "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
@@ -91,19 +247,59 @@
     "ConnectorPins": [],
     "NodeViews": [
       {
-        "Id": "27ffaa2d895f4d91b925e629893d83da",
-        "Name": "Footprint",
+        "Id": "69071ee923de49d1bb3d8834532d7f58",
+        "Name": "Footprints",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 388.0,
-        "Y": 231.0
+        "X": 224.5,
+        "Y": 305.5
+      },
+      {
+        "Id": "4ea784b4d7df4405bccda8e791dd49e5",
+        "Name": "FormaElement.Footprint",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 556.5,
+        "Y": 299.5
+      },
+      {
+        "Id": "b8b67c275fe6400d831119121cb0957e",
+        "Name": "Surface.Area",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 961.02082399664152,
+        "Y": 307.55719466851059
+      },
+      {
+        "Id": "a314f9abe605428daca21928a6665d31",
+        "Name": "Area",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1261.8365866613985,
+        "Y": 452.77859733425527
+      },
+      {
+        "Id": "42f8be9889c34e2f9e3a815f3c091716",
+        "Name": "Surface.ByPatch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 846.91829333069916,
+        "Y": 14.150687241801961
       }
     ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
-    "Zoom": 1.0
+    "X": 140.47272355959444,
+    "Y": 194.45066826073497,
+    "Zoom": 0.67483165842686466
   }
 }

@@ -125,7 +125,35 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             (input: { id: string }) => input.id === id,
           );
 
-          if (input.type === "FormaTerrain") {
+          if (
+            input.type === "FormaSelectElements" ||
+            input.type === "FormaSelectElement"
+          ) {
+            const paths = value as string[];
+            const triangles = await Promise.all(
+              paths.map((path) =>
+                Forma.geometry
+                  .getTriangles({ path })
+                  .then((triangles) => (triangles ? [...triangles] : undefined))
+              )
+            );
+            const footprints = await Promise.all(
+              paths.map((path) =>
+                Forma.geometry
+                  .getFootprint({ path })
+                  .then((polygon) =>
+                    polygon ? polygon.coordinates : undefined
+                  )
+              )
+            );
+
+            const elements = paths.map((_, index) => ({
+              triangles: triangles[index],
+              footprints: footprints[index],
+            }));
+
+            return { nodeId: id, value: JSON.stringify(elements) };
+          } else if (input.type === "FormaTerrain") {
             const [path] = await Forma.geometry.getPathsByCategory({
               category: "terrain",
             });

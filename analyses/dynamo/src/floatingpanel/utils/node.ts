@@ -17,6 +17,8 @@ export function isSelect(input: Input) {
     "FormaSelectMetrics",
     "FormaSelectGeometry",
     "FormaSelectFootprints",
+    "FormaSelectElements",
+    "FormaSelectElement",
   ];
 
   return names.includes(input.name) || types.includes(input.type);
