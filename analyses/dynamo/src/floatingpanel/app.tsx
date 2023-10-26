@@ -135,6 +135,7 @@ const DynamoStatusPage = ({ dynamoState }: { dynamoState: DynamoState }) => {
     case DynamoState.BLOCKED:
       return <>Dynamo is blocked, open Dynamo and follow instructions</>;
     case DynamoState.CONNECTED:
+    case DynamoState.LOST_CONNECTION:
       return null;
   }
 };

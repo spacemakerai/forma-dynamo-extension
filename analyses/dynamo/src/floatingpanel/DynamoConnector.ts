@@ -8,6 +8,7 @@ export enum DynamoState {
   MULTIPLE_CONNECTIONS = "MULTIPLE_CONNECTIONS",
   NOT_CONNECTED = "NOT_CONNECTED",
   BLOCKED = "BLOCKED",
+  LOST_CONNECTION = "LOST_CONNECTION",
 }
 
 async function health(port: number) {
@@ -72,6 +73,7 @@ export const useDynamoConnector = () => {
         DynamoState.NOT_CONNECTED,
         DynamoState.MULTIPLE_CONNECTIONS,
         DynamoState.BLOCKED,
+        DynamoState.LOST_CONNECTION,
       ].includes(state)
     ) {
       intervalId = setInterval(() => portDiscovery(), 2000);
@@ -83,22 +85,28 @@ export const useDynamoConnector = () => {
     (method: string, payload: any) => {
       switch (method) {
         case "getFolderInfo":
-          return graphFolderInfo(getDynamoUrl(), payload.path).catch((_) =>
-            portDiscovery(),
-          );
+          return graphFolderInfo(getDynamoUrl(), payload.path).catch((e) => {
+            setState(DynamoState.LOST_CONNECTION);
+            throw e;
+          });
         case "getGraphInfo":
-          return Dynamo.info(getDynamoUrl(), payload.code).catch((_) =>
-            portDiscovery(),
-          );
+          return Dynamo.info(getDynamoUrl(), payload.code).catch((e) => {
+            if (!(e.status === 500 && e.message === "Graph is not trusted.")) {
+              setState(DynamoState.LOST_CONNECTION);
+            }
+            throw e;
+          });
         case "runGraph":
           const { code, inputs } = payload;
-          return Dynamo.run(getDynamoUrl(), code, inputs).catch((_) =>
-            portDiscovery(),
-          );
+          return Dynamo.run(getDynamoUrl(), code, inputs).catch((e) => {
+            setState(DynamoState.LOST_CONNECTION);
+            throw e;
+          });
         case "trustFolder":
-          Dynamo.trust(getDynamoUrl(), payload.path).catch((_) =>
-            portDiscovery(),
-          );
+          Dynamo.trust(getDynamoUrl(), payload.path).catch((e) => {
+            setState(DynamoState.LOST_CONNECTION);
+            throw e;
+          });
       }
     },
     [state, dynamoPort],

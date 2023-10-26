@@ -134,17 +134,19 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
               paths.map((path) =>
                 Forma.geometry
                   .getTriangles({ path })
-                  .then((triangles) => (triangles ? [...triangles] : undefined))
-              )
+                  .then((triangles) =>
+                    triangles ? [...triangles] : undefined,
+                  ),
+              ),
             );
             const footprints = await Promise.all(
               paths.map((path) =>
                 Forma.geometry
                   .getFootprint({ path })
                   .then((polygon) =>
-                    polygon ? polygon.coordinates : undefined
-                  )
-              )
+                    polygon ? polygon.coordinates : undefined,
+                  ),
+              ),
             );
 
             const elements = paths.map((_, index) => ({
@@ -251,7 +253,11 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
 
       {scriptInfo.type === "error" &&
         scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
-          <NotTrustedGraph script={script} reload={reload} />
+          <NotTrustedGraph
+            script={script}
+            reload={reload}
+            dynamoHandler={dynamoHandler}
+          />
         )}
 
       {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
