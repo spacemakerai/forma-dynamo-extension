@@ -37,8 +37,9 @@ export const useDynamoConnector = () => {
       );
       if (blockedConnections.length > 0) {
         setState(DynamoState.BLOCKED);
+      } else {
+        setState(DynamoState.NOT_CONNECTED);
       }
-      setState(DynamoState.NOT_CONNECTED);
     }
   };
 
