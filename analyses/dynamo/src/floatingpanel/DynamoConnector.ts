@@ -87,7 +87,7 @@ export const useDynamoConnector = () => {
             throw e;
           });
         case "trustFolder":
-          Dynamo.trust(getDynamoUrl(), payload.path).catch((e) => {
+          return Dynamo.trust(getDynamoUrl(), payload.path).catch((e) => {
             setState(DynamoState.LOST_CONNECTION);
             throw e;
           });
