@@ -7,20 +7,6 @@ class FetchError extends Error {
   }
 }
 
-function getDynamoUrl() {
-  let dynamoUrl = "http://localhost:55100";
-
-  try {
-    const url = localStorage.getItem("dynamo-url");
-    if (url && url.startsWith("http")) {
-      dynamoUrl = url;
-    }
-  } catch (e) {
-    console.error(e);
-  }
-  return dynamoUrl;
-}
-
 export function createTarget(code: any) {
   if (code.id) {
     return {
@@ -33,23 +19,6 @@ export function createTarget(code: any) {
       type: "JsonGraphTarget",
       contents: JSON.stringify(code),
     };
-  }
-}
-
-type Health = "READY" | "BLOCKED" | "UNAVAILABLE";
-
-export async function health(): Promise<Health> {
-  try {
-    const response = await fetch(getDynamoUrl() + "/v1/health");
-    if (response.status === 200) {
-      return "READY";
-    } else if (response.status === 503) {
-      return "BLOCKED";
-    } else {
-      return "UNAVAILABLE";
-    }
-  } catch (e) {
-    return "UNAVAILABLE";
   }
 }
 
@@ -111,4 +80,21 @@ export async function trust(url: string, path: string) {
       path,
     }),
   });
+}
+
+export async function health(port: number) {
+  try {
+    const response = await fetch("http://localhost:" + port + "/v1/health");
+    if (response.status === 200) {
+      return { status: 200, port };
+    }
+    // TODO: make sure 503 errors end up here
+    else if (response.status === 503) {
+      return { status: 503, port };
+    } else {
+      return { status: 500, port };
+    }
+  } catch (e) {
+    return { status: 500, port };
+  }
 }
