@@ -3,8 +3,9 @@ import { LocalScript } from "./pages/LocalScript";
 import { Next } from "./icons/Next";
 import dynamoIconUrn from "./icons/dynamo.png";
 import { Forma } from "forma-embedded-view-sdk/auto";
-import { DynamoState, useDynamoConnector } from "./DynamoConnector.ts";
+import { useDynamoConnector } from "./DynamoConnector.ts";
 import { TemplatesAndLibrary } from "./pages/components/TemplatesAndLibrary.tsx";
+import { StatusBlock } from "./pages/components/StatusBlock.tsx";
 
 window.Forma = Forma;
 
@@ -119,27 +120,6 @@ function ScriptList({ setScript, dynamoHandler }: any) {
   );
 }
 
-const DynamoStatusPage = ({ dynamoState }: { dynamoState: DynamoState }) => {
-  switch (dynamoState) {
-    case DynamoState.INIT:
-      return <>Loading...</>;
-    case DynamoState.NOT_CONNECTED:
-      return <>Make sure you have Dynamo running locally on your machine</>;
-    case DynamoState.MULTIPLE_CONNECTIONS:
-      return (
-        <>
-          Multiple instances of Dynamo was found running. Close all except one
-          instance.
-        </>
-      );
-    case DynamoState.BLOCKED:
-      return <>Dynamo is blocked, open Dynamo and follow instructions</>;
-    case DynamoState.CONNECTED:
-    case DynamoState.LOST_CONNECTION:
-      return null;
-  }
-};
-
 export function App() {
   const { dynamoState, dynamoHandler } = useDynamoConnector();
   const [script, setScript] = useState(undefined);
@@ -159,5 +139,5 @@ export function App() {
       </>
     );
   }
-  return <DynamoStatusPage dynamoState={dynamoState} />;
+  return <StatusBlock dynamoState={dynamoState} />;
 }
