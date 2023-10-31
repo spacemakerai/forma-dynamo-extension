@@ -67,6 +67,8 @@ function ScriptList({ setScript, dynamoHandler }: any) {
     })();
   }, [folder]);
 
+  useEffect(reload, []);
+
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center" }}>
