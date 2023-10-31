@@ -58,7 +58,7 @@ function ScriptList({ setScript, dynamoHandler }: any) {
           path: folder,
         });
         const localPrograms = Object.fromEntries(
-          localFiles.map((file: any) => [file.name, file]),
+          localFiles.map((file: any) => [file.name, file])
         );
         setPrograms(localPrograms);
       } catch (e) {
@@ -66,10 +66,6 @@ function ScriptList({ setScript, dynamoHandler }: any) {
       }
     })();
   }, [folder]);
-
-  useEffect(() => {
-    reload();
-  }, [reload]);
 
   return (
     <div>
@@ -90,12 +86,13 @@ function ScriptList({ setScript, dynamoHandler }: any) {
       <br />
       <input
         defaultValue={folder}
-        onChange={(e: any) => {
+        onBlur={(e: any) => {
           const folder = e?.target?.value;
           localStorage.setItem("dynamo-folder", folder);
           setFolder(folder);
         }}
       />
+      <button onClick={reload}>Load</button>
       {error && (
         <div style={{ color: "red" }}>
           {error}
