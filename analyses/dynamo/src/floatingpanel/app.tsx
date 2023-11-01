@@ -72,36 +72,40 @@ function ScriptList({ setScript, dynamoHandler }: any) {
 
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <img src={dynamoIconUrn} />
-        <h1
-          style={{
-            fontFamily: "Artifact Element",
-            marginLeft: "5px",
-            fontSize: "12px",
-          }}
-        >
-          Dynamo Player
-        </h1>
-      </div>
       <TemplatesAndLibrary />
-      Folder:
+      <div style={{ width: "100%", height: "1px", backgroundColor: "gray" }} />
       <br />
-      <input
-        defaultValue={folder}
-        onBlur={(e: any) => {
-          const folder = e?.target?.value;
-          setFolder(folder);
-        }}
-      />
-      <button onClick={reload}>Load</button>
+      <div>
+        Graph Folder
+        <br />
+        <input
+          defaultValue={folder}
+          onBlur={(e: any) => {
+            const folder = e?.target?.value;
+            setFolder(folder);
+          }}
+        />
+        <button
+          style={{
+            cursor: "pointer",
+            boxShadow: "none",
+            color: "white",
+            padding: "1px",
+            border: "1px solid gray",
+            backgroundColor: "blue",
+          }}
+          onClick={reload}
+        >
+          Load
+        </button>
+      </div>
       {error && (
         <div style={{ color: "red" }}>
           {error}
           <button onClick={reload}>Retry</button>
         </div>
       )}
-      {folder ? (
+      {folder && (
         <div>
           {Object.entries(programs).map(([name, code]) => (
             <ScriptListItem
@@ -112,15 +116,16 @@ function ScriptList({ setScript, dynamoHandler }: any) {
             />
           ))}
         </div>
-      ) : (
-        <div>Select trusted Dynamo folder</div>
       )}
     </div>
   );
 }
 
 export function App() {
-  const { dynamoState, dynamoHandler } = useDynamoConnector();
+  const { dynamoState, dynamoHandler } = {
+    dynamoState: "CONNECTED" as DynamoState,
+    dynamoHandler: {},
+  }; //useDynamoConnector();
   const [script, setScript] = useState(undefined);
   if (dynamoState === "CONNECTED") {
     return (
