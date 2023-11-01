@@ -57,6 +57,7 @@ function ScriptList({ setScript, dynamoHandler }: any) {
         const localFiles = await dynamoHandler("getFolderInfo", {
           path: folder,
         });
+        localStorage.setItem("dynamo-folder", folder);
         const localPrograms = Object.fromEntries(
           localFiles.map((file: any) => [file.name, file])
         );
@@ -90,7 +91,6 @@ function ScriptList({ setScript, dynamoHandler }: any) {
         defaultValue={folder}
         onBlur={(e: any) => {
           const folder = e?.target?.value;
-          localStorage.setItem("dynamo-folder", folder);
           setFolder(folder);
         }}
       />
