@@ -46,7 +46,7 @@ type ScriptResult =
 
 function useScript(
   script: any,
-  dynamoHandler: any,
+  dynamoHandler: any
 ): [ScriptResult, () => void] {
   const [state, setState] = useState<ScriptResult>({ type: "init" });
 
@@ -75,15 +75,29 @@ function useScript(
 
 function AnimatedLoading() {
   const [dots, setDots] = useState(0);
+  const [slow, setSlow] = useState(false);
 
   useEffect(() => {
+    const start = new Date();
     const interval = setInterval(() => {
       setDots((dots) => (dots + 1) % 4);
+
+      if (start.getTime() + 3000 < new Date().getTime()) {
+        setSlow(true);
+      }
     }, 500);
     return () => clearInterval(interval);
   }, []);
 
-  return <div> Opening script in dynamo {Array(dots).fill(".").join("")} </div>;
+  return (
+    <div>
+      Opening script in dynamo {Array(dots).fill(".").join("")}
+      <br />
+      <br />
+      {slow &&
+        "This is taking longer than usual, check if dynamo is blocked on a saving modal."}
+    </div>
+  );
 }
 
 type Output =
@@ -108,7 +122,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
   const setValue = useCallback(
     (id: string, value: any) =>
       setState((state) => ({ ...state, [id]: value })),
-    [],
+    []
   );
 
   const onRun = useCallback(async () => {
@@ -122,7 +136,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
       const inputs = await Promise.all(
         Object.entries(state).map(async ([id, value]) => {
           const input = code.inputs.find(
-            (input: { id: string }) => input.id === id,
+            (input: { id: string }) => input.id === id
           );
 
           if (
@@ -134,19 +148,17 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
               paths.map((path) =>
                 Forma.geometry
                   .getTriangles({ path })
-                  .then((triangles) =>
-                    triangles ? [...triangles] : undefined,
-                  ),
-              ),
+                  .then((triangles) => (triangles ? [...triangles] : undefined))
+              )
             );
             const footprints = await Promise.all(
               paths.map((path) =>
                 Forma.geometry
                   .getFootprint({ path })
                   .then((polygon) =>
-                    polygon ? polygon.coordinates : undefined,
-                  ),
-              ),
+                    polygon ? polygon.coordinates : undefined
+                  )
+              )
             );
 
             const elements = paths.map((_, index) => ({
@@ -177,8 +189,8 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                     return [
                       ...(await Forma.geometry.getTriangles({ urn, path })),
                     ];
-                  }),
-                ),
+                  })
+                )
               ),
             };
           } else if (
@@ -195,8 +207,8 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                       ...(await Forma.geometry.getFootprint({ urn, path }))
                         .coordinates,
                     ];
-                  }),
-                ),
+                  })
+                )
               ),
             };
           } else if (
@@ -206,7 +218,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             return {
               nodeId: id,
               value: JSON.stringify(
-                await Forma.areaMetrics.calculate({ paths: value as string[] }),
+                await Forma.areaMetrics.calculate({ paths: value as string[] })
               ),
             };
           } else {
@@ -215,7 +227,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
               value: value,
             };
           }
-        }),
+        })
       );
 
       setOutput({
