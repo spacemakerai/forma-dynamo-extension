@@ -75,16 +75,18 @@ function ScriptList({ setScript, dynamoHandler }: any) {
       <TemplatesAndLibrary />
       <div style={{ width: "100%", height: "1px", backgroundColor: "gray" }} />
       <br />
-      <div>
-        Graph Folder
-        <br />
-        <input
-          defaultValue={folder}
-          onBlur={(e: any) => {
-            const folder = e?.target?.value;
-            setFolder(folder);
-          }}
-        />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div>
+          Graph Folder
+          <br />
+          <input
+            defaultValue={folder}
+            onBlur={(e: any) => {
+              const folder = e?.target?.value;
+              setFolder(folder);
+            }}
+          />
+        </div>
         <button
           style={{
             cursor: "pointer",
