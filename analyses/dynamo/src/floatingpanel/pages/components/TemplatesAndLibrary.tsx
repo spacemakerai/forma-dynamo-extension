@@ -22,7 +22,7 @@ export function TemplatesAndLibrary() {
         style={{ cursor: "pointer" }}
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        Assets
+        Sample Files
         <button
           style={{
             float: "right",
@@ -49,6 +49,7 @@ export function TemplatesAndLibrary() {
                 style={{
                   float: "right",
                   border: "none",
+                  color: "blue",
                   background: "white",
                   cursor: "pointer",
                 }}
@@ -70,6 +71,7 @@ export function TemplatesAndLibrary() {
                 style={{
                   float: "right",
                   border: "none",
+                  color: "blue",
                   background: "white",
                   cursor: "pointer",
                 }}
@@ -89,6 +91,7 @@ export function TemplatesAndLibrary() {
                 style={{
                   float: "right",
                   border: "none",
+                  color: "blue",
                   background: "white",
                   cursor: "pointer",
                 }}
@@ -108,6 +111,7 @@ export function TemplatesAndLibrary() {
                 style={{
                   float: "right",
                   border: "none",
+                  color: "blue",
                   background: "white",
                   cursor: "pointer",
                 }}
@@ -127,6 +131,7 @@ export function TemplatesAndLibrary() {
                 style={{
                   float: "right",
                   border: "none",
+                  color: "blue",
                   background: "white",
                   cursor: "pointer",
                 }}
@@ -149,6 +154,7 @@ export function TemplatesAndLibrary() {
                 style={{
                   float: "right",
                   border: "none",
+                  color: "blue",
                   background: "white",
                   cursor: "pointer",
                 }}
