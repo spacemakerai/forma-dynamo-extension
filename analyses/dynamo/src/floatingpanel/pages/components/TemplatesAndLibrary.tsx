@@ -49,7 +49,7 @@ export function TemplatesAndLibrary() {
                 style={{
                   float: "right",
                   border: "none",
-                  color: "blue",
+                  color: "var(--text-active",
                   background: "white",
                   cursor: "pointer",
                 }}
@@ -71,7 +71,7 @@ export function TemplatesAndLibrary() {
                 style={{
                   float: "right",
                   border: "none",
-                  color: "blue",
+                  color: "var(--text-active)",
                   background: "white",
                   cursor: "pointer",
                 }}
@@ -91,7 +91,7 @@ export function TemplatesAndLibrary() {
                 style={{
                   float: "right",
                   border: "none",
-                  color: "blue",
+                  color: "var(--text-active)",
                   background: "white",
                   cursor: "pointer",
                 }}
@@ -111,7 +111,7 @@ export function TemplatesAndLibrary() {
                 style={{
                   float: "right",
                   border: "none",
-                  color: "blue",
+                  color: "var(--text-active)",
                   background: "white",
                   cursor: "pointer",
                 }}
@@ -131,7 +131,7 @@ export function TemplatesAndLibrary() {
                 style={{
                   float: "right",
                   border: "none",
-                  color: "blue",
+                  color: "var(--text-active)",
                   background: "white",
                   cursor: "pointer",
                 }}
@@ -154,7 +154,7 @@ export function TemplatesAndLibrary() {
                 style={{
                   float: "right",
                   border: "none",
-                  color: "blue",
+                  color: "var(--text-active)",
                   background: "white",
                   cursor: "pointer",
                 }}

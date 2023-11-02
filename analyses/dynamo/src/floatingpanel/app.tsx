@@ -89,9 +89,9 @@ function ScriptList({ setScript, dynamoHandler }: any) {
             cursor: "pointer",
             boxShadow: "none",
             color: "white",
-            padding: "1px",
+            padding: "5px",
             border: "1px solid gray",
-            backgroundColor: "blue",
+            backgroundColor: "var(--text-active)",
           }}
           onClick={reload}
         >
