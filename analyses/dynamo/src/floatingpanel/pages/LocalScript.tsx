@@ -7,6 +7,7 @@ import { Back } from "../icons/Back.js";
 import dynamoIconUrn from "../icons/dynamo.png";
 import { isSelect } from "../utils/node.js";
 import { NotTrustedGraph } from "./components/NotTrustedGraph.js";
+import {SelectMode} from "./components/SelectMode.tsx";
 
 function getDefaultValues(scriptInfo: any) {
   if (scriptInfo.type === "loaded") {
@@ -108,6 +109,7 @@ type Output =
 
 export function LocalScript({ script, setScript, dynamoHandler }: any) {
   const [scriptInfo, reload] = useScript(script, dynamoHandler);
+  const [activeSelectionNode, setActiveSelectionNode] = useState(undefined);
 
   const [state, setState] = useState<Record<string, any>>({});
 
@@ -245,7 +247,9 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
   }, [state]);
 
   return (
-    <div>
+      <>
+      {activeSelectionNode && <SelectMode activeSelectionNode={activeSelectionNode} setActiveSelectionNode={setActiveSelectionNode} setValue={setValue}/>}
+    <div style={{ display: activeSelectionNode ? 'none' : 'block' }}>
       <Back onClick={() => setScript(undefined)} />
 
       {scriptInfo.type === "error" &&
@@ -271,6 +275,8 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             code={scriptInfo.data}
             state={state}
             setValue={setValue}
+            activeSelectionNode={activeSelectionNode}
+            setActiveSelectionNode={setActiveSelectionNode}
           />
           <button
             style={{
@@ -293,5 +299,6 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         </div>
       )}
     </div>
+      </>
   );
 }

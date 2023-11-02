@@ -1,76 +1,16 @@
-import { useCallback, useEffect, useState } from "preact/compat";
-import { Forma } from "forma-embedded-view-sdk/auto";
 import { isSelect } from "../../utils/node";
 
-function useCurrentSelection() {
-  const [selection, setSelection] = useState<any>([]);
-
-  useEffect(() => {
-    const intervalId = setInterval(async () => {
-      setSelection(await Forma.selection.getSelection());
-    }, 100);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  return selection;
-}
-
-function ActiveSelection({ input, setValue, setIsSelecting }: any) {
-  const currentSelection = useCurrentSelection();
-
-  const onFinishSelection = useCallback(async () => {
-    setValue(input.id, await Forma.selection.getSelection());
-    setIsSelecting(false);
-  }, [input]);
-
-  return (
-    <div>
-      <br />
-      <span>{currentSelection.length} Currently selected</span>
-      <button onClick={onFinishSelection}>Use Selection</button>
-    </div>
-  );
-}
-
-function DynamoSelection({ input, value, setValue }: any) {
-  const [isSelecting, setIsSelecting] = useState(false);
-
-  const onClick = useCallback(async () => {
-    if (isSelecting) {
-      setValue(input.id, await Forma.selection.getSelection());
-      setIsSelecting(false);
-    } else {
-      setIsSelecting(true);
-    }
-  }, [isSelecting, input]);
-
-  if (isSelecting) {
-    return (
-      <ActiveSelection
-        input={input}
-        setIsSelecting={setIsSelecting}
-        setValue={setValue}
-      />
-    );
-  }
-
-  return (
-    <div>
-      {value && <span>{value.length} Selected</span>}
-      <button onClick={onClick}>Select</button>
-    </div>
-  );
-}
 
 function DynamoInputComponent({
   input,
   value,
   setValue,
+                                setActiveSelectionNode,
 }: {
   input: Input;
   value: any;
   setValue: (id: string, v: any) => void;
+  setActiveSelectionNode?: (v: any) => void;
 }) {
   if (input.type === "FormaTerrain") {
     return (
@@ -81,11 +21,10 @@ function DynamoInputComponent({
     );
   } else if (isSelect(input)) {
     return (
-      <DynamoSelection
-        input={input}
-        setValue={setValue}
-        value={value}
-      ></DynamoSelection>
+        <div>
+          {value && <span>{value.length} Selected</span>}
+          <button onClick={() => setActiveSelectionNode({id: input.id, name: input.name})}>Select</button>
+        </div>
     );
   } else if (input.type === "StringInput") {
     return (
@@ -193,7 +132,7 @@ type Input = {
   };
 };
 
-export function DynamoInput({ code, state, setValue }: any) {
+export function DynamoInput({ code, state, setValue, setActiveSelectionNode }: any) {
   return (code?.inputs || []).map((input: Input) => (
     <div
       style={{
@@ -209,6 +148,7 @@ export function DynamoInput({ code, state, setValue }: any) {
         input={input}
         value={state[input.id]}
         setValue={setValue}
+        setActiveSelectionNode={setActiveSelectionNode}
       />
     </div>
   ));
