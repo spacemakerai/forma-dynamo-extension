@@ -2,12 +2,9 @@ import { useCallback, useEffect, useState } from "preact/compat";
 import { LocalScript } from "./pages/LocalScript";
 import { Next } from "./icons/Next";
 import dynamoIconUrn from "./icons/dynamo.png";
-import { Forma } from "forma-embedded-view-sdk/auto";
-import { useDynamoConnector } from "./DynamoConnector.ts";
+import { DynamoState, useDynamoConnector } from "./DynamoConnector.ts";
 import { TemplatesAndLibrary } from "./pages/components/TemplatesAndLibrary.tsx";
 import { StatusBlock } from "./pages/components/StatusBlock.tsx";
-
-window.Forma = Forma;
 
 let dynamoFolder = "";
 try {
@@ -124,10 +121,7 @@ function ScriptList({ setScript, dynamoHandler }: any) {
 }
 
 export function App() {
-  const { dynamoState, dynamoHandler } = {
-    dynamoState: "CONNECTED" as DynamoState,
-    dynamoHandler: {},
-  }; //useDynamoConnector();
+  const { dynamoState, dynamoHandler } = useDynamoConnector();
   const [script, setScript] = useState(undefined);
   if (dynamoState === "CONNECTED") {
     return (

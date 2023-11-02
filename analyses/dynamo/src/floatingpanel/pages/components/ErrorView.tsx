@@ -8,7 +8,9 @@ function TabHeaders({ label, onClick, isActive }: any) {
       style={{
         cursor: "pointer",
         margin: "5px",
-        borderBottom: isActive ? "2px solid blue" : "2px solid gray",
+        borderBottom: isActive
+          ? "2px solid var(--text-active)"
+          : "2px solid lightgray",
       }}
       onClick={onClick}
     >
@@ -26,14 +28,23 @@ export function ErrorView() {
 
   return (
     <div>
-      :warn: Not able to connect to Dynamo.
+      <div style={{ display: "flex" }}>
+        <div style={{ width: "15px" }}>⚠️</div>
+        <div>Not able to connect to Dynamo.</div>
+      </div>
       <br />
-      <br />
-      - Are Dynamo and the FormaDynamo extension installed, and is Dynamo
-      running? If so, check Dynamo for any open dialogs that may be blocking.
-      <br />
-      - Dynamo not installed: Follow installation directions below
-      <br />
+      <div style={{ display: "flex" }}>
+        <div style={{ minWidth: "15px" }}>-</div>
+        <div>
+          Are Dynamo and the FormaDynamo extension installed, and is Dynamo
+          running? If so, check Dynamo for any open dialogs that may be
+          blocking.
+        </div>
+      </div>
+      <div style={{ display: "flex" }}>
+        <div style={{ width: "15px" }}>-</div>
+        <div>Dynamo not installed: Follow installation directions below</div>
+      </div>
       <br />
       <div style={{ width: "100%", height: "1px", backgroundColor: "gray" }} />
       <br />
@@ -56,62 +67,94 @@ export function ErrorView() {
             extension.
           </div>
           <br />
-          <ol>
-            <li>
-              1. Download Dynamo 2.81.0 from{" "}
+          <div style={{ display: "flex" }}>
+            <div style={{ width: "15px" }}>1.</div>
+            <div>
+              Download Dynamo 2.81.0 from{" "}
               <a
                 href="https://dyn-builds-data.s3-us-west-2.amazonaws.com/DynamoCoreRuntime2.18.1.zip"
                 target="_blank"
               >
                 daily builds
               </a>
-            </li>
-            <br />
-            <li>
-              2. Download{" "}
+            </div>
+          </div>
+          <br />
+          <div style={{ display: "flex" }}>
+            <div style={{ width: "15px" }}>2.</div>
+            <div>
+              Download{" "}
               <a href={"#"} onClick={downloadDynamoPlayerExtension}>
                 FormaDynamo.7z
               </a>
-            </li>
-            <br />
-            <li>
-              3. Extract Dynamo 2.18 using <a href={"#"}>7zip</a> to a folder of
-              your choise.
-            </li>
-            <br />
-            <li>
-              4. Extract FormaDynamo.7z to{" "}
-              <span style={{ background: "#80808040", fontFamily: "Monaco" }}>
+            </div>
+          </div>
+          <br />
+          <div style={{ display: "flex" }}>
+            <div style={{ width: "15px" }}>3.</div>
+            <div>
+              Extract Dynamo 2.18 using{" "}
+              <a target="_blank" href={"https://7-zip.org/"}>
+                7zip
+              </a>{" "}
+              to a folder of your choise.
+            </div>
+          </div>
+          <br />
+          <div style={{ display: "flex" }}>
+            <div style={{ width: "15px" }}>4.</div>
+            <div>
+              Extract FormaDynamo.7z to{" "}
+              <span style={{ fontFamily: "Monaco" }}>
                 %AppData%\Dynamo\Dynamo Core\2.18\packages
               </span>
-            </li>
-            <br />
-            <li>5. Open DynamoSandbox.exe from the Dynamo 2.18 folder</li>
-          </ol>
+            </div>
+          </div>
+          <br />
+          <div style={{ display: "flex" }}>
+            <div style={{ width: "15px" }}>5.</div>
+            <div>Open DynamoSandbox.exe from the Dynamo 2.18 folder</div>
+          </div>
         </>
       ) : (
-        <ol>
-          <li>
-            1. Make sure you have Revit 2024.1 installed with Dynamo 2.18.1
-          </li>
+        <>
+          <div>
+            Follow these directions to set up Revit and the FormaDynamo
+            extension.
+          </div>
           <br />
-          <li>
-            2. Download{" "}
-            <a href={"#"} onClick={downloadDynamoPlayerExtension}>
-              FormaDynamo.7z
-            </a>
-          </li>
+          <div style={{ display: "flex" }}>
+            <div style={{ width: "15px" }}>1.</div>
+            <div>
+              Make sure you have Revit 2024.1 installed with Dynamo 2.18.1
+            </div>
+          </div>
           <br />
-          <li>
-            4. Extract FormaDynamo.7z to{" "}
-            <span style={{ background: "#80808040", fontFamily: "Monaco" }}>
-              %AppData%\Dynamo\Dynamo Revit\2.18\packages
-            </span>
-          </li>
+          <div style={{ display: "flex" }}>
+            <div style={{ width: "15px" }}>2.</div>
+            <div>
+              Download{" "}
+              <a href={"#"} onClick={downloadDynamoPlayerExtension}>
+                FormaDynamo.7z
+              </a>
+            </div>
+          </div>
           <br />
-
-          <li>4. Open Dynamo from Revit</li>
-        </ol>
+          <div style={{ display: "flex" }}>
+            <div style={{ width: "15px" }}>3.</div>
+            <div>
+              Extract FormaDynamo.7z to{" "}
+              <span style={{ fontFamily: "Monaco" }}>
+                %AppData%\Dynamo\Dynamo Revit\2.18\packages
+              </span>
+            </div>
+          </div>
+          <br />
+          <div style={{ display: "flex" }}>
+            <div style={{ width: "15px" }}>4.</div>
+            <div>Open Dynamo from Revit</div>
+          </div>
+        </>
       )}
     </div>
   );

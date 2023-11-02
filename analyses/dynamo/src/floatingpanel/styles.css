@@ -87,3 +87,11 @@ body,
     --text-placeholder: rgba(245, 245, 245, 0.4);
   }
 }
+
+a:link,
+a:visited,
+a:hover,
+a:active,
+a:focus {
+  color: var(--text-active);
+}
