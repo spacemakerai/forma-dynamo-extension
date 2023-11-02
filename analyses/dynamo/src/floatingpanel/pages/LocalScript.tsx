@@ -246,22 +246,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
 
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <Back onClick={() => setScript(undefined)} />
-        <h1
-          onClick={() => reload()}
-          style={{
-            cursor: "pointer",
-            fontFamily: "Artifact Element",
-            marginLeft: "5px",
-            fontSize: "12px",
-          }}
-        >
-          {script.name}
-        </h1>
-
-        <img src={dynamoIconUrn} />
-      </div>
+      <Back onClick={() => setScript(undefined)} />
 
       {scriptInfo.type === "error" &&
         scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
