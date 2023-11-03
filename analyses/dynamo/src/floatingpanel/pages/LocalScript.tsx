@@ -260,7 +260,10 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         />
       )}
       <div style={{ display: activeSelectionNode ? "none" : "block" }}>
-        <Back onClick={() => setScript(undefined)} />
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Back onClick={() => setScript(undefined)} />
+          {script.name}
+        </div>
 
         {scriptInfo.type === "error" &&
           scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
@@ -270,7 +273,6 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
               dynamoHandler={dynamoHandler}
             />
           )}
-
         {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
 
         {scriptInfo.type === "loaded" && (
