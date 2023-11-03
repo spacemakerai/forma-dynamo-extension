@@ -22,10 +22,6 @@ export function SelectMode({
   setValue,
 }: any) {
   const selection = useCurrentSelection();
-
-  const [hoverConfirm, setHoverConfirm] = useState(false);
-  const [hoverCancel, setHoverCancel] = useState(false);
-
   const onClickConfirm = async () => {
     setValue(activeSelectionNode.id, selection);
     setActiveSelectionNode(undefined);
@@ -52,42 +48,17 @@ export function SelectMode({
       </div>
 
       <div style={{ display: "flex", justifyContent: "end", padding: "6px" }}>
-        <button
-          onMouseEnter={() => setHoverCancel(true)}
-          onMouseLeave={() => setHoverCancel(false)}
-          style={{
-            lineHeight: "16px",
-            backgroundColor: "white",
-            padding: "4px 12px",
-            cursor: "pointer",
-            color: "#006EAF",
-            borderRadius: "2px",
-            border: `1px solid ${hoverCancel ? "black" : "white"}`,
-            marginRight: "8px",
-            fontWeight: "600",
-            fontSize: "12px",
-          }}
-          onClick={onClickCancel}
-        >
+        <weave-button variant="flat" onClick={onClickCancel}>
           Cancel
-        </button>
-        <button
-          onMouseEnter={() => setHoverConfirm(true)}
-          onMouseLeave={() => setHoverConfirm(false)}
-          style={{
-            lineHeight: "16px",
-            borderRadius: "2px",
-            border: `1px solid ${hoverConfirm ? "black" : "#BFBFBF"}`,
-            backgroundColor: "white",
-            padding: "4px 12px",
-            cursor: "pointer",
-            fontWeight: "600",
-            fontSize: "12px",
-          }}
+        </weave-button>
+        <weave-button
+          style={{ marginLeft: "10px" }}
+          variant="outlined"
+          density="high"
           onClick={onClickConfirm}
         >
           Confirm selection
-        </button>
+        </weave-button>
       </div>
     </div>
   );
