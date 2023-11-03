@@ -7,6 +7,12 @@ export declare module "preact/src/jsx" {
         density?: "high" | "medium";
         iconposition?: "left" | "right";
       };
+      "weave-slider": Omit<
+        JSXInternal.HTMLAttributes<HTMLInputElement>,
+        "onInput"
+      > & {
+        onInput?: (e: CustomEvent<string>) => void;
+      };
     }
   }
 }

@@ -59,14 +59,12 @@ function DynamoInputComponent({
   } else if (input.type === "DoubleSlider") {
     return (
       <>
-        <input
-          type="range"
+        <weave-slider
           min={input.nodeTypeProperties.minimumValue}
           max={input.nodeTypeProperties.maximumValue}
           step={input.nodeTypeProperties.stepValue}
-          defaultValue={value}
-          // @ts-ignore
-          onChange={(ev) => setValue(input.id, ev.target.value)}
+          value={value}
+          onInput={(ev) => setValue(input.id, ev.detail)}
         />
         <span>{value}</span>
       </>
@@ -74,14 +72,12 @@ function DynamoInputComponent({
   } else if (input.type === "IntegerSlider64Bit") {
     return (
       <>
-        <input
-          type="range"
+        <weave-slider
           min={input.nodeTypeProperties.minimumValue}
           max={input.nodeTypeProperties.maximumValue}
           step={input.nodeTypeProperties.stepValue}
-          defaultValue={value}
-          // @ts-ignore
-          onChange={(ev) => setValue(input.id, ev.target.value)}
+          value={value}
+          onInput={(ev) => setValue(input.id, ev.detail)}
         />
         <span>{value}</span>
       </>
