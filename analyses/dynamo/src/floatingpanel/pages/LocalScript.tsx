@@ -7,7 +7,7 @@ import { Back } from "../icons/Back.js";
 import dynamoIconUrn from "../icons/dynamo.png";
 import { isSelect } from "../utils/node.js";
 import { NotTrustedGraph } from "./components/NotTrustedGraph.js";
-import {SelectMode} from "./components/SelectMode.tsx";
+import { SelectMode } from "./components/SelectMode.tsx";
 
 function getDefaultValues(scriptInfo: any) {
   if (scriptInfo.type === "loaded") {
@@ -47,7 +47,7 @@ type ScriptResult =
 
 function useScript(
   script: any,
-  dynamoHandler: any
+  dynamoHandler: any,
 ): [ScriptResult, () => void] {
   const [state, setState] = useState<ScriptResult>({ type: "init" });
 
@@ -109,7 +109,9 @@ type Output =
 
 export function LocalScript({ script, setScript, dynamoHandler }: any) {
   const [scriptInfo, reload] = useScript(script, dynamoHandler);
-  const [activeSelectionNode, setActiveSelectionNode] = useState<{id: string, name: string} | undefined>(undefined);
+  const [activeSelectionNode, setActiveSelectionNode] = useState<
+    { id: string; name: string } | undefined
+  >(undefined);
 
   const [state, setState] = useState<Record<string, any>>({});
 
@@ -124,7 +126,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
   const setValue = useCallback(
     (id: string, value: any) =>
       setState((state) => ({ ...state, [id]: value })),
-    []
+    [],
   );
 
   const onRun = useCallback(async () => {
@@ -138,7 +140,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
       const inputs = await Promise.all(
         Object.entries(state).map(async ([id, value]) => {
           const input = code.inputs.find(
-            (input: { id: string }) => input.id === id
+            (input: { id: string }) => input.id === id,
           );
 
           if (
@@ -150,17 +152,19 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
               paths.map((path) =>
                 Forma.geometry
                   .getTriangles({ path })
-                  .then((triangles) => (triangles ? [...triangles] : undefined))
-              )
+                  .then((triangles) =>
+                    triangles ? [...triangles] : undefined,
+                  ),
+              ),
             );
             const footprints = await Promise.all(
               paths.map((path) =>
                 Forma.geometry
                   .getFootprint({ path })
                   .then((polygon) =>
-                    polygon ? polygon.coordinates : undefined
-                  )
-              )
+                    polygon ? polygon.coordinates : undefined,
+                  ),
+              ),
             );
 
             const elements = paths.map((_, index) => ({
@@ -191,8 +195,8 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                     return [
                       ...(await Forma.geometry.getTriangles({ urn, path })),
                     ];
-                  })
-                )
+                  }),
+                ),
               ),
             };
           } else if (
@@ -209,8 +213,8 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                       ...(await Forma.geometry.getFootprint({ urn, path }))
                         .coordinates,
                     ];
-                  })
-                )
+                  }),
+                ),
               ),
             };
           } else if (
@@ -220,7 +224,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             return {
               nodeId: id,
               value: JSON.stringify(
-                await Forma.areaMetrics.calculate({ paths: value as string[] })
+                await Forma.areaMetrics.calculate({ paths: value as string[] }),
               ),
             };
           } else {
@@ -229,7 +233,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
               value: value,
             };
           }
-        })
+        }),
       );
 
       setOutput({
@@ -247,58 +251,64 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
   }, [state]);
 
   return (
-      <>
-      {activeSelectionNode && <SelectMode activeSelectionNode={activeSelectionNode} setActiveSelectionNode={setActiveSelectionNode} setValue={setValue}/>}
-    <div style={{ display: activeSelectionNode ? 'none' : 'block' }}>
-      <Back onClick={() => setScript(undefined)} />
-
-      {scriptInfo.type === "error" &&
-        scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
-          <NotTrustedGraph
-            script={script}
-            reload={reload}
-            dynamoHandler={dynamoHandler}
-          />
-        )}
-
-      {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
-
-      {scriptInfo.type === "loaded" && (
-        <div>
-          <div
-            style={{
-              marginBottom: "5px",
-              paddingBottom: "5px",
-            }}
-          ></div>
-          <DynamoInput
-            code={scriptInfo.data}
-            state={state}
-            setValue={setValue}
-            activeSelectionNode={activeSelectionNode}
-            setActiveSelectionNode={setActiveSelectionNode}
-          />
-          <button
-            style={{
-              width: "100%",
-              backgroundColor: "#0696D7",
-              border: "none",
-              borderRadius: "2px",
-              height: "24px",
-              color: "white",
-              padding: "4px, 12px, 4px, 12px",
-              cursor: "pointer",
-            }}
-            disabled={output.type === "running"}
-            onClick={onRun}
-          >
-            Run
-          </button>
-
-          <DynamoOutput output={output} />
-        </div>
+    <>
+      {activeSelectionNode && (
+        <SelectMode
+          activeSelectionNode={activeSelectionNode}
+          setActiveSelectionNode={setActiveSelectionNode}
+          setValue={setValue}
+        />
       )}
-    </div>
-      </>
+      <div style={{ display: activeSelectionNode ? "none" : "block" }}>
+        <Back onClick={() => setScript(undefined)} />
+
+        {scriptInfo.type === "error" &&
+          scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
+            <NotTrustedGraph
+              script={script}
+              reload={reload}
+              dynamoHandler={dynamoHandler}
+            />
+          )}
+
+        {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
+
+        {scriptInfo.type === "loaded" && (
+          <div>
+            <div
+              style={{
+                marginBottom: "5px",
+                paddingBottom: "5px",
+              }}
+            ></div>
+            <DynamoInput
+              code={scriptInfo.data}
+              state={state}
+              setValue={setValue}
+              activeSelectionNode={activeSelectionNode}
+              setActiveSelectionNode={setActiveSelectionNode}
+            />
+            <button
+              style={{
+                width: "100%",
+                backgroundColor: "#0696D7",
+                border: "none",
+                borderRadius: "2px",
+                height: "24px",
+                color: "white",
+                padding: "4px, 12px, 4px, 12px",
+                cursor: "pointer",
+              }}
+              disabled={output.type === "running"}
+              onClick={onRun}
+            >
+              Run
+            </button>
+
+            <DynamoOutput output={output} />
+          </div>
+        )}
+      </div>
+    </>
   );
 }
