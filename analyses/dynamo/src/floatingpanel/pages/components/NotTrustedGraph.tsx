@@ -14,7 +14,9 @@ export function NotTrustedGraph({ script, reload, dynamoHandler }: any) {
   return (
     <div>
       Location of script is not trusted.
-      <button onClick={trust}>Trust location</button>
+      <weave-button variant="solid" onClick={trust}>
+        Trust location
+      </weave-button>
     </div>
   );
 }

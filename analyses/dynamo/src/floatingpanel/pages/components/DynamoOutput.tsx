@@ -60,21 +60,9 @@ function DynamoOutputWatch3D({ output }: { output: Output }) {
       }}
     >
       <span>{output.name}</span>
-
-      <button
-        style={{
-          height: "24px",
-          borderRadius: "2px",
-          border: "1px solid " + (shouldShow ? "black" : "gray"),
-          backgroundColor: "white",
-          padding: "4px 12px",
-          cursor: "pointer",
-        }}
-        disabled={!shouldShow}
-        onClick={add}
-      >
+      <weave-button variant="outlined" disabled={!shouldShow} onClick={add}>
         Add
-      </button>
+      </weave-button>
       <Visibility
         onClick={() => setShouldShow(!shouldShow)}
         isVisible={shouldShow}
@@ -111,10 +99,10 @@ export function DynamoOutput({ output }: any) {
   const outputs = (output.data?.info?.outputs || []) as Output[];
 
   return (
-    <div>
+    <>
       {outputs.map((output) => (
         <DynamoOutputComponent output={output} />
       ))}
-    </div>
+    </>
   );
 }

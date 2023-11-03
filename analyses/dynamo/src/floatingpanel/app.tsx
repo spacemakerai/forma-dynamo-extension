@@ -56,7 +56,7 @@ function ScriptList({ setScript, dynamoHandler }: any) {
         });
         localStorage.setItem("dynamo-folder", folder);
         const localPrograms = Object.fromEntries(
-          localFiles.map((file: any) => [file.name, file])
+          localFiles.map((file: any) => [file.name, file]),
         );
         setPrograms(localPrograms);
       } catch (e) {
@@ -84,24 +84,16 @@ function ScriptList({ setScript, dynamoHandler }: any) {
             }}
           />
         </div>
-        <button
-          style={{
-            cursor: "pointer",
-            boxShadow: "none",
-            color: "white",
-            padding: "5px",
-            border: "1px solid gray",
-            backgroundColor: "var(--text-active)",
-          }}
-          onClick={reload}
-        >
+        <weave-button variant="solid" onClick={reload}>
           Load
-        </button>
+        </weave-button>
       </div>
       {error && (
         <div style={{ color: "red" }}>
           {error}
-          <button onClick={reload}>Retry</button>
+          <weave-button variant="outlined" onClick={reload}>
+            Retry
+          </weave-button>
         </div>
       )}
       {folder && (
@@ -125,7 +117,7 @@ export function App() {
   const [script, setScript] = useState(undefined);
   if (dynamoState === "CONNECTED") {
     return (
-      <>
+      <div style={{ padding: "0 2px" }}>
         {!script && (
           <ScriptList dynamoHandler={dynamoHandler} setScript={setScript} />
         )}
@@ -136,7 +128,7 @@ export function App() {
             setScript={setScript}
           />
         )}
-      </>
+      </div>
     );
   }
   return <StatusBlock dynamoState={dynamoState} />;

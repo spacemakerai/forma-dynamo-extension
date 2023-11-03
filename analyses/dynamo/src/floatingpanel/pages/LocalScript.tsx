@@ -290,23 +290,14 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
               activeSelectionNode={activeSelectionNode}
               setActiveSelectionNode={setActiveSelectionNode}
             />
-            <button
-              style={{
-                width: "100%",
-                backgroundColor: "#0696D7",
-                border: "none",
-                borderRadius: "2px",
-                height: "24px",
-                color: "white",
-                padding: "4px, 12px, 4px, 12px",
-                cursor: "pointer",
-              }}
+            <weave-button
+              style={{ width: "100%", margin: "10px 0" }}
+              variant="solid"
               disabled={output.type === "running"}
               onClick={onRun}
             >
               Run
-            </button>
-
+            </weave-button>
             <DynamoOutput output={output} />
           </div>
         )}

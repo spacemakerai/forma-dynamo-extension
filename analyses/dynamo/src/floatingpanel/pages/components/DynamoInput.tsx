@@ -1,6 +1,5 @@
 import { isSelect } from "../../utils/node";
 
-
 function DynamoInputComponent({
   input,
   value,
@@ -16,15 +15,28 @@ function DynamoInputComponent({
     return (
       <div>
         {value}
-        <button onClick={() => setValue(input.id, "selected")}>select</button>
+        <weave-button
+          variant="outlined"
+          onClick={() => setValue(input.id, "selected")}
+        >
+          Select
+        </weave-button>
       </div>
     );
   } else if (isSelect(input)) {
     return (
-        <div>
-          {value && <span>{value.length} Selected</span>}
-          <button onClick={() => setActiveSelectionNode({id: input.id, name: input.name})}>Select</button>
-        </div>
+      <div>
+        {value && <span>{value.length} Selected</span>}
+        <weave-button
+          style={{ marginLeft: "5px" }}
+          variant="outlined"
+          onClick={() =>
+            setActiveSelectionNode({ id: input.id, name: input.name })
+          }
+        >
+          Select
+        </weave-button>
+      </div>
     );
   } else if (input.type === "StringInput") {
     return (
@@ -132,7 +144,12 @@ type Input = {
   };
 };
 
-export function DynamoInput({ code, state, setValue, setActiveSelectionNode }: any) {
+export function DynamoInput({
+  code,
+  state,
+  setValue,
+  setActiveSelectionNode,
+}: any) {
   return (code?.inputs || []).map((input: Input) => (
     <div
       style={{
