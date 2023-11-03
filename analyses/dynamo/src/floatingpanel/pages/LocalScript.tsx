@@ -109,7 +109,7 @@ type Output =
 
 export function LocalScript({ script, setScript, dynamoHandler }: any) {
   const [scriptInfo, reload] = useScript(script, dynamoHandler);
-  const [activeSelectionNode, setActiveSelectionNode] = useState(undefined);
+  const [activeSelectionNode, setActiveSelectionNode] = useState<{id: string, name: string} | undefined>(undefined);
 
   const [state, setState] = useState<Record<string, any>>({});
 
