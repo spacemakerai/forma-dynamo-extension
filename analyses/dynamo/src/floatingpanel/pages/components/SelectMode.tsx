@@ -56,7 +56,7 @@ export function SelectMode({
           onMouseEnter={() => setHoverCancel(true)}
           onMouseLeave={() => setHoverCancel(false)}
           style={{
-            height: "24px",
+            lineHeight: "16px",
             backgroundColor: "white",
             padding: "4px 12px",
             cursor: "pointer",
@@ -65,8 +65,9 @@ export function SelectMode({
             border: `1px solid ${hoverCancel ? "black" : "white"}`,
             marginRight: "8px",
             fontWeight: "600",
+            fontSize: "12px",
           }}
-          onclick={onClickCancel}
+          onClick={onClickCancel}
         >
           Cancel
         </button>
@@ -74,15 +75,16 @@ export function SelectMode({
           onMouseEnter={() => setHoverConfirm(true)}
           onMouseLeave={() => setHoverConfirm(false)}
           style={{
-            height: "24px",
+            lineHeight: "16px",
             borderRadius: "2px",
             border: `1px solid ${hoverConfirm ? "black" : "#BFBFBF"}`,
             backgroundColor: "white",
             padding: "4px 12px",
             cursor: "pointer",
             fontWeight: "600",
+            fontSize: "12px",
           }}
-          onclick={onClickConfirm}
+          onClick={onClickConfirm}
         >
           Confirm selection
         </button>
