@@ -5,7 +5,7 @@ function DynamoInputComponent({
   input,
   value,
   setValue,
-                                setActiveSelectionNode,
+  setActiveSelectionNode,
 }: {
   input: Input;
   value: any;
