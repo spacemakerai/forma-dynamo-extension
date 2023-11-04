@@ -17,155 +17,140 @@ export function TemplatesAndLibrary() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div style={{ margin: "10px 0" }}>
-      <h1
-        style={{ cursor: "pointer" }}
-        onClick={() => setIsExpanded(!isExpanded)}
+    <>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          margin: "10px 0",
+        }}
       >
-        Sample Files
-        <button
+        <h3>Sample Files</h3>
+        <weave-button
+          variant="outlined"
+          onClick={() => setIsExpanded(!isExpanded)}
           style={{
             float: "right",
             border: "none",
-            background: "white",
-            cursor: "pointer",
           }}
         >
           {isExpanded ? "Hide" : "Show"}
-        </button>
-      </h1>
-
+        </weave-button>
+      </div>
       {isExpanded && (
         <div>
-          <div style={{ margin: "5px 5px" }}>
-            <h2
+          <div>
+            <h4
               style={{ cursor: "pointer" }}
               onClick={() =>
                 download(downloadExtension, "DynamoPlayerExtension2.18.7z")
               }
             >
               Dynamo Extension
-              <button
+              <weave-button
+                variant="flat"
                 style={{
                   float: "right",
-                  border: "none",
-                  color: "var(--text-active",
-                  background: "white",
-                  cursor: "pointer",
                 }}
               >
                 Download
-              </button>
-            </h2>
+              </weave-button>
+            </h4>
             <div>The extension to install into dynamo to connect to Forma.</div>
           </div>
           <div style={{ margin: "5px 5px" }}>
-            <h2
+            <h4
               style={{ cursor: "pointer" }}
               onClick={() =>
                 download(downloadAutodeskForma, "AutodeskForma.7z")
               }
             >
               AutodeskForma
-              <button
+              <weave-button
+                variant="flat"
                 style={{
                   float: "right",
-                  border: "none",
-                  color: "var(--text-active)",
-                  background: "white",
-                  cursor: "pointer",
                 }}
               >
                 Download
-              </button>
-            </h2>
+              </weave-button>
+            </h4>
             <div>Node library for building graphs</div>
           </div>
           <div style={{ margin: "5px 5px" }}>
-            <h2
+            <h4
               style={{ cursor: "pointer" }}
               onClick={() => download(downloadMetrics, "Metrics.dyn")}
             >
               Metrics
-              <button
+              <weave-button
+                variant="flat"
                 style={{
                   float: "right",
-                  border: "none",
-                  color: "var(--text-active)",
-                  background: "white",
-                  cursor: "pointer",
                 }}
               >
                 Download
-              </button>
-            </h2>
+              </weave-button>
+            </h4>
             <div>Template for reading the area metrics for the selection.</div>
           </div>
           <div style={{ margin: "5px 5px" }}>
-            <h2
+            <h4
               style={{ cursor: "pointer" }}
               onClick={() => download(downloadFootprint, "Footprint.dyn")}
             >
               Footprint
-              <button
+              <weave-button
+                variant="flat"
                 style={{
                   float: "right",
-                  border: "none",
-                  color: "var(--text-active)",
-                  background: "white",
-                  cursor: "pointer",
                 }}
               >
                 Download
-              </button>
-            </h2>
+              </weave-button>
+            </h4>
             <div>Template for getting Curves of selected ground polygons.</div>
           </div>
           <div style={{ margin: "5px 5px" }}>
-            <h2
+            <h4
               style={{ cursor: "pointer" }}
               onClick={() => download(downloadGeometry, "Geometry.dyn")}
             >
               Geometry
-              <button
+              <weave-button
+                variant="flat"
                 style={{
                   float: "right",
-                  border: "none",
-                  color: "var(--text-active)",
-                  background: "white",
-                  cursor: "pointer",
                 }}
               >
                 Download
-              </button>
-            </h2>
+              </weave-button>
+            </h4>
             <div>
               Template for geting solids based on triangles of selected
               geometry.
             </div>
           </div>
           <div style={{ margin: "5px 5px" }}>
-            <h2
+            <h4
               style={{ cursor: "pointer" }}
               onClick={() => download(downloadTerrain, "Terrain.dyn")}
             >
               Terrain
-              <button
+              <weave-button
+                variant="flat"
                 style={{
                   float: "right",
-                  border: "none",
-                  color: "var(--text-active)",
-                  background: "white",
-                  cursor: "pointer",
                 }}
               >
                 Download
-              </button>
-            </h2>
+              </weave-button>
+            </h4>
             <div>Template for getting mesh based on triangles of terrain.</div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
