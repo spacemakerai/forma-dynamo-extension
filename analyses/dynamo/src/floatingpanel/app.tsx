@@ -60,7 +60,9 @@ function ScriptList({ setScript, dynamoHandler }: any) {
         );
         setPrograms(localPrograms);
       } catch (e) {
-        setError("Could not load files");
+        setError(
+          "Could not load files. Please check the folder name and try to load again.",
+        );
       }
     })();
   }, [folder]);
@@ -72,30 +74,33 @@ function ScriptList({ setScript, dynamoHandler }: any) {
       <TemplatesAndLibrary />
       <div style={{ width: "100%", height: "1px", backgroundColor: "gray" }} />
       <br />
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "end",
+          marginBottom: "10px",
+        }}
+      >
         <div>
-          Graph Folder
-          <br />
-          <input
-            defaultValue={folder}
+          <weave-input
+            type="text"
+            value={folder}
+            label="Graph folder"
+            showlabel="true"
+            name="height"
+            placeholder="Enter folder name"
             onBlur={(e: any) => {
               const folder = e?.target?.value;
               setFolder(folder);
             }}
-          />
+          ></weave-input>
         </div>
         <weave-button variant="solid" onClick={reload}>
           Load
         </weave-button>
       </div>
-      {error && (
-        <div style={{ color: "red" }}>
-          {error}
-          <weave-button variant="outlined" onClick={reload}>
-            Retry
-          </weave-button>
-        </div>
-      )}
+      {error && <div style={{ color: "red" }}>{error}</div>}
       {folder && (
         <div>
           {Object.entries(programs).map(([name, code]) => (
@@ -106,6 +111,9 @@ function ScriptList({ setScript, dynamoHandler }: any) {
               setScript={setScript}
             />
           ))}
+          {!error && Object.keys(programs).length === 0 && (
+            <div style={{ color: "gray" }}>No graphs found in folder.</div>
+          )}
         </div>
       )}
     </div>

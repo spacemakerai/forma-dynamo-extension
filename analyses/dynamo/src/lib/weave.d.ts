@@ -13,6 +13,9 @@ export declare module "preact/src/jsx" {
       > & {
         onInput?: (e: CustomEvent<string>) => void;
       };
+      "weave-input": JSXInternal.HTMLAttributes<HTMLInputElement> & {
+        showlabel?: "true" | "false";
+      };
     }
   }
 }
