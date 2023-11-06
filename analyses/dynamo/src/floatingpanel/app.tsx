@@ -43,11 +43,12 @@ function ScriptList({ setScript, dynamoHandler }: any) {
   const [programs, setPrograms] = useState({});
   const [error, setError] = useState<string | null>(null);
   const [folder, setFolder] = useState(dynamoFolder);
+  const [isLoading, setIsLoading] = useState(false);
 
   const reload = useCallback(() => {
     (async function () {
       if (!folder) return;
-
+      setIsLoading(true);
       try {
         setError(null);
         setPrograms([]);
@@ -59,7 +60,9 @@ function ScriptList({ setScript, dynamoHandler }: any) {
           localFiles.map((file: any) => [file.name, file]),
         );
         setPrograms(localPrograms);
+        setIsLoading(false);
       } catch (e) {
+        setIsLoading(false);
         setError(
           "Could not load files. Please check the folder name and try to load again.",
         );
@@ -111,7 +114,7 @@ function ScriptList({ setScript, dynamoHandler }: any) {
               setScript={setScript}
             />
           ))}
-          {!error && Object.keys(programs).length === 0 && (
+          {!isLoading && !error && Object.keys(programs).length === 0 && (
             <div style={{ color: "gray" }}>No graphs found in folder.</div>
           )}
         </div>
