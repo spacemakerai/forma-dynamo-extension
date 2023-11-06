@@ -40,7 +40,7 @@ function DynamoInputComponent({
     );
   } else if (input.type === "StringInput") {
     return (
-      <input
+      <weave-input
         type="text"
         defaultValue={value}
         // @ts-ignore
@@ -84,7 +84,7 @@ function DynamoInputComponent({
     );
   } else if (input.type === "DoubleInput") {
     return (
-      <input
+      <weave-input
         type="number"
         defaultValue={value}
         // @ts-ignore
@@ -105,7 +105,7 @@ function DynamoInputComponent({
     );
   } else if (input.type === "Filename") {
     return (
-      <input
+      <weave-input
         type="text"
         defaultValue={value}
         // @ts-ignore
@@ -114,7 +114,7 @@ function DynamoInputComponent({
     );
   } else if (input.type === "Directory") {
     return (
-      <input
+      <weave-input
         type="text"
         defaultValue={value}
         // @ts-ignore
