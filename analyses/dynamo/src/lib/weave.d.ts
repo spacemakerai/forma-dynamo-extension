@@ -16,6 +16,10 @@ export declare module "preact/src/jsx" {
       "weave-input": JSXInternal.HTMLAttributes<HTMLInputElement> & {
         showlabel?: "true" | "false";
       };
+      "weave-checkbox": Omit<JSX.HTMLAttributes<HTMLElement>, "onChange"> & {
+        checked?: boolean;
+        onChange: (e: CustomEvent<{ checked: boolean }>) => void;
+      };
     }
   }
 }

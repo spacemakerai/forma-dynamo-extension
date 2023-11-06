@@ -49,11 +49,9 @@ function DynamoInputComponent({
     );
   } else if (input.type === "BoolSelector") {
     return (
-      <input
-        type="checkbox"
-        defaultChecked={value}
-        // @ts-ignore
-        onChange={(ev) => setValue(input.id, ev.target.checked)}
+      <weave-checkbox
+        checked={value}
+        onChange={(ev) => setValue(input.id, ev.detail.checked)}
       />
     );
   } else if (input.type === "DoubleSlider") {
