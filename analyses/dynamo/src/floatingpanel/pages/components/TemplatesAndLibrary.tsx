@@ -5,6 +5,7 @@ import downloadGeometry from "../../../assets/Geometry.dyn?url";
 import downloadTerrain from "../../../assets/Terrain.dyn?url";
 import downloadAutodeskForma from "../../../assets/AutodeskForma.7z?url";
 import downloadExtension from "../../../assets/DynamoPlayerExtension2.18.7z?url";
+import downloadDynamoForma from "../../../assets/DynamoForma.7z?url";
 
 function download(url: string, name: string) {
   const a = document.createElement("a");
@@ -40,7 +41,27 @@ export function TemplatesAndLibrary() {
       </div>
       {isExpanded && (
         <div>
-          <div>
+          <div style={{ margin: "5px 5px" }}>
+            <h4
+              style={{ cursor: "pointer" }}
+              onClick={() => download(downloadDynamoForma, "DynamoForma.7z")}
+            >
+              Dynamo Extension Bundle
+              <weave-button
+                variant="flat"
+                style={{
+                  float: "right",
+                }}
+              >
+                Download
+              </weave-button>
+            </h4>
+            <div>
+              The extension and node library to install into Dynamo to connect
+              to Forma.
+            </div>
+          </div>
+          <div style={{ margin: "5px 5px" }}>
             <h4
               style={{ cursor: "pointer" }}
               onClick={() =>
