@@ -42,7 +42,7 @@ function DynamoInputComponent({
     return (
       <weave-input
         type="text"
-        defaultValue={value}
+        value={value}
         // @ts-ignore
         onChange={(ev) => setValue(input.id, ev.target.value)}
       />
@@ -84,7 +84,7 @@ function DynamoInputComponent({
     return (
       <weave-input
         type="number"
-        defaultValue={value}
+        value={value}
         // @ts-ignore
         onChange={(ev) => setValue(input.id, ev.target.value)}
       />
@@ -105,7 +105,7 @@ function DynamoInputComponent({
     return (
       <weave-input
         type="text"
-        defaultValue={value}
+        value={value}
         // @ts-ignore
         onChange={(ev) => setValue(input.id, ev.target.value)}
       />
@@ -114,7 +114,7 @@ function DynamoInputComponent({
     return (
       <weave-input
         type="text"
-        defaultValue={value}
+        value={value}
         // @ts-ignore
         onChange={(ev) => setValue(input.id, ev.target.value)}
       />
