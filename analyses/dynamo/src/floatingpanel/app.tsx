@@ -110,6 +110,7 @@ function ScriptList({ setScript, dynamoHandler }: any) {
             type="text"
             value={folder}
             label="Graph folder"
+            title={folder}
             showlabel="true"
             name="height"
             placeholder="Enter folder name"
