@@ -94,7 +94,13 @@ function DynamoOutputComponent({ output }: { output: Output }) {
 export function DynamoOutput({ output }: any) {
   if (output.type === "init") return null;
   if (output.type === "error") return <div>Failed</div>;
-  if (output.type === "running") return <div>Loading...</div>;
+  if (output.type === "running")
+    return (
+      <div>
+        <weave-progress-bar />
+        Running
+      </div>
+    );
 
   const outputs = (output.data?.info?.outputs || []) as Output[];
 

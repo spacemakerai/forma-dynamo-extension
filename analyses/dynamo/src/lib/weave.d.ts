@@ -26,6 +26,9 @@ export declare module "preact/src/jsx" {
       > & {
         onChange?: (event: CustomEvent<{ value: string }>) => void;
       };
+      "weave-progress-bar": {
+        percentcomplete?: string;
+      };
     }
   }
 }
