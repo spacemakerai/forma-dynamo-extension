@@ -151,7 +151,7 @@ export function App() {
   const [script, setScript] = useState(undefined);
   if (dynamoState === "CONNECTED") {
     return (
-      <div style={{ padding: "0 2px" }}>
+      <div style={{ padding: "0 2px", height: "100%" }}>
         {!script && (
           <ScriptList dynamoHandler={dynamoHandler} setScript={setScript} />
         )}

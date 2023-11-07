@@ -268,7 +268,12 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
           setValue={setValue}
         />
       )}
-      <div style={{ display: activeSelectionNode ? "none" : "block" }}>
+      <div
+        style={{
+          display: activeSelectionNode ? "none" : "block",
+          height: "100%",
+        }}
+      >
         <div
           style={{
             display: "flex",
@@ -298,25 +303,44 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
 
         {scriptInfo.type === "loaded" && (
-          <div>
+          <div
+            style={{
+              height: "calc(100% - 45.88px)",
+              display: "flex",
+              flexDirection: "column",
+              flexWrap: "nowrap",
+            }}
+          >
             <div
               style={{
                 marginBottom: "5px",
                 paddingBottom: "5px",
               }}
             ></div>
-            <DynamoInput
-              code={scriptInfo.data}
-              state={state}
-              setValue={setValue}
-              activeSelectionNode={activeSelectionNode}
-              setActiveSelectionNode={setActiveSelectionNode}
-            />
             <div
               style={{
+                flexGrow: 1,
+                overflow: "auto",
+                minHeight: "20px",
+              }}
+            >
+              <DynamoInput
+                code={scriptInfo.data}
+                state={state}
+                setValue={setValue}
+                activeSelectionNode={activeSelectionNode}
+                setActiveSelectionNode={setActiveSelectionNode}
+              />
+
+              <DynamoOutput output={output} />
+            </div>
+            <div
+              style={{
+                flexGrow: 0,
                 display: "flex",
-                margin: "10px 0",
+                padding: "10px 0px",
                 justifyContent: "flex-end",
+                borderTop: "1px solid #ccc",
               }}
             >
               <weave-button
@@ -335,7 +359,6 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                 Run
               </weave-button>
             </div>
-            <DynamoOutput output={output} />
           </div>
         )}
       </div>
