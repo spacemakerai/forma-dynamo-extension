@@ -340,7 +340,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                 display: "flex",
                 padding: "10px 0px",
                 justifyContent: "flex-end",
-                borderTop: "1px solid #ccc",
+                borderTop: "1px solid var(--divider-lightweight)",
               }}
             >
               <weave-button

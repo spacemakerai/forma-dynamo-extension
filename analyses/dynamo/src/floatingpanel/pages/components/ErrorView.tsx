@@ -46,7 +46,13 @@ export function ErrorView() {
         <div>Dynamo not installed: Follow installation directions below</div>
       </div>
       <br />
-      <div style={{ width: "100%", height: "1px", backgroundColor: "gray" }} />
+      <div
+        style={{
+          width: "100%",
+          height: "1px",
+          backgroundColor: "var(--divider-lightweight)",
+        }}
+      />
       <br />
       <TabHeaders
         onClick={() => setApp("sandbox")}

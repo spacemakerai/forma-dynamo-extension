@@ -95,7 +95,7 @@ function ScriptList({ setScript, dynamoHandler }: any) {
   return (
     <div>
       <TemplatesAndLibrary />
-      <div style={{ width: "100%", height: "1px", backgroundColor: "gray" }} />
+      <div style={{ width: "100%", height: "1px", backgroundColor: "var(--divider-lightweight)" }} />
       <br />
       <div
         style={{
