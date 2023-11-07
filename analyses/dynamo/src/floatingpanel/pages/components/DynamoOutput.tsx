@@ -80,8 +80,9 @@ function DynamoOutputComponent({ output }: { output: Output }) {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          marginBottom: "5px",
-          paddingBottom: "5px",
+          padding: "5px",
+          lineHeight: "24px",
+          borderBottom: "1px solid var(--divider-lightweight)",
         }}
       >
         <span>{output.name}</span>
@@ -106,9 +107,20 @@ export function DynamoOutput({ output }: any) {
 
   return (
     <>
+      <div
+        style={{
+          padding: "5px",
+          backgroundColor: "var(--background-filled-level100to250-default)",
+          borderBottom: "1px solid var(--divider-lightweight)",
+
+        }}
+      >
+        Outputs
+      </div>
       {outputs.map((output) => (
         <DynamoOutputComponent output={output} />
       ))}
+      
     </>
   );
 }

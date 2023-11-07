@@ -144,23 +144,39 @@ export function DynamoInput({
   setValue,
   setActiveSelectionNode,
 }: any) {
-  return (code?.inputs || []).map((input: Input) => (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        marginBottom: "5px",
-        paddingBottom: "5px",
-      }}
-      key={input.id}
-    >
-      {input.name}
-      <DynamoInputComponent
-        input={input}
-        value={state[input.id]}
-        setValue={setValue}
-        setActiveSelectionNode={setActiveSelectionNode}
-      />
+  return (
+    <div>
+      <div
+        style={{
+          padding: "5px",
+          backgroundColor: "var(--background-filled-level100to250-default)",
+          borderBottom: "1px solid var(--divider-lightweight)",
+          borderTop: "1px solid var(--divider-lightweight)",
+        }}
+      >
+        Inputs
+      </div>
+
+      {(code?.inputs || []).map((input: Input) => (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: "5px",
+            lineHeight: "24px",
+            borderBottom: "1px solid var(--divider-lightweight)",
+          }}
+          key={input.id}
+        >
+          {input.name}
+          <DynamoInputComponent
+            input={input}
+            value={state[input.id]}
+            setValue={setValue}
+            setActiveSelectionNode={setActiveSelectionNode}
+          />
+        </div>
+      ))}
     </div>
-  ));
+  );
 }
