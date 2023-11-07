@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "preact/compat";
 import { LocalScript } from "./pages/LocalScript";
 import { Next } from "./icons/Next";
-import dynamoIconUrn from "./icons/dynamo.png";
-import { DynamoState, useDynamoConnector } from "./DynamoConnector.ts";
+import { useDynamoConnector } from "./DynamoConnector.ts";
 import { TemplatesAndLibrary } from "./pages/components/TemplatesAndLibrary.tsx";
 import { StatusBlock } from "./pages/components/StatusBlock.tsx";
 
