@@ -3,7 +3,6 @@ import { useState, useCallback, useEffect } from "preact/compat";
 import { DynamoOutput } from "./components/DynamoOutput.js";
 import { DynamoInput } from "./components/DynamoInput.js";
 import { Forma } from "forma-embedded-view-sdk/auto";
-import { Back } from "../icons/Back.js";
 import dynamoIconUrn from "../icons/dynamo.png";
 import { isSelect } from "../utils/node.js";
 import { NotTrustedGraph } from "./components/NotTrustedGraph.js";
@@ -270,11 +269,24 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         />
       )}
       <div style={{ display: activeSelectionNode ? "none" : "block" }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Back onClick={() => setScript(undefined)} />
-          {script.name}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <h2>{script.name}</h2>
+          <weave-button variant="flat" onClick={reload}>
+            Refresh
+          </weave-button>
         </div>
-
+        {script?.code?.metadata?.description && (
+          <div>
+            <span style={{ fontWeight: "600" }}>Description: </span>
+            <span>{script?.code?.metadata?.description}</span>
+          </div>
+        )}
         {scriptInfo.type === "error" &&
           scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
             <NotTrustedGraph
@@ -300,14 +312,29 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
               activeSelectionNode={activeSelectionNode}
               setActiveSelectionNode={setActiveSelectionNode}
             />
-            <weave-button
-              style={{ width: "100%", margin: "10px 0" }}
-              variant="solid"
-              disabled={output.type === "running"}
-              onClick={onRun}
+            <div
+              style={{
+                display: "flex",
+                margin: "10px 0",
+                justifyContent: "flex-end",
+              }}
             >
-              Run
-            </weave-button>
+              <weave-button
+                style={{ width: "60px", marginRight: "6px" }}
+                variant="outlined"
+                onClick={() => setScript(undefined)}
+              >
+                Back
+              </weave-button>
+              <weave-button
+                style={{ width: "80px" }}
+                variant="solid"
+                disabled={output.type === "running"}
+                onClick={onRun}
+              >
+                Run
+              </weave-button>
+            </div>
             <DynamoOutput output={output} />
           </div>
         )}
