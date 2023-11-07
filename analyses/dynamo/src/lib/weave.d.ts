@@ -29,6 +29,11 @@ export declare module "preact/src/jsx" {
       "weave-progress-bar": {
         percentcomplete?: string;
       };
+      "weave-skeleton-item": JSX.HTMLAttributes<HTMLElement> & {
+        height?: string;
+        width?: string;
+        radius?: string;
+      };
     }
   }
 }

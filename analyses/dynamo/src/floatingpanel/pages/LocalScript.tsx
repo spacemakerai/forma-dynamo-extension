@@ -75,14 +75,11 @@ function useScript(
 }
 
 function AnimatedLoading() {
-  const [dots, setDots] = useState(0);
   const [slow, setSlow] = useState(false);
 
   useEffect(() => {
     const start = new Date();
     const interval = setInterval(() => {
-      setDots((dots) => (dots + 1) % 4);
-
       if (start.getTime() + 3000 < new Date().getTime()) {
         setSlow(true);
       }
@@ -91,12 +88,25 @@ function AnimatedLoading() {
   }, []);
 
   return (
-    <div>
-      Opening script in dynamo {Array(dots).fill(".").join("")}
-      <br />
-      <br />
-      {slow &&
-        "This is taking longer than usual, check if dynamo is blocked on a saving modal."}
+    <div style={{ width: "100%", marginTop: "5px" }}>
+      <weave-skeleton-item
+        width="90%"
+        style={{ marginBottom: "5px" }}
+      ></weave-skeleton-item>
+      <weave-skeleton-item
+        width="70%"
+        style={{ marginBottom: "5px" }}
+      ></weave-skeleton-item>
+      <weave-skeleton-item
+        width="50%"
+        style={{ marginBottom: "5px" }}
+      ></weave-skeleton-item>
+      {slow && (
+        <div style={{ marginTop: "5px" }}>
+          This is taking longer than usual. Please open Dynamo and check if it
+          is blocked with a message dialog.
+        </div>
+      )}
     </div>
   );
 }
