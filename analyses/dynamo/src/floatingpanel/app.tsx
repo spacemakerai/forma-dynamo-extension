@@ -105,21 +105,21 @@ function ScriptList({ setScript, dynamoHandler }: any) {
           marginBottom: "10px",
         }}
       >
-        <div>
-          <weave-input
-            type="text"
-            value={folder}
-            label="Graph folder"
-            title={folder}
-            showlabel="true"
-            name="height"
-            placeholder="Enter folder name"
-            onBlur={(e: any) => {
-              const folder = e?.target?.value;
-              setFolder(folder);
-            }}
-          ></weave-input>
-        </div>
+        <weave-input
+          style={{ flexGrow: 1 }}
+          type="text"
+          value={folder}
+          label="Graph folder"
+          title={folder}
+          showlabel="true"
+          name="height"
+          placeholder="Enter folder name"
+          onBlur={(e: any) => {
+            const folder = e?.target?.value;
+            setFolder(folder);
+          }}
+        ></weave-input>
+
         <weave-button variant="solid" onClick={reload}>
           Load
         </weave-button>
