@@ -13,6 +13,27 @@ try {
   console.error(e);
 }
 
+function LoadingScriptList() {
+  return (
+    <div style={{ width: "100%" }}>
+      {[...Array(3)].map(() => {
+        return (
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              height: "40px",
+              alignItems: "center",
+            }}
+          >
+            <weave-skeleton-item height="30px"></weave-skeleton-item>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function ScriptListItem({ name, code, setScript }: any) {
   const [hover, setHover] = useState(false);
 
@@ -106,14 +127,16 @@ function ScriptList({ setScript, dynamoHandler }: any) {
       {error && <div style={{ color: "red" }}>{error}</div>}
       {folder && (
         <div>
-          {Object.entries(programs).map(([name, code]) => (
-            <ScriptListItem
-              key={name}
-              name={name}
-              code={code}
-              setScript={setScript}
-            />
-          ))}
+          {isLoading && <LoadingScriptList />}
+          {!isLoading &&
+            Object.entries(programs).map(([name, code]) => (
+              <ScriptListItem
+                key={name}
+                name={name}
+                code={code}
+                setScript={setScript}
+              />
+            ))}
           {!isLoading && !error && Object.keys(programs).length === 0 && (
             <div style={{ color: "gray" }}>No graphs found in folder.</div>
           )}
