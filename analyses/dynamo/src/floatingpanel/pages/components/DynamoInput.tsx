@@ -91,15 +91,15 @@ function DynamoInputComponent({
     );
   } else if (input.type === "DSDropDownBase") {
     return (
-      <select
+      <forma-select-native
         // @ts-ignore
-        onChange={(ev) => setValue(input.id, ev.target.value)}
+        onChange={(ev) => setValue(input.id, ev.detail.value)}
         defaultValue={input.value.split(":")[1]}
       >
         {input.nodeTypeProperties.options.map((name: string, i) => (
           <option value={i}>{name}</option>
         ))}
-      </select>
+      </forma-select-native>
     );
   } else if (input.type === "Filename") {
     return (

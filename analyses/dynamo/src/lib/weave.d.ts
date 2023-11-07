@@ -20,6 +20,12 @@ export declare module "preact/src/jsx" {
         checked?: boolean;
         onChange: (e: CustomEvent<{ checked: boolean }>) => void;
       };
+      "forma-select-native": Omit<
+        JSX.HTMLAttributes<HTMLSelectElement>,
+        "onChange"
+      > & {
+        onChange?: (event: CustomEvent<{ value: string }>) => void;
+      };
     }
   }
 }
