@@ -112,7 +112,6 @@ export function DynamoOutput({ output }: any) {
           padding: "5px",
           backgroundColor: "var(--background-filled-level100to250-default)",
           borderBottom: "1px solid var(--divider-lightweight)",
-
         }}
       >
         Outputs
@@ -120,7 +119,25 @@ export function DynamoOutput({ output }: any) {
       {outputs.map((output) => (
         <DynamoOutputComponent output={output} />
       ))}
-      
+      {outputs.length === 0 && (
+        <div
+          style={{
+            padding: "5px",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <span>No outputs</span>
+          <weave-button
+            variant="flat"
+            onClick={() =>
+              window.open("https://dynamobim.org/dynamo-for-forma/", "_blank")
+            }
+          >
+            Learn more
+          </weave-button>
+        </div>
+      )}
     </>
   );
 }

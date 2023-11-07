@@ -177,6 +177,26 @@ export function DynamoInput({
           />
         </div>
       ))}
+
+      {code?.inputs?.length === 0 && (
+        <div
+          style={{
+            padding: "5px",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <span>No inputs</span>
+          <weave-button
+            variant="flat"
+            onClick={() =>
+              window.open("https://dynamobim.org/dynamo-for-forma/", "_blank")
+            }
+          >
+            Learn how
+          </weave-button>
+        </div>
+      )}
     </div>
   );
 }
