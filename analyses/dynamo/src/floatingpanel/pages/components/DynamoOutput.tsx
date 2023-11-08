@@ -45,6 +45,14 @@ function DynamoOutputWatch3D({ output }: { output: Output }) {
         await Forma.render.glb.remove({ id: output.id });
       }
     })();
+
+    return async () => {
+      try {
+        await Forma.render.glb.remove({ id: output.id });
+      } catch (e) {
+        // ignore as we do not know if it is added or not
+      }
+    };
   }, [shouldShow]);
 
   return (
