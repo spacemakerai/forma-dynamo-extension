@@ -156,7 +156,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             input.type === "FormaSelectElements" ||
             input.type === "FormaSelectElement"
           ) {
-            const paths = value as string[];
+            const paths = (value || []) as string[];
             const triangles = await Promise.all(
               paths.map((path) =>
                 Forma.geometry
@@ -196,6 +196,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             input.name === "Triangles" ||
             input.type === "FormaSelectGeometry"
           ) {
+            console.log(value);
             return {
               nodeId: id,
               value: JSON.stringify(
