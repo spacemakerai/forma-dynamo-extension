@@ -87,7 +87,7 @@ function DynamoInputComponent({
       <forma-select-native
         // @ts-ignore
         onChange={(ev) => setValue(input.id, ev.detail.value)}
-        defaultValue={input.value.split(":")[1]}
+        value={value}
       >
         {input.nodeTypeProperties.options.map((name: string, i) => (
           <option value={i}>{name}</option>

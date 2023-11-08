@@ -21,6 +21,11 @@ function getDefaultValues(scriptInfo: any) {
       if (input.value) {
         if (input.type === "boolean") {
           state[input.id] = input.value === "true";
+        } else if (
+          input.type === "DSDropDownBase" ||
+          input.type === "CustomSelection"
+        ) {
+          state[input.id] = input.value.split(":")[0];
         } else {
           state[input.id] = input.value;
         }
@@ -276,74 +281,74 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             flexWrap: "nowrap",
           }}
         >
-        {script?.code?.metadata?.description && (
-          <div>
-            <span style={{ fontWeight: "600" }}>Description: </span>
-            <span>{script?.code?.metadata?.description}</span>
-          </div>
-        )}
-        {scriptInfo.type === "error" &&
-          scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
-            <NotTrustedGraph
-              script={script}
-              reload={reload}
-              dynamoHandler={dynamoHandler}
-            />
+          {script?.code?.metadata?.description && (
+            <div>
+              <span style={{ fontWeight: "600" }}>Description: </span>
+              <span>{script?.code?.metadata?.description}</span>
+            </div>
           )}
-        {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
-
-        {scriptInfo.type === "loaded" && (
-          <>
-            <div
-              style={{
-                marginBottom: "5px",
-                paddingBottom: "5px",
-              }}
-            ></div>
-            <div
-              style={{
-                flexGrow: 1,
-                overflow: "auto",
-                minHeight: "20px",
-              }}
-            >
-              <DynamoInput
-                code={scriptInfo.data}
-                state={state}
-                setValue={setValue}
-                activeSelectionNode={activeSelectionNode}
-                setActiveSelectionNode={setActiveSelectionNode}
+          {scriptInfo.type === "error" &&
+            scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
+              <NotTrustedGraph
+                script={script}
+                reload={reload}
+                dynamoHandler={dynamoHandler}
               />
+            )}
+          {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
 
-              <DynamoOutput output={output} />
-            </div>
-            <div
-              style={{
-                flexGrow: 0,
-                display: "flex",
-                padding: "10px 0px",
-                justifyContent: "flex-end",
-                borderTop: "1px solid var(--divider-lightweight)",
-              }}
-            >
-              <weave-button
-                style={{ width: "60px", marginRight: "6px" }}
-                variant="outlined"
-                onClick={() => setScript(undefined)}
+          {scriptInfo.type === "loaded" && (
+            <>
+              <div
+                style={{
+                  marginBottom: "5px",
+                  paddingBottom: "5px",
+                }}
+              ></div>
+              <div
+                style={{
+                  flexGrow: 1,
+                  overflow: "auto",
+                  minHeight: "20px",
+                }}
               >
-                Back
-              </weave-button>
-              <weave-button
-                style={{ width: "80px" }}
-                variant="solid"
-                disabled={output.type === "running"}
-                onClick={onRun}
+                <DynamoInput
+                  code={scriptInfo.data}
+                  state={state}
+                  setValue={setValue}
+                  activeSelectionNode={activeSelectionNode}
+                  setActiveSelectionNode={setActiveSelectionNode}
+                />
+
+                <DynamoOutput output={output} />
+              </div>
+              <div
+                style={{
+                  flexGrow: 0,
+                  display: "flex",
+                  padding: "10px 0px",
+                  justifyContent: "flex-end",
+                  borderTop: "1px solid var(--divider-lightweight)",
+                }}
               >
-                Run
-              </weave-button>
-            </div>
-          </>
-        )}
+                <weave-button
+                  style={{ width: "60px", marginRight: "6px" }}
+                  variant="outlined"
+                  onClick={() => setScript(undefined)}
+                >
+                  Back
+                </weave-button>
+                <weave-button
+                  style={{ width: "80px" }}
+                  variant="solid"
+                  disabled={output.type === "running"}
+                  onClick={onRun}
+                >
+                  Run
+                </weave-button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>
