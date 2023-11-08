@@ -14,17 +14,13 @@ function getDefaultValues(scriptInfo: any) {
     const state: any = {};
 
     for (const input of inputs) {
+      if (isSelect(input) || input.type === "FormaTerrain") {
+        // Intentionally ignored does not work between sessions
+        continue;
+      }
       if (input.value) {
-        if (input.type === "FormaTerrain") {
-          //state[input.id] = "selected";
-          // Intentionally ignored does not work between sessions
-          state[input.id] = undefined;
-        } else if (input.type === "boolean") {
+        if (input.type === "boolean") {
           state[input.id] = input.value === "true";
-        } else if (isSelect(input)) {
-          // state[input.id] = JSON.parse(input.value.replace("\r\n", ""));
-          // Intentionally ignored does not work between sessions
-          state[input.id] = undefined;
         } else {
           state[input.id] = input.value;
         }
@@ -147,15 +143,10 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
       setOutput({ type: "running" });
       const urn = await Forma.proposal.getRootUrn();
       const inputs = await Promise.all(
-        Object.entries(state).map(async ([id, value]) => {
-          const input = code.inputs.find(
-            (input: { id: string }) => input.id === id,
-          );
+        code.inputs.map(async ({ id, type, name }: any) => {
+          const value = state[id];
 
-          if (
-            input.type === "FormaSelectElements" ||
-            input.type === "FormaSelectElement"
-          ) {
+          if (type === "FormaSelectElements" || type === "FormaSelectElement") {
             const paths = (value || []) as string[];
             const triangles = await Promise.all(
               paths.map((path) =>
@@ -182,7 +173,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             }));
 
             return { nodeId: id, value: JSON.stringify(elements) };
-          } else if (input.type === "FormaTerrain") {
+          } else if (type === "FormaTerrain") {
             const [path] = await Forma.geometry.getPathsByCategory({
               category: "terrain",
             });
@@ -192,11 +183,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                 [...(await Forma.geometry.getTriangles({ path }))],
               ]),
             };
-          } else if (
-            input.name === "Triangles" ||
-            input.type === "FormaSelectGeometry"
-          ) {
-            console.log(value);
+          } else if (name === "Triangles" || type === "FormaSelectGeometry") {
             return {
               nodeId: id,
               value: JSON.stringify(
@@ -209,10 +196,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                 ),
               ),
             };
-          } else if (
-            input.name === "Footprint" ||
-            input.type === "FormaSelectFootprints"
-          ) {
+          } else if (name === "Footprint" || type === "FormaSelectFootprints") {
             return {
               nodeId: id,
               value: JSON.stringify(
@@ -227,10 +211,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                 ),
               ),
             };
-          } else if (
-            input.name === "Metrics" ||
-            input.type === "FormaSelectMetrics"
-          ) {
+          } else if (name === "Metrics" || type === "FormaSelectMetrics") {
             return {
               nodeId: id,
               value: JSON.stringify(

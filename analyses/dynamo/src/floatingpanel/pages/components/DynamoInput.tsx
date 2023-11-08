@@ -12,17 +12,7 @@ function DynamoInputComponent({
   setActiveSelectionNode?: (v: any) => void;
 }) {
   if (input.type === "FormaTerrain") {
-    return (
-      <div>
-        {value}
-        <weave-button
-          variant="outlined"
-          onClick={() => setValue(input.id, "selected")}
-        >
-          Select
-        </weave-button>
-      </div>
-    );
+    return null;
   } else if (isSelect(input)) {
     return (
       <div>
