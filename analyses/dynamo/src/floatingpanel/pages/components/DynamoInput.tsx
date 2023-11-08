@@ -155,7 +155,8 @@ export function DynamoInput({
           style={{
             display: "flex",
             justifyContent: "space-between",
-            padding: "5px",
+            alignItems: "center",
+            padding: "5px 0 5px 5px",
             lineHeight: "24px",
             borderBottom: "1px solid var(--divider-lightweight)",
           }}

@@ -62,20 +62,22 @@ function DynamoOutputWatch3D({ output }: { output: Output }) {
         display: "flex",
         justifyContent: "space-between",
         lineHeight: "24px",
-        marginBottom: "5px",
-        paddingBottom: "5px",
+        padding: "5px 0 5px 5px",
         height: "24px",
         color: shouldShow ? "black" : "gray",
+        borderBottom: "1px solid var(--divider-lightweight)",
       }}
     >
       <span>{output.name}</span>
-      <weave-button variant="outlined" disabled={!shouldShow} onClick={add}>
-        Add
-      </weave-button>
-      <Visibility
-        onClick={() => setShouldShow(!shouldShow)}
-        isVisible={shouldShow}
-      />
+      <div style={{ display: "flex" }}>
+        <weave-button variant="outlined" disabled={!shouldShow} onClick={add}>
+          Add
+        </weave-button>
+        <Visibility
+          onClick={() => setShouldShow(!shouldShow)}
+          isVisible={shouldShow}
+        />
+      </div>
     </div>
   );
 }
@@ -89,6 +91,7 @@ function DynamoOutputComponent({ output }: { output: Output }) {
         style={{
           display: "flex",
           justifyContent: "space-between",
+          alignItems: "center",
           padding: "5px",
           lineHeight: "24px",
           borderBottom: "1px solid var(--divider-lightweight)",
