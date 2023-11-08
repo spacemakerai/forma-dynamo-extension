@@ -26,6 +26,7 @@ function DynamoOutputWatch3D({ output }: { output: Output }) {
     try {
       if (output.value) {
         await addElement(base64ToArrayBuffer(output.value));
+        setShouldShow(false);
       } else {
         console.log("No value", output);
       }
