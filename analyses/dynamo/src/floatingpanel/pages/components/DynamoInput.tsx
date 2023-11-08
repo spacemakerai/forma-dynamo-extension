@@ -89,7 +89,10 @@ function DynamoInputComponent({
         onChange={(ev) => setValue(input.id, ev.target.value)}
       />
     );
-  } else if (input.type === "DSDropDownBase") {
+  } else if (
+    input.type === "DSDropDownBase" ||
+    input.type === "CustomSelection"
+  ) {
     return (
       <forma-select-native
         // @ts-ignore
