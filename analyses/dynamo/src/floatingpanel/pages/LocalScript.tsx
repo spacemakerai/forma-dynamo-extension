@@ -287,6 +287,14 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             Refresh
           </weave-button>
         </div>
+        <div
+          style={{
+            height: "calc(100% - 45.88px)",
+            display: "flex",
+            flexDirection: "column",
+            flexWrap: "nowrap",
+          }}
+        >
         {script?.code?.metadata?.description && (
           <div>
             <span style={{ fontWeight: "600" }}>Description: </span>
@@ -304,14 +312,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
 
         {scriptInfo.type === "loaded" && (
-          <div
-            style={{
-              height: "calc(100% - 45.88px)",
-              display: "flex",
-              flexDirection: "column",
-              flexWrap: "nowrap",
-            }}
-          >
+          <>
             <div
               style={{
                 marginBottom: "5px",
@@ -360,8 +361,9 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                 Run
               </weave-button>
             </div>
-          </div>
+          </>
         )}
+        </div>
       </div>
     </>
   );
