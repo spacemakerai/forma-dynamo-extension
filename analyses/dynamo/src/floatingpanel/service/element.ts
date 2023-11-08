@@ -20,6 +20,7 @@ export async function addElement(glb: ArrayBuffer, name?: string) {
               format: "glb",
               s3Id: fileId,
             },
+            elementProvider: "dynamo-player",
           },
         },
       },
