@@ -81,19 +81,19 @@ function ScriptList({ setScript, dynamoHandler }: any) {
           });
           localStorage.setItem("dynamo-folder", folder);
           const localPrograms = Object.fromEntries(
-            localFiles.map((file: any) => [file.name, file])
+            localFiles.map((file: any) => [file.name, file]),
           );
           setPrograms(localPrograms);
           setIsLoading(false);
         } catch (e) {
           setIsLoading(false);
           setError(
-            "Could not load files. Please check the folder name and try to load again."
+            "Could not load files. Please check the folder name and try to load again.",
           );
         }
       })();
     },
-    [folder]
+    [folder],
   );
 
   return (
@@ -116,7 +116,7 @@ function ScriptList({ setScript, dynamoHandler }: any) {
         }}
       >
         <weave-input
-          style={{ flexGrow: 1 }}
+          style={{ flexGrow: 1, marginRight: "5px" }}
           type="text"
           value={folder}
           label="Graph folder"
