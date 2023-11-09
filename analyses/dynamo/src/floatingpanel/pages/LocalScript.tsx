@@ -275,7 +275,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         </div>
         <div
           style={{
-            height: "calc(100% - 45.88px)",
+            height: "calc(100% - 50px)",
             display: "flex",
             flexDirection: "column",
             flexWrap: "nowrap",
