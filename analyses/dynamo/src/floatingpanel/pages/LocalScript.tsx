@@ -268,7 +268,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             alignItems: "center",
           }}
         >
-          <h2>{script.name}</h2>
+          <h3>{script.name}</h3>
           <weave-button variant="flat" onClick={reload}>
             Refresh
           </weave-button>
