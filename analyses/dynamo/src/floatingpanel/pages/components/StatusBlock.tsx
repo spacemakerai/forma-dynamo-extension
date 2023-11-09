@@ -5,18 +5,10 @@ import { DynamoState } from "../../DynamoConnector.ts";
 function Loading() {
   return (
     <div style={{ width: "100%" }}>
-      <weave-skeleton-item
-        width="90%"
-        style={{ marginTop: "5px" }}
-      ></weave-skeleton-item>
-      <weave-skeleton-item
-        width="70%"
-        style={{ marginTop: "5px" }}
-      ></weave-skeleton-item>
-      <weave-skeleton-item
-        width="50%"
-        style={{ marginTop: "5px" }}
-      ></weave-skeleton-item>
+      <div style={{ fontSize: "12px", padding: "16px 0" }}>
+        Connecting to Dynamo...
+      </div>
+      <weave-progress-bar></weave-progress-bar>
     </div>
   );
 }
