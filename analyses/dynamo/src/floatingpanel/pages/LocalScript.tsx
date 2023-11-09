@@ -291,6 +291,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
               <NotTrustedGraph
                 script={script}
+                setScript={setScript}
                 reload={reload}
                 dynamoHandler={dynamoHandler}
               />

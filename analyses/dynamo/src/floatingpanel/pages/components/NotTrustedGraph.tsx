@@ -1,6 +1,11 @@
 import { useCallback } from "preact/hooks";
 
-export function NotTrustedGraph({ script, reload, dynamoHandler }: any) {
+export function NotTrustedGraph({
+  script,
+  setScript,
+  reload,
+  dynamoHandler,
+}: any) {
   const trust = useCallback(async () => {
     const { id } = script.code;
 
@@ -13,10 +18,28 @@ export function NotTrustedGraph({ script, reload, dynamoHandler }: any) {
 
   return (
     <div>
-      Location of script is not trusted.
-      <weave-button variant="solid" onClick={trust}>
-        Trust location
-      </weave-button>
+      <h3>Open external file?</h3>
+      <div style={{ lineHeight: "20px" }}>
+        This file is stored in an untrusted location.
+        <br></br>
+        Do you want to trust this file´s location?
+      </div>
+      <div
+        style={{
+          marginTop: "12px",
+        }}
+      >
+        <weave-button
+          style={{ marginRight: "6px" }}
+          variant="outlined"
+          onClick={() => setScript(undefined)}
+        >
+          No, go back
+        </weave-button>
+        <weave-button variant="solid" onClick={trust}>
+          Yes, trust location
+        </weave-button>
+      </div>
     </div>
   );
 }
