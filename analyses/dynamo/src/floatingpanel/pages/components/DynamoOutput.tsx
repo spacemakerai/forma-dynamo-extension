@@ -124,6 +124,8 @@ export function DynamoOutput({ output }: any) {
           padding: "5px",
           backgroundColor: "var(--background-filled-level100to250-default)",
           borderBottom: "1px solid var(--divider-lightweight)",
+          fontSize: "12px",
+          fontWeight: "600",
         }}
       >
         Outputs

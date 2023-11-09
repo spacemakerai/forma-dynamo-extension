@@ -30,15 +30,14 @@ export function SelectMode({
     setActiveSelectionNode(undefined);
   };
   return (
-    <div style={{ fontSize: "11px", fontWeight: "600", color: "#3C3C3C" }}>
-      <div style={{ height: "16px", padding: "6px" }}>Select in the canvas</div>
+    <div>
+      <h2>Select in the canvas</h2>
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           height: "16px",
-          padding: "6px",
         }}
       >
         <div>{activeSelectionNode.name}</div>
@@ -47,7 +46,9 @@ export function SelectMode({
         </div>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "end", padding: "6px" }}>
+      <div
+        style={{ display: "flex", justifyContent: "end", marginTop: "14px" }}
+      >
         <weave-button variant="flat" onClick={onClickCancel}>
           Cancel
         </weave-button>
