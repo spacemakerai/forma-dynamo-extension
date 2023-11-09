@@ -24,7 +24,6 @@ export function TemplatesAndLibrary() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          margin: "10px 0",
         }}
       >
         <h3>Sample Files</h3>
