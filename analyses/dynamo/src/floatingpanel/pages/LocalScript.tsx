@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "preact/compat";
+import { useState, useCallback, useEffect, useRef } from "preact/compat";
 
 import { DynamoOutput } from "./components/DynamoOutput.js";
 import { DynamoInput } from "./components/DynamoInput.js";
@@ -246,6 +246,23 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
     setOutput({ type: "init" });
   }, [state]);
 
+  const fixedFooterHeight = 44;
+  const headerRef = useRef(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  useEffect(() => {
+    function handleResize() {
+      // @ts-ignore
+      if (headerRef?.current?.offsetHeight) {
+        // @ts-ignore
+        setHeaderHeight(headerRef.current.offsetHeight);
+      }
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <>
       {activeSelectionNode && (
@@ -262,6 +279,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         }}
       >
         <div
+          ref={headerRef}
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -275,7 +293,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         </div>
         <div
           style={{
-            height: "calc(100% - 50px)",
+            height: `calc(100% - ${fixedFooterHeight + headerHeight}px)`,
             display: "flex",
             flexDirection: "column",
             flexWrap: "nowrap",
@@ -308,7 +326,6 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
               ></div>
               <div
                 style={{
-                  flexGrow: 1,
                   overflow: "auto",
                   minHeight: "20px",
                 }}
@@ -323,33 +340,33 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
 
                 <DynamoOutput output={output} />
               </div>
-              <div
-                style={{
-                  flexGrow: 0,
-                  display: "flex",
-                  padding: "10px 0px",
-                  justifyContent: "flex-end",
-                  borderTop: "1px solid var(--divider-lightweight)",
-                }}
-              >
-                <weave-button
-                  style={{ width: "60px", marginRight: "6px" }}
-                  variant="outlined"
-                  onClick={() => setScript(undefined)}
-                >
-                  Back
-                </weave-button>
-                <weave-button
-                  style={{ width: "80px" }}
-                  variant="solid"
-                  disabled={output.type === "running"}
-                  onClick={onRun}
-                >
-                  Run
-                </weave-button>
-              </div>
             </>
           )}
+        </div>
+        <div
+          style={{
+            height: `${fixedFooterHeight - 1}px`,
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            borderTop: "1px solid var(--divider-lightweight)",
+          }}
+        >
+          <weave-button
+            style={{ width: "60px", marginRight: "6px" }}
+            variant="outlined"
+            onClick={() => setScript(undefined)}
+          >
+            Back
+          </weave-button>
+          <weave-button
+            style={{ width: "80px" }}
+            variant="solid"
+            disabled={output.type === "running" || scriptInfo.type !== "loaded"}
+            onClick={onRun}
+          >
+            Run
+          </weave-button>
         </div>
       </div>
     </>
