@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@sentry/browser": "^7.80.0",
     "forma-embedded-view-sdk": "0.17.0",
     "preact": "^10.17.1"
   },

@@ -4,6 +4,7 @@ import { Next } from "./icons/Next";
 import { useDynamoConnector } from "./DynamoConnector.ts";
 import { SampleFiles } from "./pages/components/SampleFiles.tsx";
 import { StatusBlock } from "./pages/components/StatusBlock.tsx";
+import { useCustomErrorBoundary } from "./pages/components/ErrorBoundary.tsx";
 
 function LoadingScriptList() {
   return (
@@ -158,6 +159,7 @@ function ScriptList({ setScript, dynamoHandler }: any) {
 
 export function App() {
   const { dynamoState, dynamoHandler } = useDynamoConnector();
+  useCustomErrorBoundary();
   const [script, setScript] = useState(undefined);
   if (dynamoState === "CONNECTED") {
     return (
