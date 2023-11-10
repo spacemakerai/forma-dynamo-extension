@@ -1,0 +1,1385 @@
+{
+  "Uuid": "bef2b468-e73f-4bc0-aef8-fe4761fc52d7",
+  "IsCustomNode": false,
+  "Description": "Calculate the cost of Residential, Commercial and Unspecified space and a consultants percentage based on local rates.",
+  "Name": "Metrics-BuildingCostCalculator",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "DesignScript.Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "DesignScriptBuiltin.dll"
+      },
+      "DesignScript.Builtin.Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "DesignScriptBuiltin.dll"
+      },
+      "List": {
+        "Key": "List",
+        "Value": "BuiltIn.ds"
+      },
+      "String": {
+        "Key": "DSCore.String",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [
+    {
+      "Id": "e07bc53f6d1b4fe393145f4dc329cb77",
+      "Name": "Select Building and Site",
+      "Type": "string",
+      "Type2": "string",
+      "Value": "{\"customMetrics\":[{\"id\":\"gia\",\"name\":\"GIA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":44640.002182500044},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":21285.000931499995},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":3555.0002925000213},{\"functionId\":\"0e80a986-151f-4262-bf55-95bd423e8019\",\"functionName\":\"Mechanical\",\"functionColor\":\"#F0D3F8\",\"value\":3667.500193500002}]},{\"id\":\"nia\",\"name\":\"NIA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":40176.00196425004},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":19156.50083835},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":3199.500263250019},{\"functionId\":\"0e80a986-151f-4262-bf55-95bd423e8019\",\"functionName\":\"Mechanical\",\"functionColor\":\"#F0D3F8\",\"value\":3300.750174150002}]}],\"builtInMetrics\":{\"grossFloorArea\":{\"id\":\"gfa\",\"name\":\"GFA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":49600.00242500006},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":23650.001035},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":3950.0003250000236},{\"functionId\":\"0e80a986-151f-4262-bf55-95bd423e8019\",\"functionName\":\"Mechanical\",\"functionColor\":\"#F0D3F8\",\"value\":4075.0002150000023}]},\"siteArea\":{\"id\":\"site_area\",\"name\":\"Site Area\",\"unitOfMeasurement\":\"SQUARE_METER\",\"value\":0},\"buildingCoverage\":{\"id\":\"bc\",\"name\":\"Building Coverage\",\"unitOfMeasurement\":\"SQUARE_METER\",\"value\":1600.0000800000007}},\"unitStatistics\":{\"count\":{\"id\":\"unit_count\",\"name\":\"Number of units\",\"unitOfMeasurement\":\"COUNT\",\"value\":0}}}",
+      "Description": "Selection Forma Metrics",
+      "SelectedIndex": 0
+    },
+    {
+      "Id": "358aecda1e3e478db734c776abe6bc6c",
+      "Name": "GIA = Tick | NIA = Untick",
+      "Type": "boolean",
+      "Type2": "boolean",
+      "Value": "true",
+      "Description": "Enables selection between True and False",
+      "SelectedIndex": 0
+    },
+    {
+      "Id": "1e705914459a4c759fa329b1a11c14de",
+      "Name": "Residential Rate ($)",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "100",
+      "NumberType": "Double",
+      "Description": "Creates a number",
+      "SelectedIndex": 0
+    },
+    {
+      "Id": "6e23e778cf354208adad153b658d67fc",
+      "Name": "Commercial Rate ($)",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "200",
+      "NumberType": "Double",
+      "Description": "Creates a number",
+      "SelectedIndex": 0
+    },
+    {
+      "Id": "00746d6435cf4bdb9d9e9ea25393bd18",
+      "Name": "Unspecified Rate ($)",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "350",
+      "NumberType": "Double",
+      "Description": "Creates a number",
+      "SelectedIndex": 0
+    },
+    {
+      "Id": "75090daca3fc47d99ecd0aee04d51b66",
+      "Name": "Consultant Percentage (%)",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "5",
+      "NumberType": "Double",
+      "Description": "Creates a number",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [
+    {
+      "Id": "e98da3f9ef59411aa856b198abd3ae5e",
+      "Name": "Residential Cost ($)",
+      "Type": "unknown",
+      "InitialValue": "",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "Id": "28e75dd1856f4de2bfc5ca318b5fdd0a",
+      "Name": "Commercial Cost ($)",
+      "Type": "unknown",
+      "InitialValue": "",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "Id": "931940ce91e44f16ad5d23199ecb3a13",
+      "Name": "Unspecified Cost ($)",
+      "Type": "unknown",
+      "InitialValue": "",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "Id": "75c7ba74e9984b308c78185418e8310c",
+      "Name": "BUILDING COST ($)",
+      "Type": "unknown",
+      "InitialValue": "",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "Id": "d31dea33ee9040c9a063383577fcecb6",
+      "Name": "Consultant Fee ($)",
+      "Type": "unknown",
+      "InitialValue": "",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "Id": "8b6e3879c8044813bf9b4515c440f258",
+      "Name": "TOTAL COST ($)",
+      "Type": "unknown",
+      "InitialValue": "",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Logic.RefactoredIf, CoreNodeModels",
+      "Id": "2160a71e5f2547059993fbaed17c0391",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "c129e027fc1e4b0d8fdcb183a8ac81b4",
+          "Name": "test",
+          "Description": "Boolean test",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e7d2d96e33ce47b2a873e79d6a6c20e5",
+          "Name": "true",
+          "Description": "Returned if test is true",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "aa88b1d3f95f432283df0a4f4982aea2",
+          "Name": "false",
+          "Description": "Returned if test is false",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "729190de5ca944b3b46841acc85e4a5a",
+          "Name": "result",
+          "Description": "Result block produced",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the result of either True or False input depending on what boolean value is toggled in the test input. Supports recursion which requires that only a single branch be executed. It's critical that that both True and False branches are isolated and do not interact with each other!"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 95.0,
+      "WatchHeight": 38.0,
+      "Id": "e98da3f9ef59411aa856b198abd3ae5e",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "e9a61b3827d140178bd6501ab3a7be15",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0beb080e1310427da172223f115eff37",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 95.0,
+      "WatchHeight": 38.0,
+      "Id": "28e75dd1856f4de2bfc5ca318b5fdd0a",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "ab416c13edc546a387b973eb234bd627",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1a2b4054484248fca1f27f4cc725f0e6",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 95.0,
+      "WatchHeight": 38.0,
+      "Id": "931940ce91e44f16ad5d23199ecb3a13",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "0b3930ac379243fab54f804b7fcd37de",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "37c189fcd746435f855561017c891beb",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 95.0,
+      "WatchHeight": 38.0,
+      "Id": "75c7ba74e9984b308c78185418e8310c",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "9eedbb6836f4458da64a52fc6aa0e5c7",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fbdbc3c7397c4b0da536a4fb40490463",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 80.0,
+      "WatchHeight": 38.0,
+      "Id": "d31dea33ee9040c9a063383577fcecb6",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "5dc8eeb110834e75b9eb7878ce2b044b",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b8d3a49171cc4b92b52d33dc321771ad",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 102.5,
+      "WatchHeight": 38.0,
+      "Id": "8b6e3879c8044813bf9b4515c440f258",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "9245d7235c0c49c6bfff110330659bb1",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3db6d809a8b44dff8e3699ee14a10a36",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "8452525a45b948a5ad13ef353efc873f",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "507a81d092c44090b61ace549e400d48",
+          "Name": "formaMetrics",
+          "Description": "formaMetrics",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8ddf742cccd143aa812b9dd47fb9fec8",
+          "Name": "",
+          "Description": "areaMetrics",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4a730273b9f048f787039569b79b93c3",
+          "Name": "",
+          "Description": "functionValues",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c368f3ef773c4945a651168918d1290e",
+          "Name": "",
+          "Description": "gia",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "92c66428d9f74af8be2820f54e1840a2",
+          "Name": "",
+          "Description": "nia",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "//Get to Area Metrics from Dictionary\nareaMetrics = formaMetrics\n\t[\"customMetrics\"]\n\t[\"functionBreakdown\"];\n\n//Get to Functions and Values from Dictionary\nfunctionValues = DesignScript.Dictionary.ValueAtKey(\n\tareaMetrics,\n\t[\"functionId\", \"value\"]@L1<1>\n\t);\n\n//Split out results into GIA and NIA\ngia = List.FirstItem(functionValues@L3<1>);\nnia = List.LastItem(functionValues@L3<1>);"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "a7bae2a3749d4bca8954142afd3f348e",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "9738de6ed6404a81824879071b810d5d",
+          "Name": "ifResult",
+          "Description": "ifResult",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4e7668c84271422a9ce549c33ee714ca",
+          "Name": "resiRate",
+          "Description": "resiRate",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ec5943f5d2ec4348b07621c80af91b26",
+          "Name": "commRate",
+          "Description": "commRate",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "30dafe9dd75f413e9ad97d5d873aefee",
+          "Name": "unspRate",
+          "Description": "unspRate",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7579aa1178c84b66b399630f754f37e9",
+          "Name": "consultantPercentage",
+          "Description": "consultantPercentage",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6885400aa35a4d9a8c1c2bf9ca4812b8",
+          "Name": "",
+          "Description": "areaTypologies",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1658ab6bc85246be9195a82c2a9c7ad1",
+          "Name": "",
+          "Description": "pairTypologies",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "55c48cc26b994941a92009f9c3e7f8dd",
+          "Name": "",
+          "Description": "residential",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "64d698081c8048b0a10e2893333dc7e9",
+          "Name": "",
+          "Description": "commercial",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ce0c681a4a6d4fc4a4baba28525fd370",
+          "Name": "",
+          "Description": "unspecified",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f0196b4d588649aa85bafab22c9d73f4",
+          "Name": "",
+          "Description": "resiCost",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "165ab1585298483990744f0eb1ec01c7",
+          "Name": "",
+          "Description": "commCost",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "11ea17c150294bb9989e6fe65fe26e36",
+          "Name": "",
+          "Description": "unspCost",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "edaee06bc41041209fb322a48a1e9c11",
+          "Name": "",
+          "Description": "buildingCost",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "626227593e9343d986255e8f7500f064",
+          "Name": "",
+          "Description": "consultantFee",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "aa35578673bc4d9ab37880a4dec26632",
+          "Name": "",
+          "Description": "totalCost",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "//Define salient Area Typologies\nareaTypologies = [\n\t\"residential\",\n\t\"commercial\",\n\t\"unspecified\"];\n\n//Pair typologies to Dictionary results\npairTypologies = List.FirstIndexOf(\n\tifResult@L2<1>,\n\tareaTypologies);\n\n//Pulling out individual Data Lists\nresidential = pairTypologies[0][0];\ncommercial = pairTypologies[0][1];\nunspecified = pairTypologies[0][2];\n\n//Calculating cost based on Area * Rate\nresiCost = Math.Ceiling(\n\tList.LastItem(\n\t\tList.GetItemAtIndex(\n\t\t\tifResult@L2<1>,\n\t\t\tresidential)) * resiRate);\ncommCost = Math.Ceiling(\n\tList.LastItem(\n\t\tList.GetItemAtIndex(\n\t\t\tifResult@L2<1>,\n\t\t\tcommercial)) * commRate);\nunspCost = Math.Ceiling(\n\tList.LastItem(\n\t\tList.GetItemAtIndex(\n\t\t\tifResult@L2<1>,\n\t\t\tunspecified)) * unspRate);\n\n//Calculating Building Costs\nbuildingCost = resiCost + commCost + unspCost;\nconsultantFee = Math.Ceiling(\n\tbuildingCost * (consultantPercentage/100));\ntotalCost = Math.Ceiling(buildingCost + consultantFee);"
+    },
+    {
+      "ConcreteType": "DynamoForma.NodeModels.FormaSelectMetrics, DynamoForma.NodeModels",
+      "Id": "e07bc53f6d1b4fe393145f4dc329cb77",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2f1a3a52683d4241bd2062799a171d1e",
+          "Name": "Dictionary",
+          "Description": "Dictionary Data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection Forma Metrics",
+      "InputValue": "{\"customMetrics\":[{\"id\":\"gia\",\"name\":\"GIA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":44640.002182500044},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":21285.000931499995},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":3555.0002925000213},{\"functionId\":\"0e80a986-151f-4262-bf55-95bd423e8019\",\"functionName\":\"Mechanical\",\"functionColor\":\"#F0D3F8\",\"value\":3667.500193500002}]},{\"id\":\"nia\",\"name\":\"NIA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":40176.00196425004},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":19156.50083835},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":3199.500263250019},{\"functionId\":\"0e80a986-151f-4262-bf55-95bd423e8019\",\"functionName\":\"Mechanical\",\"functionColor\":\"#F0D3F8\",\"value\":3300.750174150002}]}],\"builtInMetrics\":{\"grossFloorArea\":{\"id\":\"gfa\",\"name\":\"GFA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":49600.00242500006},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":23650.001035},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":3950.0003250000236},{\"functionId\":\"0e80a986-151f-4262-bf55-95bd423e8019\",\"functionName\":\"Mechanical\",\"functionColor\":\"#F0D3F8\",\"value\":4075.0002150000023}]},\"siteArea\":{\"id\":\"site_area\",\"name\":\"Site Area\",\"unitOfMeasurement\":\"SQUARE_METER\",\"value\":0},\"buildingCoverage\":{\"id\":\"bc\",\"name\":\"Building Coverage\",\"unitOfMeasurement\":\"SQUARE_METER\",\"value\":1600.0000800000007}},\"unitStatistics\":{\"count\":{\"id\":\"unit_count\",\"name\":\"Number of units\",\"unitOfMeasurement\":\"COUNT\",\"value\":0}}}"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "358aecda1e3e478db734c776abe6bc6c",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d05d10f333d74e61a1ec949ddc4f764a",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "1e705914459a4c759fa329b1a11c14de",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "66d64497c9d045189dedf5ea1b2f66c3",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 100.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "6e23e778cf354208adad153b658d67fc",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "34d04321f9d043239884b9a281b2babe",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 200.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "00746d6435cf4bdb9d9e9ea25393bd18",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f3cbfe0996f54387b26d68133e955277",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 350.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "75090daca3fc47d99ecd0aee04d51b66",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6539e5bdb2a04ef5ba4b9650ecd0fc28",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 5.0
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nimport locale\r\n\r\ndef format_number(input_value):\r\n    try:\r\n        # Convert input to integer if it's a string\r\n        number = int(input_value)\r\n    except ValueError:\r\n        return \"Invalid input. Please provide a valid number or string representation of a number.\"\r\n\r\n    # Set the locale to the user's default\r\n    locale.setlocale(locale.LC_ALL, '')\r\n\r\n    # Format the number with commas as separators\r\n    formatted_number = locale.format_string('%d', number, grouping=True)\r\n    \r\n    return formatted_number\r\n\r\n# Example usage\r\ninput_value = IN[0]\r\nresult = format_number(input_value)\r\nOUT = \"$\" + result",
+      "Engine": "CPython3",
+      "EngineName": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "67f11bbe923c45679fcaf8743cfd3b76",
+      "NodeType": "PythonScriptNode",
+      "Inputs": [
+        {
+          "Id": "11b1d7bafc0c43d2b2b06744de134bff",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9074f6b45ffd45988f38f9391fa6b43d",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nimport locale\r\n\r\ndef format_number(input_value):\r\n    try:\r\n        # Convert input to integer if it's a string\r\n        number = int(input_value)\r\n    except ValueError:\r\n        return \"Invalid input. Please provide a valid number or string representation of a number.\"\r\n\r\n    # Set the locale to the user's default\r\n    locale.setlocale(locale.LC_ALL, '')\r\n\r\n    # Format the number with commas as separators\r\n    formatted_number = locale.format_string('%d', number, grouping=True)\r\n    \r\n    return formatted_number\r\n\r\n# Example usage\r\ninput_value = IN[0]\r\nresult = format_number(input_value)\r\nOUT = \"$\" + result",
+      "Engine": "CPython3",
+      "EngineName": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "8f7bc6f6be914d7689c8fe5f3076e401",
+      "NodeType": "PythonScriptNode",
+      "Inputs": [
+        {
+          "Id": "57f14ee176b147f5a1fce83a30ceba31",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "efb0f23ddb9c44a0a86f5fb7bafe29a7",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nimport locale\r\n\r\ndef format_number(input_value):\r\n    try:\r\n        # Convert input to integer if it's a string\r\n        number = int(input_value)\r\n    except ValueError:\r\n        return \"Invalid input. Please provide a valid number or string representation of a number.\"\r\n\r\n    # Set the locale to the user's default\r\n    locale.setlocale(locale.LC_ALL, '')\r\n\r\n    # Format the number with commas as separators\r\n    formatted_number = locale.format_string('%d', number, grouping=True)\r\n    \r\n    return formatted_number\r\n\r\n# Example usage\r\ninput_value = IN[0]\r\nresult = format_number(input_value)\r\nOUT = \"$\" + result",
+      "Engine": "CPython3",
+      "EngineName": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "356a17779f0146e58f707e761c9b490d",
+      "NodeType": "PythonScriptNode",
+      "Inputs": [
+        {
+          "Id": "761d529afb764022abf7001669eb179a",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1d87af6afd5b41d087774173c42894bc",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nimport locale\r\n\r\ndef format_number(input_value):\r\n    try:\r\n        # Convert input to integer if it's a string\r\n        number = int(input_value)\r\n    except ValueError:\r\n        return \"Invalid input. Please provide a valid number or string representation of a number.\"\r\n\r\n    # Set the locale to the user's default\r\n    locale.setlocale(locale.LC_ALL, '')\r\n\r\n    # Format the number with commas as separators\r\n    formatted_number = locale.format_string('%d', number, grouping=True)\r\n    \r\n    return formatted_number\r\n\r\n# Example usage\r\ninput_value = IN[0]\r\nresult = format_number(input_value)\r\nOUT = \"$\" + result",
+      "Engine": "CPython3",
+      "EngineName": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "91e31a4525f74d11804e23eae0b06d31",
+      "NodeType": "PythonScriptNode",
+      "Inputs": [
+        {
+          "Id": "69183a30a10d4f939c093e0e43360f41",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f6ddb2e035fb4f928099911afa364174",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nimport locale\r\n\r\ndef format_number(input_value):\r\n    try:\r\n        # Convert input to integer if it's a string\r\n        number = int(input_value)\r\n    except ValueError:\r\n        return \"Invalid input. Please provide a valid number or string representation of a number.\"\r\n\r\n    # Set the locale to the user's default\r\n    locale.setlocale(locale.LC_ALL, '')\r\n\r\n    # Format the number with commas as separators\r\n    formatted_number = locale.format_string('%d', number, grouping=True)\r\n    \r\n    return formatted_number\r\n\r\n# Example usage\r\ninput_value = IN[0]\r\nresult = format_number(input_value)\r\nOUT = \"$\" + result",
+      "Engine": "CPython3",
+      "EngineName": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "88c05d24bb354762b1a16ba715e192df",
+      "NodeType": "PythonScriptNode",
+      "Inputs": [
+        {
+          "Id": "fbb6b427acb14f6484ed1a9ece3f28a8",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e3e181dd21144eb4b6272626e8ac1f21",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nimport locale\r\n\r\ndef format_number(input_value):\r\n    try:\r\n        # Convert input to integer if it's a string\r\n        number = int(input_value)\r\n    except ValueError:\r\n        return \"Invalid input. Please provide a valid number or string representation of a number.\"\r\n\r\n    # Set the locale to the user's default\r\n    locale.setlocale(locale.LC_ALL, '')\r\n\r\n    # Format the number with commas as separators\r\n    formatted_number = locale.format_string('%d', number, grouping=True)\r\n    \r\n    return formatted_number\r\n\r\n# Example usage\r\ninput_value = IN[0]\r\nresult = format_number(input_value)\r\nOUT = \"$\" + result",
+      "Engine": "CPython3",
+      "EngineName": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "01dc70d9585c412b9c9736f24590bdfa",
+      "NodeType": "PythonScriptNode",
+      "Inputs": [
+        {
+          "Id": "0cc35a63c75a45199a4c42d0ad36e26f",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1bae8a5b57e0493586c214409ef92d8e",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "729190de5ca944b3b46841acc85e4a5a",
+      "End": "9738de6ed6404a81824879071b810d5d",
+      "Id": "eaac1b63bf71406caa87283db179ec78",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c368f3ef773c4945a651168918d1290e",
+      "End": "e7d2d96e33ce47b2a873e79d6a6c20e5",
+      "Id": "c3b56f09101645be83bb60d48afad940",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "92c66428d9f74af8be2820f54e1840a2",
+      "End": "aa88b1d3f95f432283df0a4f4982aea2",
+      "Id": "cd49767e0b094a8ca07bc4a68274ff49",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f0196b4d588649aa85bafab22c9d73f4",
+      "End": "11b1d7bafc0c43d2b2b06744de134bff",
+      "Id": "b6ea61fe1dd04cd6b742c807cb9e4c92",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "165ab1585298483990744f0eb1ec01c7",
+      "End": "57f14ee176b147f5a1fce83a30ceba31",
+      "Id": "f60ad4defe11487bb4efd135c51aee31",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "11ea17c150294bb9989e6fe65fe26e36",
+      "End": "761d529afb764022abf7001669eb179a",
+      "Id": "89c3c9a0dcfa48048f4f1c29da4b7202",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "edaee06bc41041209fb322a48a1e9c11",
+      "End": "0cc35a63c75a45199a4c42d0ad36e26f",
+      "Id": "f55b977700f643c5990462a9ef3fb87a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "626227593e9343d986255e8f7500f064",
+      "End": "fbb6b427acb14f6484ed1a9ece3f28a8",
+      "Id": "887a278da03f4f1a8f59f1de3dea2a57",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "aa35578673bc4d9ab37880a4dec26632",
+      "End": "69183a30a10d4f939c093e0e43360f41",
+      "Id": "9ee6a5c8734b41a0afef69e3fb9f2436",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2f1a3a52683d4241bd2062799a171d1e",
+      "End": "507a81d092c44090b61ace549e400d48",
+      "Id": "f3ba38aa402345038a4807d6d6e4414f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d05d10f333d74e61a1ec949ddc4f764a",
+      "End": "c129e027fc1e4b0d8fdcb183a8ac81b4",
+      "Id": "49c593529c3d4e19abac90bf830ee586",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "66d64497c9d045189dedf5ea1b2f66c3",
+      "End": "4e7668c84271422a9ce549c33ee714ca",
+      "Id": "4365c457e0c34ed1bbdde2d497fcfc9e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "34d04321f9d043239884b9a281b2babe",
+      "End": "ec5943f5d2ec4348b07621c80af91b26",
+      "Id": "344cc1733e0742668258490eee30cf6e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f3cbfe0996f54387b26d68133e955277",
+      "End": "30dafe9dd75f413e9ad97d5d873aefee",
+      "Id": "c47b3e7b77e040079daf102246648e2e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6539e5bdb2a04ef5ba4b9650ecd0fc28",
+      "End": "7579aa1178c84b66b399630f754f37e9",
+      "Id": "e37dec2e0bcd41a497d1f7a874086d26",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9074f6b45ffd45988f38f9391fa6b43d",
+      "End": "e9a61b3827d140178bd6501ab3a7be15",
+      "Id": "5f2f17ed087049dba049d2bd727ecab7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "efb0f23ddb9c44a0a86f5fb7bafe29a7",
+      "End": "ab416c13edc546a387b973eb234bd627",
+      "Id": "722b8a5858594e71bc9d8a2ee01126c0",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1d87af6afd5b41d087774173c42894bc",
+      "End": "0b3930ac379243fab54f804b7fcd37de",
+      "Id": "04ad088eec67445ea0dfed276dcdc766",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f6ddb2e035fb4f928099911afa364174",
+      "End": "9245d7235c0c49c6bfff110330659bb1",
+      "Id": "768d6962565c4ec99a1f6eedacd9cf6b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e3e181dd21144eb4b6272626e8ac1f21",
+      "End": "5dc8eeb110834e75b9eb7878ce2b044b",
+      "Id": "5959446e52d8437ab3b2d3bd487cc4b7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1bae8a5b57e0493586c214409ef92d8e",
+      "End": "9eedbb6836f4458da64a52fc6aa0e5c7",
+      "Id": "851280e3599e49b8bab8be0d8e4e78c4",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "DynamoFormaBeta",
+      "Version": "1.0.1",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "e07bc53f6d1b4fe393145f4dc329cb77"
+      ]
+    }
+  ],
+  "Thumbnail": "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",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "Autodesk",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.3.6394",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 309.158203125,
+      "EyeY": 682.26885986328125,
+      "EyeZ": 393.74542236328125,
+      "LookX": -349.553466796875,
+      "LookY": -375.71405029296875,
+      "LookZ": -471.35076904296875,
+      "UpX": -0.20617292821407318,
+      "UpY": 0.93819123506546021,
+      "UpZ": -0.2780107855796814
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "2160a71e5f2547059993fbaed17c0391",
+        "Name": "If",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 2971.7318712455549,
+        "Y": 264.5467633347539
+      },
+      {
+        "Id": "e98da3f9ef59411aa856b198abd3ae5e",
+        "Name": "Residential Cost ($)",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 4326.6292095874433,
+        "Y": 367.42613218967671
+      },
+      {
+        "Id": "28e75dd1856f4de2bfc5ca318b5fdd0a",
+        "Name": "Commercial Cost ($)",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 4328.3862964467135,
+        "Y": 525.95188334282363
+      },
+      {
+        "Id": "931940ce91e44f16ad5d23199ecb3a13",
+        "Name": "Unspecified Cost ($)",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 4328.4185302679034,
+        "Y": 681.34671516029152
+      },
+      {
+        "Id": "75c7ba74e9984b308c78185418e8310c",
+        "Name": "BUILDING COST ($)",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 4335.8044626524224,
+        "Y": 841.10189968636848
+      },
+      {
+        "Id": "d31dea33ee9040c9a063383577fcecb6",
+        "Name": "Consultant Fee ($)",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 4337.5615495116908,
+        "Y": 996.62765083951558
+      },
+      {
+        "Id": "8b6e3879c8044813bf9b4515c440f258",
+        "Name": "TOTAL COST ($)",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 4337.5937833328808,
+        "Y": 1152.0224826569834
+      },
+      {
+        "Id": "8452525a45b948a5ad13ef353efc873f",
+        "Name": "Dictionary Breakdown",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 2284.2318712455549,
+        "Y": 111.06176333475389
+      },
+      {
+        "Id": "a7bae2a3749d4bca8954142afd3f348e",
+        "Name": "Pairing Area typologies with Data",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 3272.6292095874428,
+        "Y": 262.52930742333
+      },
+      {
+        "Id": "e07bc53f6d1b4fe393145f4dc329cb77",
+        "Name": "Select Building and Site",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1889.7318712455549,
+        "Y": -47.536848976720876
+      },
+      {
+        "Id": "358aecda1e3e478db734c776abe6bc6c",
+        "Name": "GIA = Tick | NIA = Untick",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1889.7318712455549,
+        "Y": 96.889613583299479
+      },
+      {
+        "Id": "1e705914459a4c759fa329b1a11c14de",
+        "Name": "Residential Rate ($)",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1889.7318712455549,
+        "Y": 241.31607614331983
+      },
+      {
+        "Id": "6e23e778cf354208adad153b658d67fc",
+        "Name": "Commercial Rate ($)",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1889.7318712455549,
+        "Y": 385.74253870334019
+      },
+      {
+        "Id": "00746d6435cf4bdb9d9e9ea25393bd18",
+        "Name": "Unspecified Rate ($)",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1889.7318712455549,
+        "Y": 530.16900126336054
+      },
+      {
+        "Id": "75090daca3fc47d99ecd0aee04d51b66",
+        "Name": "Consultant Percentage (%)",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1889.7318712455549,
+        "Y": 674.5954638233809
+      },
+      {
+        "Id": "67f11bbe923c45679fcaf8743cfd3b76",
+        "Name": "Python Script",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 4052.1292095874428,
+        "Y": 367.42613218967671
+      },
+      {
+        "Id": "8f7bc6f6be914d7689c8fe5f3076e401",
+        "Name": "Python Script",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 4053.886296446713,
+        "Y": 525.95188334282363
+      },
+      {
+        "Id": "356a17779f0146e58f707e761c9b490d",
+        "Name": "Python Script",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 4053.918530267903,
+        "Y": 681.34671516029152
+      },
+      {
+        "Id": "91e31a4525f74d11804e23eae0b06d31",
+        "Name": "Python Script",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 4063.0937833328812,
+        "Y": 1152.0224826569834
+      },
+      {
+        "Id": "88c05d24bb354762b1a16ba715e192df",
+        "Name": "Python Script",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 4063.0615495116913,
+        "Y": 996.62765083951547
+      },
+      {
+        "Id": "01dc70d9585c412b9c9736f24590bdfa",
+        "Name": "Python Script",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 4061.304462652422,
+        "Y": 841.10189968636848
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "bbdd4596177743aab333c7b181644349",
+        "Title": "Outputs",
+        "DescriptionText": "Outputs self-organized based on creation order",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "e98da3f9ef59411aa856b198abd3ae5e",
+          "28e75dd1856f4de2bfc5ca318b5fdd0a",
+          "931940ce91e44f16ad5d23199ecb3a13",
+          "75c7ba74e9984b308c78185418e8310c",
+          "d31dea33ee9040c9a063383577fcecb6",
+          "8b6e3879c8044813bf9b4515c440f258",
+          "67f11bbe923c45679fcaf8743cfd3b76",
+          "8f7bc6f6be914d7689c8fe5f3076e401",
+          "356a17779f0146e58f707e761c9b490d",
+          "91e31a4525f74d11804e23eae0b06d31",
+          "88c05d24bb354762b1a16ba715e192df",
+          "01dc70d9585c412b9c9736f24590bdfa"
+        ],
+        "HasNestedGroups": false,
+        "Left": 4042.1292095874428,
+        "Top": 294.42613218967671,
+        "Width": 521.17525306497964,
+        "Height": 1005.5963504673066,
+        "FontSize": 36.0,
+        "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
+        "InitialTop": 367.42613218967671,
+        "InitialHeight": 929.59635046730659,
+        "TextblockHeight": 63.0,
+        "Background": "#FFFFC999"
+      },
+      {
+        "Id": "05c09e63349c4429a2c70ea9d3855c31",
+        "Title": "Inputs",
+        "DescriptionText": " ",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "e07bc53f6d1b4fe393145f4dc329cb77",
+          "358aecda1e3e478db734c776abe6bc6c",
+          "1e705914459a4c759fa329b1a11c14de",
+          "6e23e778cf354208adad153b658d67fc",
+          "00746d6435cf4bdb9d9e9ea25393bd18",
+          "75090daca3fc47d99ecd0aee04d51b66"
+        ],
+        "HasNestedGroups": false,
+        "Left": 1879.7318712455549,
+        "Top": -120.53684897672088,
+        "Width": 294.5,
+        "Height": 939.13231280010177,
+        "FontSize": 36.0,
+        "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
+        "InitialTop": -47.536848976720876,
+        "InitialHeight": 867.13231280010177,
+        "TextblockHeight": 63.0,
+        "Background": "#FFFFB8D8"
+      },
+      {
+        "Id": "3b45da5a6fdf4c64b9db6fc3ed1f5a61",
+        "Title": "Dictionary Parsing and Value Calculations",
+        "DescriptionText": " ",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "2160a71e5f2547059993fbaed17c0391",
+          "8452525a45b948a5ad13ef353efc873f",
+          "a7bae2a3749d4bca8954142afd3f348e"
+        ],
+        "HasNestedGroups": false,
+        "Left": 2274.2318712455549,
+        "Top": 38.061763334753891,
+        "Width": 1667.8973383418879,
+        "Height": 966.46754408857612,
+        "FontSize": 36.0,
+        "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
+        "InitialTop": 111.06176333475389,
+        "InitialHeight": 298.485,
+        "TextblockHeight": 63.0,
+        "Background": "#FFB9F9E1"
+      }
+    ],
+    "X": -681.25430072379049,
+    "Y": 339.62215933062447,
+    "Zoom": 0.43246625113509563
+  }
+}
