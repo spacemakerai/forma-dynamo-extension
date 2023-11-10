@@ -145,7 +145,10 @@ export function DynamoOutput({ output }: any) {
           <weave-button
             variant="flat"
             onClick={() =>
-              window.open("https://dynamobim.org/dynamo-for-forma/", "_blank")
+              window.open(
+                "https://help.autodeskforma.com/en/articles/8560252-dynamo-player-extension-for-forma-beta#h_071d739af8",
+                "_blank"
+              )
             }
           >
             Learn more
