@@ -1,19 +1,26 @@
-import {
-  BrowserClient,
-  Hub as SentryHub,
-  makeFetchTransport,
-  defaultStackParser,
-} from "@sentry/browser";
+import * as Sentry from "@sentry/browser";
+import { defaultStackParser, makeFetchTransport } from "@sentry/browser";
 
-const sentryClient = new BrowserClient({
+const enableSentry = () => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const origin = searchParams.get("origin");
+
+  if (!origin) return false;
+
+  const url = new URL(origin);
+  return (
+    url.host.startsWith("app.autodeskforma") &&
+    window.location.href.split("?")[0] ===
+      "https://spacemakerai.github.io/forma-extensions-samples/dynamo/dist/index.html"
+  );
+};
+
+Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   release: import.meta.env.VITE_SENTRY_RELEASE,
-  integrations: [],
-  enabled: true,
+  enabled: enableSentry(),
   transport: makeFetchTransport,
   stackParser: defaultStackParser,
 });
 
-const hub = new SentryHub(sentryClient);
-
-export { hub as Sentry };
+export { Sentry };

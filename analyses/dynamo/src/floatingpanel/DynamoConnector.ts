@@ -72,13 +72,6 @@ export const useDynamoConnector = () => {
     return () => clearInterval(intervalId);
   }, [state]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      console.log("halla ");
-      throw new Error("Martin and Vilde testing for fun");
-    }, 2500);
-  }, []);
-
   const handler = useCallback(
     (method: string, payload: any) => {
       switch (method) {

@@ -1,7 +1,8 @@
 import { Sentry } from "../../util/sentry";
 import { ComponentChildren } from "preact";
-import { useCallback, useEffect, useErrorBoundary } from "preact/hooks";
+import { useCallback, useErrorBoundary } from "preact/hooks";
 import { Forma } from "forma-embedded-view-sdk/auto";
+
 export function useCustomErrorBoundary(): [unknown, () => void] {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const [error, resetError] = useErrorBoundary((error, errorInfo) => {
@@ -13,7 +14,6 @@ export function useCustomErrorBoundary(): [unknown, () => void] {
         errorInfo,
       },
     });
-    console.log("error handled in boundary", error);
     Sentry.withScope((scope) => {
       scope.setExtra("errorinfo", errorInfo);
       scope.setTags({
