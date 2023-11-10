@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "preact/compat";
 import { LocalScript } from "./pages/LocalScript";
 import { Next } from "./icons/Next";
 import { useDynamoConnector } from "./DynamoConnector.ts";
-import { TemplatesAndLibrary } from "./pages/components/TemplatesAndLibrary.tsx";
+import { SampleFiles } from "./pages/components/SampleFiles.tsx";
 import { StatusBlock } from "./pages/components/StatusBlock.tsx";
 
 function LoadingScriptList() {
@@ -81,24 +81,24 @@ function ScriptList({ setScript, dynamoHandler }: any) {
           });
           localStorage.setItem("dynamo-folder", folder);
           const localPrograms = Object.fromEntries(
-            localFiles.map((file: any) => [file.name, file]),
+            localFiles.map((file: any) => [file.name, file])
           );
           setPrograms(localPrograms);
           setIsLoading(false);
         } catch (e) {
           setIsLoading(false);
           setError(
-            "Could not load files. Please check the folder name and try to load again.",
+            "Could not load files. Please check the folder name and try to load again."
           );
         }
       })();
     },
-    [folder],
+    [folder]
   );
 
   return (
     <div>
-      <TemplatesAndLibrary />
+      <SampleFiles />
       <div
         style={{
           width: "100%",
