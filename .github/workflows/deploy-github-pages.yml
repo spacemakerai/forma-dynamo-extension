@@ -28,6 +28,7 @@ jobs:
           yarn install --frozen-lockfile
           yarn build
           rm -rf node_modules
+          cp src/assets/AutodeskDynamoFormaBetaTerms.pdf dist/assets/AutodeskDynamoFormaBetaTerms.pdf
           cd ../..
       # end build dynamo
       - uses: actions/configure-pages@v3
