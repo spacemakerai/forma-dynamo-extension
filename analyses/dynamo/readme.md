@@ -1,6 +1,5 @@
-# Forma Dynamo template extension
+# Dynamo Player for Forma
 
-**Note: This extension is a tech preview and the runnin Dynamo in Forma will (for now) only run on Autodesk VPN. You can use this from anywhere to start experimenting on Forma data in Dynamo**
+This is the Dynamo Player Forma extension for connection to Dynamo. It connects to the DynamoFormaBeta package running in Dynamo Sandbox or Dynamo in Revit or Civil 3D. 
 
-This extension includes a Dynamo template which is hooked up data extraction and visualization in Forma.
-With the extension you and configure and export a template, modify it in Dynamo for Revit, reimport it into the extension and run it in Dynamo in Forma. You can also follow only the first two steps, as we bundle the current data into the dynamo template. And you can then use Dynamo for Revit to expore the data in Dynamo. 
+It is built as [Forma Extension](https://github.com/spacemakerai/forma-extensions-samples/tree/main/analyses/dynamo) using the [Forma SDK](https://aps.autodesk.com/en/docs/forma/v1/overview/welcome-to-forma/).
