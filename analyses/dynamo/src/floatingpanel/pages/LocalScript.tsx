@@ -7,6 +7,7 @@ import dynamoIconUrn from "../icons/dynamo.png";
 import { isSelect } from "../utils/node.js";
 import { NotTrustedGraph } from "./components/NotTrustedGraph.js";
 import { SelectMode } from "./components/SelectMode.tsx";
+import { captureException } from "../util/sentry.ts";
 
 function getDefaultValues(scriptInfo: any) {
   if (scriptInfo.type === "loaded") {
@@ -237,7 +238,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         data: await dynamoHandler("runGraph", { code, inputs }),
       });
     } catch (e) {
-      console.error(e);
+      captureException(e, "Error running Dynamo graph");
       setOutput({ type: "error", data: e });
     }
   }, [scriptInfo, state]);

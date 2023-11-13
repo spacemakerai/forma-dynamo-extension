@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "start": "DEV_SERVER=1 vite",
-    "build": "vite build",
+    "build": "VITE_SENTRY_RELEASE=$(git rev-parse --short HEAD) vite build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@sentry/browser": "^7.80.0",
     "forma-embedded-view-sdk": "0.17.0",
-    "preact": "^10.17.1"
+    "preact": "^10.18.2"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.5.0",
