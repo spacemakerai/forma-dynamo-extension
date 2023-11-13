@@ -1,18 +1,42 @@
 import * as Sentry from "@sentry/browser";
 import { defaultStackParser, makeFetchTransport } from "@sentry/browser";
+import { Forma } from "forma-embedded-view-sdk/dist/auto";
+import { ErrorInfo } from "preact";
+
+export function captureException(
+  error: Error | any,
+  message: string,
+  errorInfo?: ErrorInfo | undefined,
+) {
+  Sentry.addBreadcrumb({
+    message: "Error info",
+    data: {
+      error,
+      errorInfo,
+    },
+  });
+  Sentry.withScope((scope) => {
+    scope.setTags({
+      owner: "analyze-extensions",
+      projectId: Forma.getProjectId(),
+    });
+    Sentry.captureException(new Error(message));
+  });
+}
 
 const enableSentry = () => {
   const searchParams = new URLSearchParams(window.location.search);
   const origin = searchParams.get("origin");
-
   if (!origin) return false;
 
   const url = new URL(origin);
-  return (
-    url.host.startsWith("app.autodeskforma") &&
+  const isHostForma = url.host.startsWith("app.autodeskforma");
+
+  const isProduction =
     window.location.href.split("?")[0] ===
-      "https://spacemakerai.github.io/forma-extensions-samples/dynamo/dist/index.html"
-  );
+    "https://spacemakerai.github.io/forma-extensions-samples/dynamo/dist/index.html";
+
+  return isHostForma && isProduction;
 };
 
 Sentry.init({

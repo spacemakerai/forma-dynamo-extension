@@ -1,27 +1,14 @@
-import { Sentry } from "../../util/sentry";
+import { captureException, Sentry } from "../../util/sentry";
 import { ComponentChildren } from "preact";
 import { useCallback, useErrorBoundary } from "preact/hooks";
-import { Forma } from "forma-embedded-view-sdk/auto";
 
 export function useCustomErrorBoundary(): [unknown, () => void] {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const [error, resetError] = useErrorBoundary((error, errorInfo) => {
-    Sentry.addBreadcrumb({
-      message: "Error boundary triggered",
-      data: {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        error,
-        errorInfo,
-      },
-    });
-    Sentry.withScope((scope) => {
-      scope.setExtra("errorinfo", errorInfo);
-      scope.setTags({
-        owner: "analyze-extensions",
-        projectId: Forma.getProjectId(),
-      });
-      Sentry.captureException(error);
-    });
+    captureException(
+      error,
+      "Unknown error caught in error boundary",
+      errorInfo,
+    );
   });
 
   const resetErrorWithBreadcrumb = useCallback(() => {
