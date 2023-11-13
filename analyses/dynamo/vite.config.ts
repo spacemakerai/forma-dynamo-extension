@@ -6,6 +6,7 @@ import { resolve } from "path";
 export default defineConfig({
   base: "./",
   build: {
+    sourcemap: true,
     rollupOptions: {
       input: {
         floating: resolve(__dirname, "src/floatingpanel/index.html"),
