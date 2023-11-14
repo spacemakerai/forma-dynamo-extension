@@ -35,7 +35,7 @@ const enableSentry = () => {
   const isProduction =
     window.location.href.split("?")[0] ===
     "https://spacemakerai.github.io/forma-extensions-samples/dynamo/dist/index.html";
-
+  console.log("Sentry enabled: ", isHostForma && isProduction);
   return isHostForma && isProduction;
 };
 
