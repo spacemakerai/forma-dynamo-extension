@@ -31,7 +31,7 @@ export const useDynamoConnector = () => {
 
     const portsToCheck = [...Array(10)].map((_, i) => defaultPort + i);
     const responses = await Promise.all(
-      portsToCheck.map((port) => Dynamo.health(port))
+      portsToCheck.map((port) => Dynamo.health(port)),
     );
     const connections = responses.filter((response) => response.status === 200);
     if (connections.length === 1) {
@@ -41,7 +41,7 @@ export const useDynamoConnector = () => {
       setState(DynamoState.MULTIPLE_CONNECTIONS);
     } else {
       const blockedConnections = responses.filter(
-        (response) => response.status === 503
+        (response) => response.status === 503,
       );
       if (blockedConnections.length > 0) {
         setState(DynamoState.BLOCKED);
@@ -67,6 +67,7 @@ export const useDynamoConnector = () => {
         DynamoState.LOST_CONNECTION,
       ].includes(state)
     ) {
+      // @ts-ignore
       intervalId = setInterval(() => portDiscovery(), 2000);
     }
     return () => clearInterval(intervalId);
@@ -80,7 +81,7 @@ export const useDynamoConnector = () => {
             (e) => {
               setState(DynamoState.LOST_CONNECTION);
               throw e;
-            }
+            },
           );
         case "getGraphInfo":
           return Dynamo.info(getDynamoUrl(), payload.code).catch((e) => {
@@ -102,7 +103,7 @@ export const useDynamoConnector = () => {
           });
       }
     },
-    [state, dynamoPort]
+    [state, dynamoPort],
   );
   return { dynamoState: state, dynamoHandler: handler };
 };

@@ -3,7 +3,7 @@ import { useState } from "preact/hooks";
 import { useEffect } from "preact/compat";
 
 function useCurrentSelection() {
-  const [selection, setSelection] = useState<any>([]);
+  const [selection, setSelection] = useState<string[]>([]);
 
   useEffect(() => {
     const intervalId = setInterval(async () => {

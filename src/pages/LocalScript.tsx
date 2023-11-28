@@ -3,7 +3,6 @@ import { useState, useCallback, useEffect, useRef } from "preact/compat";
 import { DynamoOutput } from "./components/DynamoOutput.js";
 import { DynamoInput } from "./components/DynamoInput.js";
 import { Forma } from "forma-embedded-view-sdk/auto";
-import dynamoIconUrn from "../icons/dynamo.png";
 import { isSelect } from "../utils/node.js";
 import { NotTrustedGraph } from "./components/NotTrustedGraph.js";
 import { SelectMode } from "./components/SelectMode.tsx";
@@ -56,10 +55,10 @@ function useScript(
     setState({ type: "loading" });
 
     dynamoHandler("getGraphInfo", { code: script.code })
-      .then((data) => {
+      .then((data: any) => {
         setState({ type: "loaded", data });
       })
-      .catch((err) => {
+      .catch((err: any) => {
         if (err.status === 500 && err.message === "Graph is not trusted.") {
           setState({ type: "error", data: "GRAPH_NOT_TRUSTED" });
         } else {

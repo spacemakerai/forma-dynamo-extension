@@ -7,13 +7,6 @@ export default defineConfig({
   base: "./",
   build: {
     sourcemap: true,
-    rollupOptions: {
-      input: {
-        floating: resolve(__dirname, "src/floatingpanel/index.html"),
-        index: resolve(__dirname, "index.html"),
-        left: resolve(__dirname, "src/leftpanel/index.html"),
-      },
-    },
   },
   plugins: [preact()],
   server: {

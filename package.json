@@ -6,7 +6,9 @@
   "scripts": {
     "start": "DEV_SERVER=1 vite",
     "build": "VITE_SENTRY_RELEASE=$(git rev-parse --short HEAD) vite build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prettier:check": "prettier --check ./src",
+    "prettier:write": "prettier --write ./src"
   },
   "dependencies": {
     "@sentry/browser": "^7.80.0",
