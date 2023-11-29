@@ -21,7 +21,7 @@ function DynamoInputComponent({
           style={{ marginLeft: "5px" }}
           variant="outlined"
           onClick={() =>
-            setActiveSelectionNode({ id: input.id, name: input.name })
+            setActiveSelectionNode?.({ id: input.id, name: input.name })
           }
         >
           Select
@@ -188,7 +188,7 @@ export function DynamoInput({
             onClick={() =>
               window.open(
                 "https://help.autodeskforma.com/en/articles/8560252-dynamo-player-extension-for-forma-beta#h_163069ec88",
-                "_blank"
+                "_blank",
               )
             }
           >
