@@ -20,9 +20,7 @@ function DynamoInputComponent({
         <weave-button
           style={{ marginLeft: "5px" }}
           variant="outlined"
-          onClick={() =>
-            setActiveSelectionNode?.({ id: input.id, name: input.name })
-          }
+          onClick={() => setActiveSelectionNode?.({ id: input.id, name: input.name })}
         >
           Select
         </weave-button>
@@ -39,10 +37,7 @@ function DynamoInputComponent({
     );
   } else if (input.type === "BoolSelector") {
     return (
-      <weave-checkbox
-        checked={value}
-        onChange={(ev) => setValue(input.id, ev.detail.checked)}
-      />
+      <weave-checkbox checked={value} onChange={(ev) => setValue(input.id, ev.detail.checked)} />
     );
   } else if (input.type === "DoubleSlider") {
     return (
@@ -79,10 +74,7 @@ function DynamoInputComponent({
         onChange={(ev) => setValue(input.id, ev.target.value)}
       />
     );
-  } else if (
-    input.type === "DSDropDownBase" ||
-    input.type === "CustomSelection"
-  ) {
+  } else if (input.type === "DSDropDownBase" || input.type === "CustomSelection") {
     return (
       <forma-select-native
         // @ts-ignore
@@ -90,7 +82,9 @@ function DynamoInputComponent({
         value={value}
       >
         {input.nodeTypeProperties.options.map((name: string, i) => (
-          <option value={i}>{name}</option>
+          <option value={i} key={i}>
+            {name}
+          </option>
         ))}
       </forma-select-native>
     );
@@ -112,10 +106,9 @@ function DynamoInputComponent({
         onChange={(ev) => setValue(input.id, ev.target.value)}
       />
     );
-  } else {
-    console.log(input);
-    return null;
   }
+  console.log(input);
+  return null;
 }
 
 type Input = {
@@ -131,12 +124,7 @@ type Input = {
   };
 };
 
-export function DynamoInput({
-  code,
-  state,
-  setValue,
-  setActiveSelectionNode,
-}: any) {
+export function DynamoInput({ code, state, setValue, setActiveSelectionNode }: any) {
   return (
     <div>
       <div

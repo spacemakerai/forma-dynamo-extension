@@ -1,11 +1,6 @@
 import { useCallback } from "preact/hooks";
 
-export function NotTrustedGraph({
-  script,
-  setScript,
-  reload,
-  dynamoHandler,
-}: any) {
+export function NotTrustedGraph({ script, setScript, reload, dynamoHandler }: any) {
   const trust = useCallback(async () => {
     const { id } = script.code;
 
@@ -14,14 +9,14 @@ export function NotTrustedGraph({
 
     await dynamoHandler("trustFolder", { path: parts.join("\\") });
     reload();
-  }, [script, reload]);
+  }, [script.code, dynamoHandler, reload]);
 
   return (
     <div>
       <h3>Open external file?</h3>
       <div style={{ lineHeight: "20px" }}>
         This file is stored in an untrusted location.
-        <br></br>
+        <br />
         Do you want to trust this file´s location?
       </div>
       <div

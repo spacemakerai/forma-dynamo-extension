@@ -38,9 +38,7 @@ export function SampleFiles() {
           <div style={{ margin: "5px 5px" }}>
             <h4
               style={{ cursor: "pointer" }}
-              onClick={() =>
-                download(downloadCreateTower, "CreatePixelTower.dyn")
-              }
+              onClick={() => download(downloadCreateTower, "CreatePixelTower.dyn")}
             >
               Generate Pixel Tower
               <weave-button
@@ -57,9 +55,7 @@ export function SampleFiles() {
           <div style={{ margin: "5px 5px" }}>
             <h4
               style={{ cursor: "pointer" }}
-              onClick={() =>
-                download(downloadMetrics, "BuildingCostCalculator.dyn")
-              }
+              onClick={() => download(downloadMetrics, "BuildingCostCalculator.dyn")}
             >
               Building Cost Calculator
               <weave-button

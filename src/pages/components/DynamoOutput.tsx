@@ -12,9 +12,9 @@ type Output = {
 };
 
 function base64ToArrayBuffer(base64: string) {
-  var binaryString = atob(base64);
-  var bytes = new Uint8Array(binaryString.length);
-  for (var i = 0; i < binaryString.length; i++) {
+  const binaryString = atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
     bytes[i] = binaryString.charCodeAt(i);
   }
   return bytes.buffer;
@@ -29,19 +29,6 @@ function PreviewAndAdd({ id, value }: { id: string; value: string }) {
 
   const glb = useMemo(() => base64ToArrayBuffer(value), [value]);
 
-  const add = useCallback(async () => {
-    setIsAdding(true);
-    try {
-      await addElement(glb);
-      await togglePreview(false);
-      setIsAdded(true);
-    } catch (e) {
-      captureException(e, "Failed to add element");
-    } finally {
-      setIsAdding(false);
-    }
-  }, [glb]);
-
   const togglePreview = useCallback(
     async (newPreviewActiveState: boolean) => {
       if (!isPreviewLoading && newPreviewActiveState !== isPreviewActive) {
@@ -55,8 +42,21 @@ function PreviewAndAdd({ id, value }: { id: string; value: string }) {
         setIsPreviewLoading(false);
       }
     },
-    [isPreviewActive, id, glb],
+    [isPreviewLoading, isPreviewActive, id, glb],
   );
+
+  const add = useCallback(async () => {
+    setIsAdding(true);
+    try {
+      await addElement(glb);
+      await togglePreview(false);
+      setIsAdded(true);
+    } catch (e) {
+      captureException(e, "Failed to add element");
+    } finally {
+      setIsAdding(false);
+    }
+  }, [glb, togglePreview]);
 
   useEffect(() => {
     (async () => await Forma.render.glb.update({ id, glb }))();
@@ -67,20 +67,15 @@ function PreviewAndAdd({ id, value }: { id: string; value: string }) {
         // ignore as we do not know if it is added or not
       }
     };
-  }, []);
+  }, [glb, id]);
 
   return (
     <div style={{ display: "flex" }}>
-      <div style={{ marginRight: "5px" }}>
-        {isAdding ? "Adding..." : isAdded ? "Added" : ""}
-      </div>
+      <div style={{ marginRight: "5px" }}>{isAdding ? "Adding..." : isAdded ? "Added" : ""}</div>
       <weave-button variant="outlined" disabled={isAdding} onClick={add}>
         Add
       </weave-button>
-      <Visibility
-        onClick={() => togglePreview(!isPreviewActive)}
-        isVisible={isPreviewActive}
-      />
+      <Visibility onClick={() => togglePreview(!isPreviewActive)} isVisible={isPreviewActive} />
     </div>
   );
 }
@@ -107,23 +102,22 @@ function DynamoOutputWatch3D({ output }: { output: Output }) {
 function DynamoOutputComponent({ output }: { output: Output }) {
   if (output.type === "Watch3D") {
     return <DynamoOutputWatch3D output={output} />;
-  } else {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "5px",
-          lineHeight: "24px",
-          borderBottom: "1px solid var(--divider-lightweight)",
-        }}
-      >
-        <span>{output.name}</span>
-        <span> {output.value}</span>
-      </div>
-    );
   }
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "5px",
+        lineHeight: "24px",
+        borderBottom: "1px solid var(--divider-lightweight)",
+      }}
+    >
+      <span>{output.name}</span>
+      <span> {output.value}</span>
+    </div>
+  );
 }
 
 export function DynamoOutput({ output }: any) {
@@ -153,7 +147,7 @@ export function DynamoOutput({ output }: any) {
         Outputs
       </div>
       {outputs.map((output) => (
-        <DynamoOutputComponent output={output} />
+        <DynamoOutputComponent output={output} key={output.id} />
       ))}
       {outputs.length === 0 && (
         <div

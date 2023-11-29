@@ -16,11 +16,7 @@ function useCurrentSelection() {
   return selection;
 }
 
-export function SelectMode({
-  activeSelectionNode,
-  setActiveSelectionNode,
-  setValue,
-}: any) {
+export function SelectMode({ activeSelectionNode, setActiveSelectionNode, setValue }: any) {
   const selection = useCurrentSelection();
   const onClickConfirm = async () => {
     setValue(activeSelectionNode.id, selection);
@@ -41,14 +37,10 @@ export function SelectMode({
         }}
       >
         <div>{activeSelectionNode.name}</div>
-        <div style={{ fontWeight: "700" }}>
-          {selection.length} elements selected
-        </div>
+        <div style={{ fontWeight: "700" }}>{selection.length} elements selected</div>
       </div>
 
-      <div
-        style={{ display: "flex", justifyContent: "end", marginTop: "14px" }}
-      >
+      <div style={{ display: "flex", justifyContent: "end", marginTop: "14px" }}>
         <weave-button variant="flat" onClick={onClickCancel}>
           Cancel
         </weave-button>

@@ -7,10 +7,7 @@ export declare module "preact/src/jsx" {
         density?: "high" | "medium";
         iconposition?: "left" | "right";
       };
-      "weave-slider": Omit<
-        JSXInternal.HTMLAttributes<HTMLInputElement>,
-        "onInput"
-      > & {
+      "weave-slider": Omit<JSXInternal.HTMLAttributes<HTMLInputElement>, "onInput"> & {
         onInput?: (e: CustomEvent<string>) => void;
       };
       "weave-input": JSXInternal.HTMLAttributes<HTMLInputElement> & {
@@ -20,10 +17,7 @@ export declare module "preact/src/jsx" {
         checked?: boolean;
         onChange: (e: CustomEvent<{ checked: boolean }>) => void;
       };
-      "forma-select-native": Omit<
-        JSX.HTMLAttributes<HTMLSelectElement>,
-        "onChange"
-      > & {
+      "forma-select-native": Omit<JSX.HTMLAttributes<HTMLSelectElement>, "onChange"> & {
         onChange?: (event: CustomEvent<{ value: string }>) => void;
       };
       "weave-progress-bar": {
