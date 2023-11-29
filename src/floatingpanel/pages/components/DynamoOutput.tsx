@@ -22,6 +22,8 @@ function base64ToArrayBuffer(base64: string) {
 
 function PreviewAndAdd({ id, value }: { id: string; value: string }) {
   const [isPreviewActive, setIsPreviewActive] = useState(true);
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
 
@@ -31,7 +33,7 @@ function PreviewAndAdd({ id, value }: { id: string; value: string }) {
     setIsAdding(true);
     try {
       await addElement(glb);
-      setIsPreviewActive(false);
+      await togglePreview(false);
       setIsAdded(true);
     } catch (e) {
       captureException(e, "Failed to add element");
@@ -40,18 +42,24 @@ function PreviewAndAdd({ id, value }: { id: string; value: string }) {
     }
   }, [glb]);
 
-  useEffect(() => {
-    (async () => {
-      if (isPreviewActive) {
-        await Forma.render.glb.update({
-          id,
-          glb,
-        });
-      } else {
-        await Forma.render.glb.remove({ id });
+  const togglePreview = useCallback(
+    async (newPreviewActiveState: boolean) => {
+      if (!isPreviewLoading && newPreviewActiveState !== isPreviewActive) {
+        setIsPreviewLoading(true);
+        if (newPreviewActiveState) {
+          await Forma.render.glb.update({ id, glb });
+        } else {
+          await Forma.render.glb.remove({ id });
+        }
+        setIsPreviewActive(newPreviewActiveState);
+        setIsPreviewLoading(false);
       }
-    })();
+    },
+    [isPreviewActive, id, glb],
+  );
 
+  useEffect(() => {
+    (async () => await Forma.render.glb.update({ id, glb }))();
     return async () => {
       try {
         await Forma.render.glb.remove({ id });
@@ -59,7 +67,7 @@ function PreviewAndAdd({ id, value }: { id: string; value: string }) {
         // ignore as we do not know if it is added or not
       }
     };
-  }, [isPreviewActive]);
+  }, []);
 
   return (
     <div style={{ display: "flex" }}>
@@ -70,7 +78,7 @@ function PreviewAndAdd({ id, value }: { id: string; value: string }) {
         Add
       </weave-button>
       <Visibility
-        onClick={() => setIsPreviewActive(!isPreviewActive)}
+        onClick={() => togglePreview(!isPreviewActive)}
         isVisible={isPreviewActive}
       />
     </div>
