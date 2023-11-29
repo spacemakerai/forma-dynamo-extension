@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useState } from "preact/hooks";
+import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 import { addElement } from "../../service/element";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { Visibility } from "../../icons/Visibility";
+import { captureException } from "../../util/sentry.ts";
 
 type Output = {
   id: string;
   type: "Watch3D" | string;
   name: string;
-  value: string;
+  value?: string | undefined;
 };
 
 function base64ToArrayBuffer(base64: string) {
@@ -19,43 +20,72 @@ function base64ToArrayBuffer(base64: string) {
   return bytes.buffer;
 }
 
-function DynamoOutputWatch3D({ output }: { output: Output }) {
-  const [shouldShow, setShouldShow] = useState(true);
+function PreviewAndAdd({ id, value }: { id: string; value: string }) {
+  const [isPreviewActive, setIsPreviewActive] = useState(true);
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+
+  const [isAdding, setIsAdding] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
+
+  const glb = useMemo(() => base64ToArrayBuffer(value), [value]);
 
   const add = useCallback(async () => {
+    setIsAdding(true);
     try {
-      if (output.value) {
-        await addElement(base64ToArrayBuffer(output.value));
-        setShouldShow(false);
-      } else {
-        console.log("No value", output);
-      }
+      await addElement(glb);
+      await togglePreview(false);
+      setIsAdded(true);
     } catch (e) {
-      console.error(e);
+      captureException(e, "Failed to add element");
+    } finally {
+      setIsAdding(false);
     }
-  }, [output]);
+  }, [glb]);
+
+  const togglePreview = useCallback(
+    async (newPreviewActiveState: boolean) => {
+      if (!isPreviewLoading && newPreviewActiveState !== isPreviewActive) {
+        setIsPreviewLoading(true);
+        if (newPreviewActiveState) {
+          await Forma.render.glb.update({ id, glb });
+        } else {
+          await Forma.render.glb.remove({ id });
+        }
+        setIsPreviewActive(newPreviewActiveState);
+        setIsPreviewLoading(false);
+      }
+    },
+    [isPreviewActive, id, glb],
+  );
 
   useEffect(() => {
-    (async () => {
-      if (shouldShow) {
-        await Forma.render.glb.update({
-          id: output.id,
-          glb: base64ToArrayBuffer(output.value),
-        });
-      } else {
-        await Forma.render.glb.remove({ id: output.id });
-      }
-    })();
-
+    (async () => await Forma.render.glb.update({ id, glb }))();
     return async () => {
       try {
-        await Forma.render.glb.remove({ id: output.id });
+        await Forma.render.glb.remove({ id });
       } catch (e) {
         // ignore as we do not know if it is added or not
       }
     };
-  }, [shouldShow]);
+  }, []);
 
+  return (
+    <div style={{ display: "flex" }}>
+      <div style={{ marginRight: "5px" }}>
+        {isAdding ? "Adding..." : isAdded ? "Added" : ""}
+      </div>
+      <weave-button variant="outlined" disabled={isAdding} onClick={add}>
+        Add
+      </weave-button>
+      <Visibility
+        onClick={() => togglePreview(!isPreviewActive)}
+        isVisible={isPreviewActive}
+      />
+    </div>
+  );
+}
+
+function DynamoOutputWatch3D({ output }: { output: Output }) {
   return (
     <div
       style={{
@@ -64,20 +94,12 @@ function DynamoOutputWatch3D({ output }: { output: Output }) {
         lineHeight: "24px",
         padding: "5px 0 5px 5px",
         height: "24px",
-        color: shouldShow ? "black" : "gray",
         borderBottom: "1px solid var(--divider-lightweight)",
       }}
     >
       <span>{output.name}</span>
-      <div style={{ display: "flex" }}>
-        <weave-button variant="outlined" disabled={!shouldShow} onClick={add}>
-          Add
-        </weave-button>
-        <Visibility
-          onClick={() => setShouldShow(!shouldShow)}
-          isVisible={shouldShow}
-        />
-      </div>
+      {!output.value && <div>No output value</div>}
+      {output.value && <PreviewAndAdd id={output.id} value={output.value} />}
     </div>
   );
 }
@@ -147,7 +169,7 @@ export function DynamoOutput({ output }: any) {
             onClick={() =>
               window.open(
                 "https://help.autodeskforma.com/en/articles/8560252-dynamo-player-extension-for-forma-beta#h_071d739af8",
-                "_blank"
+                "_blank",
               )
             }
           >

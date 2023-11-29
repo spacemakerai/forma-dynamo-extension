@@ -43,7 +43,12 @@ export function Visibility({
   return (
     <div
       onClick={onClick}
-      style={{ padding: "4px", cursor: "pointer", marginLeft: "2px" }}
+      style={{
+        padding: "4px",
+        cursor: "pointer",
+        marginLeft: "2px",
+        color: isVisible ? "black" : "gray",
+      }}
     >
       {isVisible ? <VisibilityOnIcon /> : <VisibilityOffIcon />}
     </div>
