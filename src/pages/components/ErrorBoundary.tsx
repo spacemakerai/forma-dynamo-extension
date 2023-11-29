@@ -4,11 +4,7 @@ import { useCallback, useErrorBoundary } from "preact/hooks";
 
 export function useCustomErrorBoundary(): [unknown, () => void] {
   const [error, resetError] = useErrorBoundary((error, errorInfo) => {
-    captureException(
-      error,
-      "Unknown error caught in error boundary",
-      errorInfo,
-    );
+    captureException(error, "Unknown error caught in error boundary", errorInfo);
   });
 
   const resetErrorWithBreadcrumb = useCallback(() => {

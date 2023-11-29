@@ -21,10 +21,7 @@ function getDefaultValues(scriptInfo: any) {
       if (input.value) {
         if (input.type === "boolean") {
           state[input.id] = input.value === "true";
-        } else if (
-          input.type === "DSDropDownBase" ||
-          input.type === "CustomSelection"
-        ) {
+        } else if (input.type === "DSDropDownBase" || input.type === "CustomSelection") {
           state[input.id] = input.value.split(":")[0];
         } else {
           state[input.id] = input.value;
@@ -32,12 +29,9 @@ function getDefaultValues(scriptInfo: any) {
       }
     }
     return state;
-  } else {
-    return {};
   }
+  return {};
 }
-
-type Errors = "GRAPH_NOT_TRUSTED";
 
 type ScriptResult =
   | { type: "init" }
@@ -45,10 +39,7 @@ type ScriptResult =
   | { type: "error"; data: any }
   | { type: "loaded"; data: any };
 
-function useScript(
-  script: any,
-  dynamoHandler: any,
-): [ScriptResult, () => void] {
+function useScript(script: any, dynamoHandler: any): [ScriptResult, () => void] {
   const [state, setState] = useState<ScriptResult>({ type: "init" });
 
   const reload = useCallback(() => {
@@ -65,7 +56,7 @@ function useScript(
           setState({ type: "error", data: err.message });
         }
       });
-  }, [script]);
+  }, [dynamoHandler, script.code]);
 
   useEffect(() => {
     reload();
@@ -89,22 +80,13 @@ function AnimatedLoading() {
 
   return (
     <div style={{ width: "100%", marginTop: "5px" }}>
-      <weave-skeleton-item
-        width="90%"
-        style={{ marginBottom: "5px" }}
-      ></weave-skeleton-item>
-      <weave-skeleton-item
-        width="70%"
-        style={{ marginBottom: "5px" }}
-      ></weave-skeleton-item>
-      <weave-skeleton-item
-        width="50%"
-        style={{ marginBottom: "5px" }}
-      ></weave-skeleton-item>
+      <weave-skeleton-item width="90%" style={{ marginBottom: "5px" }} />
+      <weave-skeleton-item width="70%" style={{ marginBottom: "5px" }} />
+      <weave-skeleton-item width="50%" style={{ marginBottom: "5px" }} />
       {slow && (
         <div style={{ marginTop: "5px" }}>
-          This is taking longer than usual. Please open Dynamo and check if it
-          is blocked with a message dialog.
+          This is taking longer than usual. Please open Dynamo and check if it is blocked with a
+          message dialog.
         </div>
       )}
     </div>
@@ -134,8 +116,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
   const [output, setOutput] = useState<Output>({ type: "init" });
 
   const setValue = useCallback(
-    (id: string, value: any) =>
-      setState((state) => ({ ...state, [id]: value })),
+    (id: string, value: any) => setState((state) => ({ ...state, [id]: value })),
     [],
   );
 
@@ -157,18 +138,14 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
               paths.map((path) =>
                 Forma.geometry
                   .getTriangles({ path })
-                  .then((triangles) =>
-                    triangles ? [...triangles] : undefined,
-                  ),
+                  .then((triangles) => (triangles ? [...triangles] : undefined)),
               ),
             );
             const footprints = await Promise.all(
               paths.map((path) =>
                 Forma.geometry
                   .getFootprint({ path })
-                  .then((polygon) =>
-                    polygon ? polygon.coordinates : undefined,
-                  ),
+                  .then((polygon) => (polygon ? polygon.coordinates : undefined)),
               ),
             );
 
@@ -184,9 +161,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             });
             return {
               nodeId: id,
-              value: JSON.stringify([
-                [...(await Forma.geometry.getTriangles({ path }))],
-              ]),
+              value: JSON.stringify([[...(await Forma.geometry.getTriangles({ path }))]]),
             };
           } else if (name === "Triangles" || type === "FormaSelectGeometry") {
             return {
@@ -194,9 +169,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
               value: JSON.stringify(
                 await Promise.all(
                   (value as string[]).map(async (path) => {
-                    return [
-                      ...(await Forma.geometry.getTriangles({ urn, path })),
-                    ];
+                    return [...(await Forma.geometry.getTriangles({ urn, path }))];
                   }),
                 ),
               ),
@@ -209,8 +182,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                   (value as string[]).map(async (path) => {
                     return [
                       // @ts-ignore
-                      ...(await Forma.geometry.getFootprint({ urn, path }))
-                        .coordinates,
+                      ...(await Forma.geometry.getFootprint({ urn, path })).coordinates,
                     ];
                   }),
                 ),
@@ -223,12 +195,11 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                 await Forma.areaMetrics.calculate({ paths: value as string[] }),
               ),
             };
-          } else {
-            return {
-              nodeId: id,
-              value: value,
-            };
           }
+          return {
+            nodeId: id,
+            value,
+          };
         }),
       );
 
@@ -240,7 +211,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
       captureException(e, "Error running Dynamo graph");
       setOutput({ type: "error", data: e });
     }
-  }, [scriptInfo, state]);
+  }, [dynamoHandler, scriptInfo, state]);
 
   useEffect(() => {
     setOutput({ type: "init" });
@@ -305,15 +276,14 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
               <span>{script?.code?.metadata?.description}</span>
             </div>
           )}
-          {scriptInfo.type === "error" &&
-            scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
-              <NotTrustedGraph
-                script={script}
-                setScript={setScript}
-                reload={reload}
-                dynamoHandler={dynamoHandler}
-              />
-            )}
+          {scriptInfo.type === "error" && scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
+            <NotTrustedGraph
+              script={script}
+              setScript={setScript}
+              reload={reload}
+              dynamoHandler={dynamoHandler}
+            />
+          )}
           {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
 
           {scriptInfo.type === "loaded" && (
@@ -323,7 +293,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                   marginBottom: "5px",
                   paddingBottom: "5px",
                 }}
-              ></div>
+              />
               <div
                 style={{
                   overflow: "auto",

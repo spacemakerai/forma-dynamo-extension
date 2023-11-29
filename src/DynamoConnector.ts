@@ -14,9 +14,9 @@ export const useDynamoConnector = () => {
   const [state, setState] = useState<DynamoState>(DynamoState.INIT);
   const [dynamoPort, setDynamoPort] = useState<number | undefined>(undefined);
 
-  const getDynamoUrl = () => {
-    return "http://localhost:" + dynamoPort;
-  };
+  const getDynamoUrl = useCallback(() => {
+    return `http://localhost:${dynamoPort}`;
+  }, [dynamoPort]);
 
   const portDiscovery = async () => {
     setDynamoPort(undefined);
@@ -30,9 +30,7 @@ export const useDynamoConnector = () => {
     }
 
     const portsToCheck = [...Array(10)].map((_, i) => defaultPort + i);
-    const responses = await Promise.all(
-      portsToCheck.map((port) => Dynamo.health(port)),
-    );
+    const responses = await Promise.all(portsToCheck.map((port) => Dynamo.health(port)));
     const connections = responses.filter((response) => response.status === 200);
     if (connections.length === 1) {
       setState(DynamoState.CONNECTED);
@@ -40,9 +38,7 @@ export const useDynamoConnector = () => {
     } else if (connections.length > 1) {
       setState(DynamoState.MULTIPLE_CONNECTIONS);
     } else {
-      const blockedConnections = responses.filter(
-        (response) => response.status === 503,
-      );
+      const blockedConnections = responses.filter((response) => response.status === 503);
       if (blockedConnections.length > 0) {
         setState(DynamoState.BLOCKED);
       } else {
@@ -77,12 +73,10 @@ export const useDynamoConnector = () => {
     (method: string, payload: any) => {
       switch (method) {
         case "getFolderInfo":
-          return Dynamo.graphFolderInfo(getDynamoUrl(), payload.path).catch(
-            (e) => {
-              setState(DynamoState.LOST_CONNECTION);
-              throw e;
-            },
-          );
+          return Dynamo.graphFolderInfo(getDynamoUrl(), payload.path).catch((e) => {
+            setState(DynamoState.LOST_CONNECTION);
+            throw e;
+          });
         case "getGraphInfo":
           return Dynamo.info(getDynamoUrl(), payload.code).catch((e) => {
             if (!(e.status === 500 && e.message === "Graph is not trusted.")) {
@@ -91,6 +85,7 @@ export const useDynamoConnector = () => {
             throw e;
           });
         case "runGraph":
+          // eslint-disable-next-line no-case-declarations
           const { code, inputs } = payload;
           return Dynamo.run(getDynamoUrl(), code, inputs).catch((e) => {
             setState(DynamoState.LOST_CONNECTION);
@@ -103,7 +98,7 @@ export const useDynamoConnector = () => {
           });
       }
     },
-    [state, dynamoPort],
+    [getDynamoUrl],
   );
   return { dynamoState: state, dynamoHandler: handler };
 };

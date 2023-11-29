@@ -3,7 +3,31 @@ name: Deploy static files to GitHub Pages
 on: [workflow_dispatch, push]
 
 jobs:
+  build-and-format:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # build dynamo
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: Build and format checks
+        run: |
+          yarn install --frozen-lockfile
+          yarn lint:check
+          yarn prettier:check
+          yarn tsc --noEmit
+          yarn build
+
   deploy:
+    needs: ["build-and-format"]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 

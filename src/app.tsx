@@ -8,9 +8,10 @@ import { StatusBlock } from "./pages/components/StatusBlock.tsx";
 function LoadingScriptList() {
   return (
     <div style={{ width: "100%" }}>
-      {[...Array(3)].map(() => {
+      {[...Array(3)].map((_, i) => {
         return (
           <div
+            key={i}
             style={{
               display: "flex",
               width: "100%",
@@ -18,7 +19,7 @@ function LoadingScriptList() {
               alignItems: "center",
             }}
           >
-            <weave-skeleton-item height="30px"></weave-skeleton-item>
+            <weave-skeleton-item height="30px" />
           </div>
         );
       })}
@@ -58,16 +59,6 @@ function ScriptList({ setScript, dynamoHandler }: any) {
   const [folder, setFolder] = useState<undefined | string>();
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (!folder) {
-      const dynamoFolder = localStorage.getItem("dynamo-folder");
-      if (dynamoFolder) {
-        setFolder(dynamoFolder);
-        reload(dynamoFolder);
-      }
-    }
-  }, []);
-
   const reload = useCallback(
     (folder: string | undefined) => {
       (async function () {
@@ -87,14 +78,22 @@ function ScriptList({ setScript, dynamoHandler }: any) {
           setIsLoading(false);
         } catch (e) {
           setIsLoading(false);
-          setError(
-            "Could not load files. Please check the folder name and try to load again.",
-          );
+          setError("Could not load files. Please check the folder name and try to load again.");
         }
       })();
     },
-    [folder],
+    [dynamoHandler],
   );
+
+  useEffect(() => {
+    if (!folder) {
+      const dynamoFolder = localStorage.getItem("dynamo-folder");
+      if (dynamoFolder) {
+        setFolder(dynamoFolder);
+        reload(dynamoFolder);
+      }
+    }
+  }, [folder, reload]);
 
   return (
     <div>
@@ -128,7 +127,7 @@ function ScriptList({ setScript, dynamoHandler }: any) {
             const folder = e?.target?.value;
             setFolder(folder);
           }}
-        ></weave-input>
+        />
 
         <weave-button variant="solid" onClick={() => reload(folder)}>
           Load
@@ -140,12 +139,7 @@ function ScriptList({ setScript, dynamoHandler }: any) {
           {isLoading && <LoadingScriptList />}
           {!isLoading &&
             Object.entries(programs).map(([name, code]) => (
-              <ScriptListItem
-                key={name}
-                name={name}
-                code={code}
-                setScript={setScript}
-              />
+              <ScriptListItem key={name} name={name} code={code} setScript={setScript} />
             ))}
           {!isLoading && !error && Object.keys(programs).length === 0 && (
             <div style={{ color: "gray" }}>No graphs found in folder.</div>
@@ -162,15 +156,9 @@ export function App() {
   if (dynamoState === "CONNECTED") {
     return (
       <div style={{ padding: "0 2px", height: "100%" }}>
-        {!script && (
-          <ScriptList dynamoHandler={dynamoHandler} setScript={setScript} />
-        )}
+        {!script && <ScriptList dynamoHandler={dynamoHandler} setScript={setScript} />}
         {script && (
-          <LocalScript
-            dynamoHandler={dynamoHandler}
-            script={script}
-            setScript={setScript}
-          />
+          <LocalScript dynamoHandler={dynamoHandler} script={script} setScript={setScript} />
         )}
       </div>
     );
