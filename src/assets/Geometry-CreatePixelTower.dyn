@@ -25,9 +25,9 @@
       "Name": "Cube Module Dimensions",
       "Type": "number",
       "Type2": "number",
-      "Value": "5",
+      "Value": "3",
       "MaximumValue": 20.0,
-      "MinimumValue": 5.0,
+      "MinimumValue": 3.0,
       "StepValue": 1.0,
       "NumberType": "Integer",
       "Description": "Produces integer values",
@@ -38,7 +38,7 @@
       "Name": "Overall Tower Height",
       "Type": "number",
       "Type2": "number",
-      "Value": "310",
+      "Value": "200",
       "MaximumValue": 1000.0,
       "MinimumValue": 100.0,
       "StepValue": 10.0,
@@ -718,7 +718,7 @@
       "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
       "NumberType": "Integer",
       "MaximumValue": 20,
-      "MinimumValue": 5,
+      "MinimumValue": 3,
       "StepValue": 1,
       "Id": "81150b405c8f431498be5a1c272f42b3",
       "NodeType": "NumberInputNode",
@@ -736,7 +736,7 @@
       ],
       "Replication": "Disabled",
       "Description": "Produces integer values",
-      "InputValue": 5
+      "InputValue": 3
     },
     {
       "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
@@ -760,7 +760,7 @@
       ],
       "Replication": "Disabled",
       "Description": "Produces integer values",
-      "InputValue": 310
+      "InputValue": 200
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1024,38 +1024,38 @@
     },
     "Camera": {
       "Name": "_Background Preview",
-      "EyeX": 533.46087646484375,
-      "EyeY": 805.59552001953125,
-      "EyeZ": -357.26678466796875,
-      "LookX": -533.46087646484375,
-      "LookY": -650.59552001953125,
-      "LookZ": 357.26678466796875,
-      "UpX": -0.45253351330757141,
-      "UpY": 0.83866792917251587,
-      "UpZ": 0.30306702852249146
+      "EyeX": 132.52873229980469,
+      "EyeY": 346.79840087890625,
+      "EyeZ": -68.434989929199219,
+      "LookX": -132.52873229980469,
+      "LookY": -191.79840087890625,
+      "LookZ": 68.434989929199219,
+      "UpX": -0.56816518306732178,
+      "UpY": 0.76883870363235474,
+      "UpZ": 0.29338648915290833
     },
     "ConnectorPins": [
       {
         "Left": 142.83964771461319,
-        "Top": 1513.353966533082,
+        "Top": 1483.354266533082,
         "IsHidden": false,
         "ConnectorGuid": "321508a5-5c15-4c27-970e-61ab5ad1d810"
       },
       {
         "Left": 1799.2167969373932,
-        "Top": 1521.5128355050163,
+        "Top": 1491.5131355050162,
         "IsHidden": false,
         "ConnectorGuid": "321508a5-5c15-4c27-970e-61ab5ad1d810"
       },
       {
         "Left": 1147.9250585416453,
-        "Top": 1052.312560093593,
+        "Top": 1022.3128600935929,
         "IsHidden": false,
         "ConnectorGuid": "9c921011-3295-4f05-aabd-ce53fbe6b33e"
       },
       {
         "Left": 1829.9253585416452,
-        "Top": 1052.312560093593,
+        "Top": 1022.3128600935929,
         "IsHidden": false,
         "ConnectorGuid": "9c921011-3295-4f05-aabd-ce53fbe6b33e"
       }
@@ -1717,8 +1717,8 @@
         "PinnedNode": "b8f5ca8f3ed94e36ab34217aa34247a2"
       }
     ],
-    "X": 290.23923633050219,
-    "Y": 348.18471720403357,
-    "Zoom": 0.27589160008016994
+    "X": 1770.3215642131649,
+    "Y": -93.052775027959342,
+    "Zoom": 1.3082819636938894
   }
 }
