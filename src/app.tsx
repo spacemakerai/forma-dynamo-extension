@@ -27,6 +27,51 @@ function LoadingScriptList() {
   );
 }
 
+function NoFolderEmptyState() {
+  return (
+    <>
+      <br />
+      <br />
+      <div>Follow these directions to get started.</div>
+      <br />
+      <div style={{ display: "flex" }}>
+        <div style={{ width: "15px" }}>1.</div>
+        <div>
+          Open a Dynamo script in the open Dynamo Application. You can download a sample above.
+        </div>
+      </div>
+      <br />
+      <div style={{ display: "flex" }}>
+        <div style={{ width: "15px" }}>2.</div>
+        <div>
+          Copy the directory path of the script from the File Explorer and paste it into the folder
+          input above.
+        </div>
+      </div>
+      <br />
+      <div style={{ display: "flex" }}>
+        <div style={{ width: "15px" }}>3.</div>
+        <div>Click the load button to open the folder.</div>
+      </div>
+      <br />
+      <div style={{ display: "flex" }}>
+        <div style={{ width: "15px" }}>4.</div>
+        <div>Click on the script to open it in the Dynamo Player.</div>
+      </div>
+      <br />
+      <div style={{ display: "flex" }}>
+        <div>
+          If you get stuck, check out{" "}
+          <a target="_blank" rel="noreferrer" href="https://www.youtube.com/watch?v=Fmpiq6IkpTk">
+            this short video
+          </a>
+          .
+        </div>
+      </div>
+    </>
+  );
+}
+
 function ScriptListItem({ name, code, setScript }: any) {
   const [hover, setHover] = useState(false);
 
@@ -134,6 +179,7 @@ function ScriptList({ setScript, dynamoHandler }: any) {
         </weave-button>
       </div>
       {error && <div style={{ color: "red" }}>{error}</div>}
+      {!folder && <NoFolderEmptyState />}
       {folder && (
         <div>
           {isLoading && <LoadingScriptList />}
