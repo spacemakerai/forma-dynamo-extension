@@ -14,7 +14,7 @@ function getDefaultValues(scriptInfo: any) {
     const state: any = {};
 
     for (const input of inputs) {
-      if (isSelect(input) || input.type === "FormaTerrain") {
+      if (isSelect(input) || input.type === "FormaTerrain" || input.type === "FormaProject") {
         // Intentionally ignored does not work between sessions
         continue;
       }
@@ -162,6 +162,12 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             return {
               nodeId: id,
               value: JSON.stringify([[...(await Forma.geometry.getTriangles({ path }))]]),
+            };
+          } else if (type === "FormaProject") {
+            const project = await Forma.project.get();
+            return {
+              nodeId: id,
+              value: JSON.stringify(project),
             };
           } else if (name === "Triangles" || type === "FormaSelectGeometry") {
             return {

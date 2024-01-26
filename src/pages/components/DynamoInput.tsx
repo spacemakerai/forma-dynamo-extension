@@ -13,6 +13,8 @@ function DynamoInputComponent({
 }) {
   if (input.type === "FormaTerrain") {
     return null;
+  } else if (input.type === "FormaProject") {
+    return null;
   } else if (isSelect(input)) {
     return (
       <div>
