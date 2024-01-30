@@ -8,7 +8,7 @@ type Output = {
   id: string;
   type: "Watch3D" | "WatchImageCore" | string;
   name: string;
-  value?: string | undefined;
+  value?: string[] | string | undefined;
 };
 
 function base64ToArrayBuffer(base64: string) {
@@ -182,16 +182,19 @@ function DynamoOutputHousingByLine({ output }: { output: Output }) {
   const onAdd = useCallback(async () => {
     if (output.value) {
       try {
-        const { line, buffer, placementSide, templateId } = JSON.parse(output.value);
+        const values = typeof output.value === "string" ? [output.value] : output.value;
+        for (const value of values) {
+          const { line, buffer, placementSide, templateId } = JSON.parse(value);
 
-        const { urn } = await Forma.experimental.housing.createFromLine({
-          line,
-          buffer,
-          placementSide,
-          templateId: templateId !== "<default>" ? templateId : undefined,
-        });
+          const { urn } = await Forma.experimental.housing.createFromLine({
+            line,
+            buffer,
+            placementSide,
+            templateId: templateId !== "<default>" ? templateId : undefined,
+          });
 
-        await Forma.proposal.addElement({ urn });
+          await Forma.proposal.addElement({ urn });
+        }
       } catch (e) {
         captureException(e, "Failed to add housing");
       }
