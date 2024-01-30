@@ -182,7 +182,14 @@ function DynamoOutputHousingByLine({ output }: { output: Output }) {
   const onAdd = useCallback(async () => {
     if (output.value) {
       try {
-        const { urn } = await Forma.experimental.housing.createFromLine(JSON.parse(output.value));
+        const { line, buffer, placementSide, templateId } = JSON.parse(output.value);
+
+        const { urn } = await Forma.experimental.housing.createFromLine({
+          line,
+          buffer,
+          placementSide,
+          templateId: templateId !== "<default>" ? templateId : undefined,
+        });
 
         await Forma.proposal.addElement({ urn });
       } catch (e) {
