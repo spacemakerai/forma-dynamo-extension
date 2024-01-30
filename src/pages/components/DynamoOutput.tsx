@@ -178,12 +178,47 @@ function DynamoOutputWatchImage({ output }: { output: Output }) {
   );
 }
 
+function DynamoOutputHousingByLine({ output }: { output: Output }) {
+  const onAdd = useCallback(async () => {
+    if (output.value) {
+      try {
+        const { urn } = await Forma.experimental.housing.createFromLine(JSON.parse(output.value));
+
+        await Forma.proposal.addElement({ urn });
+      } catch (e) {
+        captureException(e, "Failed to add housing");
+      }
+    }
+  }, [output]);
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        lineHeight: "24px",
+        padding: "5px 0 5px 5px",
+        height: "24px",
+        borderBottom: "1px solid var(--divider-lightweight)",
+      }}
+    >
+      <span>{output.name}</span>
+      {!output.value && <div>No output value</div>}
+      <button onClick={onAdd}>Add</button>
+    </div>
+  );
+}
+
 function DynamoOutputComponent({ output }: { output: Output }) {
   if (output.type === "Watch3D") {
     return <DynamoOutputWatch3D output={output} />;
   }
   if (output.type === "WatchImageCore") {
     return <DynamoOutputWatchImage output={output} />;
+  }
+
+  if (output.name === "FormaHousing.ByLine") {
+    return <DynamoOutputHousingByLine output={output} />;
   }
 
   return (
