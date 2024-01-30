@@ -182,12 +182,11 @@ function DynamoOutputHousingByLine({ output }: { output: Output }) {
   const onAdd = useCallback(async () => {
     if (output.value) {
       try {
-        console.log("adding");
         const { urn } = await Forma.experimental.housing.createFromLine(JSON.parse(output.value));
 
         await Forma.proposal.addElement({ urn });
       } catch (e) {
-        console.log(e);
+        captureException(e, "Failed to add housing");
       }
     }
   }, [output]);
