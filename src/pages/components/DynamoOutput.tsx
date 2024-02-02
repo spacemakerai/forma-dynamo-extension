@@ -81,6 +81,24 @@ function PreviewAndAdd({ id, value }: { id: string; value: string }) {
 }
 
 function DynamoOutputWatch3D({ output }: { output: Output }) {
+  if (typeof output.value !== "string") {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          lineHeight: "24px",
+          padding: "5px 0 5px 5px",
+          height: "24px",
+          borderBottom: "1px solid var(--divider-lightweight)",
+        }}
+      >
+        <span>{output.name}</span>
+        <div>Unexpected value</div>
+      </div>
+    );
+  }
+
   return (
     <div
       style={{
