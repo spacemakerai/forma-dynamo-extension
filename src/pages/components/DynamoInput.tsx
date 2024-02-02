@@ -3,7 +3,15 @@ import { isSelect } from "../../utils/node";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { Template } from "forma-embedded-view-sdk/dist/internal/experimental/housing";
 
-function DynamoHousingTemplateInputComponent({ input, value, setValue }) {
+function DynamoHousingTemplateInputComponent({
+  input,
+  value,
+  setValue,
+}: {
+  input: Input;
+  value: any;
+  setValue: (id: string, v: any) => void;
+}) {
   const [templates, setTemplates] = useState<Template[]>([]);
   useEffect(() => {
     (async () => {
@@ -13,7 +21,7 @@ function DynamoHousingTemplateInputComponent({ input, value, setValue }) {
 
       setValue(input.id, templates[0].templateId);
     })();
-  }, []);
+  }, [input.id, setValue]);
 
   return (
     <div>
