@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "@sentry/browser": "^7.80.0",
-    "forma-embedded-view-sdk": "0.50.0",
+    "forma-elements": "^1.2.0",
+    "forma-embedded-view-sdk": "0.52.2",
     "preact": "^10.18.2"
   },
   "devDependencies": {

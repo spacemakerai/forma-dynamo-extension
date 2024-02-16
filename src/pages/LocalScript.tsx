@@ -14,7 +14,12 @@ function getDefaultValues(scriptInfo: any) {
     const state: any = {};
 
     for (const input of inputs) {
-      if (isSelect(input) || input.type === "FormaTerrain" || input.type === "FormaProject") {
+      if (
+        isSelect(input) ||
+        input.type === "FormaTerrain" ||
+        input.type === "FormaProject" ||
+        input.type === "FormaGetElementsByProperty"
+      ) {
         // Intentionally ignored does not work between sessions
         continue;
       }
@@ -93,6 +98,34 @@ function AnimatedLoading() {
   );
 }
 
+async function readElementsByPaths(paths: string[]) {
+  const elements = await Promise.all(
+    paths.map((path) =>
+      Forma.elements.getByPath({ path }).then(({ element }) => (element ? element : undefined)),
+    ),
+  );
+  const triangles = await Promise.all(
+    paths.map((path) =>
+      Forma.geometry
+        .getTriangles({ path })
+        .then((triangles) => (triangles ? [...triangles] : undefined)),
+    ),
+  );
+  const footprints = await Promise.all(
+    paths.map((path) =>
+      Forma.geometry
+        .getFootprint({ path })
+        .then((polygon) => (polygon ? polygon.coordinates : undefined)),
+    ),
+  );
+
+  return paths.map((_, index) => ({
+    element: elements[index],
+    triangles: triangles[index],
+    footprints: footprints[index],
+  }));
+}
+
 type Output =
   | { type: "init" }
   | { type: "running" }
@@ -132,29 +165,20 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         code.inputs.map(async ({ id, type, name }: any) => {
           const value = state[id];
 
-          if (type === "FormaSelectElements" || type === "FormaSelectElement") {
+          if (
+            type === "FormaSelectElements" ||
+            type === "FormaSelectElement" ||
+            name === "GetFormaElementByProperty"
+          ) {
             const paths = (value || []) as string[];
-            const triangles = await Promise.all(
-              paths.map((path) =>
-                Forma.geometry
-                  .getTriangles({ path })
-                  .then((triangles) => (triangles ? [...triangles] : undefined)),
-              ),
-            );
-            const footprints = await Promise.all(
-              paths.map((path) =>
-                Forma.geometry
-                  .getFootprint({ path })
-                  .then((polygon) => (polygon ? polygon.coordinates : undefined)),
-              ),
-            );
-
-            const elements = paths.map((_, index) => ({
-              triangles: triangles[index],
-              footprints: footprints[index],
-            }));
-
+            const elements = await readElementsByPaths(paths);
             return { nodeId: id, value: JSON.stringify(elements) };
+          } else if (name === "GetFormaElements") {
+            const { elements } = await Forma.elements.get({
+              urn,
+              recursive: true,
+            });
+            return { nodeId: id, value: JSON.stringify(Object.values(elements)) };
           } else if (type === "FormaTerrain") {
             const [path] = await Forma.geometry.getPathsByCategory({
               category: "terrain",

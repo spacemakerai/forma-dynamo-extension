@@ -2,6 +2,8 @@ import { useEffect, useState } from "preact/hooks";
 import { isSelect } from "../../utils/node";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { Template } from "forma-embedded-view-sdk/dist/internal/experimental/housing";
+import { ElementResponse } from "forma-embedded-view-sdk/dist/internal/elements";
+import { FormaElement } from "forma-elements";
 
 function DynamoHousingTemplateInputComponent({
   input,
@@ -40,6 +42,120 @@ function DynamoHousingTemplateInputComponent({
   );
 }
 
+function addPaths(
+  elements: ElementResponse,
+  urn: string,
+  path: string = "root",
+): { [path: string]: FormaElement } {
+  let elementsWithPath: { [path: string]: FormaElement } = { [path]: elements[urn] };
+
+  for (const child of elements[urn].children || []) {
+    elementsWithPath = {
+      ...elementsWithPath,
+      ...addPaths(elements, child.urn, `${path}/${child.key}`),
+    };
+  }
+
+  return elementsWithPath;
+}
+
+function getPaths(elements: { [path: string]: FormaElement }, property: string, value: string) {
+  const paths = [];
+  for (const [path, element] of Object.entries(elements)) {
+    if (element.properties?.[property] === value) {
+      paths.push(path);
+    }
+  }
+
+  return paths;
+}
+
+function GetElementsByPropertyInputComponent({
+  input,
+  value,
+  setValue,
+}: {
+  input: Input;
+  value: any;
+  setValue: (id: string, v: any) => void;
+}) {
+  const [elements, setElements] = useState<{ [path: string]: FormaElement }>({});
+  const [properties, setProperties] = useState<Record<string, Set<unknown>>>({});
+  const [property, setProperty] = useState<string>("");
+  useEffect(() => {
+    (async () => {
+      try {
+        const urn = await Forma.proposal.getRootUrn();
+        const response = await Forma.elements.get({
+          urn,
+          recursive: true,
+        });
+
+        const { elements } = response;
+
+        setElements(addPaths(elements, urn));
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [input.id]);
+
+  useEffect(() => {
+    const properties: Record<string, Set<unknown>> = {};
+    (async () => {
+      Object.values(elements).forEach((element) => {
+        Object.entries(element.properties || {}).map(([key, value]) => {
+          if (properties[key]) {
+            properties[key].add(value);
+          } else {
+            properties[key] = new Set<unknown>();
+          }
+        });
+      });
+
+      setProperties(properties);
+      setProperty(Object.keys(properties)[0]);
+    })();
+  }, [elements]);
+
+  return (
+    <div>
+      Property
+      {Object.keys(properties).length === 0 ? (
+        <span>No properties</span>
+      ) : (
+        <>
+          <forma-select-native
+            // @ts-ignore
+            onChange={(ev) => setProperty(ev.detail.value)}
+            value={value}
+          >
+            {Object.keys(properties)
+              .sort()
+              .map((name) => (
+                <option value={name} key={name}>
+                  {name}
+                </option>
+              ))}
+          </forma-select-native>
+
+          <forma-select-native
+            // @ts-ignore
+            onChange={(ev) => setValue(input.id, getPaths(elements, property, ev.detail.value))}
+            value={value}
+          >
+            {[...properties[property]].map((name) => (
+              <option value={String(name)} key={name}>
+                {String(name)}
+              </option>
+            ))}
+          </forma-select-native>
+        </>
+      )}
+    </div>
+  );
+}
+
 function DynamoInputComponent({
   input,
   value,
@@ -70,6 +186,8 @@ function DynamoInputComponent({
         </weave-button>
       </div>
     );
+  } else if (input.type === "FormaGetElementsByProperty") {
+    return <GetElementsByPropertyInputComponent input={input} value={value} setValue={setValue} />;
   } else if (input.type === "StringInput") {
     return (
       <weave-input
@@ -151,7 +269,6 @@ function DynamoInputComponent({
       />
     );
   }
-  console.log(input);
   return null;
 }
 

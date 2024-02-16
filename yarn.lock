@@ -1542,10 +1542,17 @@ for-each@^0.3.3:
   dependencies:
     is-callable "^1.1.3"
 
-forma-embedded-view-sdk@0.50.0:
-  version "0.50.0"
-  resolved "https://registry.yarnpkg.com/forma-embedded-view-sdk/-/forma-embedded-view-sdk-0.50.0.tgz#72d9b52dfad96235e1f2216be0e10ac0263fb40f"
-  integrity sha512-Fzqp5y2sxId4WcNMCDE6YrVucJiNFbnA6WLTqoFJBttZjQ51El4UmmPgbZcL/tGGlvDkGjVcfLDL0cZlNx2S5w==
+forma-elements@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/forma-elements/-/forma-elements-1.2.0.tgz#cb9e83df1336b5de62b66c1190c6827960b380c6"
+  integrity sha512-KGxor54Nil0YElNwyRSEVraRqBUmCZbm5y+Fugf9gQHMgLoTHHnDt86laC2++jNxDe/lj5zhJaQ2woyPLkB8aA==
+  dependencies:
+    zod "^3.22.4"
+
+forma-embedded-view-sdk@0.52.2:
+  version "0.52.2"
+  resolved "https://registry.yarnpkg.com/forma-embedded-view-sdk/-/forma-embedded-view-sdk-0.52.2.tgz#f35888c986f27f4aed4e48ed6d06aba9d53bfd54"
+  integrity sha512-F3auAD2pgVtSWJnPGxO4SdEUduLVPRPpCFktFkZ7ZIiEtUMdw7fU8Qp4xClPcjI31ZVX1A9qOdvSa/XNcmyArA==
   dependencies:
     "@types/geojson" "^7946.0.13"
 
@@ -2860,3 +2867,8 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+zod@^3.22.4:
+  version "3.22.4"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.22.4.tgz#f31c3a9386f61b1f228af56faa9255e845cf3fff"
+  integrity sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==
