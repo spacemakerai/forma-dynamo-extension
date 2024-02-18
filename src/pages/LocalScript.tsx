@@ -126,6 +126,39 @@ async function readElementsByPaths(paths: string[]) {
   }));
 }
 
+async function getAllPaths() {
+  const urn = await Forma.proposal.getRootUrn();
+  const { elements } = await Forma.elements.get({ urn, recursive: true });
+
+  function getElementsByPath(path: string) {
+    if (path === "root") {
+      return elements[urn];
+    }
+    const keys = path.split("/").slice(1);
+
+    let element = elements[urn];
+    for (const key of keys) {
+      const child = element.children?.find((child) => child.key === key);
+      if (!child) {
+        throw new Error(`Element not found at path ${path}`);
+      }
+      element = elements[child?.urn];
+    }
+    return element;
+  }
+
+  function findAllPaths(path: string) {
+    const element = getElementsByPath(path);
+    const paths = [path];
+    for (const child of element.children || []) {
+      paths.push(...findAllPaths(`${path}/${child.key}`));
+    }
+    return paths;
+  }
+
+  return findAllPaths("root");
+}
+
 type Output =
   | { type: "init" }
   | { type: "running" }
@@ -174,11 +207,9 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             const elements = await readElementsByPaths(paths);
             return { nodeId: id, value: JSON.stringify(elements) };
           } else if (name === "GetFormaElements") {
-            const { elements } = await Forma.elements.get({
-              urn,
-              recursive: true,
-            });
-            return { nodeId: id, value: JSON.stringify(Object.values(elements)) };
+            const paths = await getAllPaths();
+            const elements = await readElementsByPaths(paths);
+            return { nodeId: id, value: JSON.stringify(elements) };
           } else if (type === "FormaTerrain") {
             const [path] = await Forma.geometry.getPathsByCategory({
               category: "terrain",
@@ -238,6 +269,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         data: await dynamoHandler("runGraph", { code, inputs }),
       });
     } catch (e) {
+      console.error(e);
       captureException(e, "Error running Dynamo graph");
       setOutput({ type: "error", data: e });
     }
