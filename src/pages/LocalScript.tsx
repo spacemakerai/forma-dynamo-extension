@@ -14,12 +14,7 @@ function getDefaultValues(scriptInfo: any) {
     const state: any = {};
 
     for (const input of inputs) {
-      if (
-        isSelect(input) ||
-        input.type === "FormaTerrain" ||
-        input.type === "FormaProject" ||
-        input.type === "FormaGetElementsByProperty"
-      ) {
+      if (isSelect(input) || input.type === "FormaTerrain" || input.type === "FormaProject") {
         // Intentionally ignored does not work between sessions
         continue;
       }
@@ -198,11 +193,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         code.inputs.map(async ({ id, type, name }: any) => {
           const value = state[id];
 
-          if (
-            type === "FormaSelectElements" ||
-            type === "FormaSelectElement" ||
-            name === "GetFormaElementByProperty"
-          ) {
+          if (type === "FormaSelectElements" || type === "FormaSelectElement") {
             const paths = (value || []) as string[];
             const elements = await readElementsByPaths(paths);
             return { nodeId: id, value: JSON.stringify(elements) };
