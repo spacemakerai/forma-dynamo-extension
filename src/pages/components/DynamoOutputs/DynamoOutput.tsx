@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
-import { addElement } from "../../service/element";
+import { addElement } from "../../../service/element.ts";
 import { Forma } from "forma-embedded-view-sdk/auto";
-import { Visibility } from "../../icons/Visibility";
-import { captureException } from "../../util/sentry.ts";
+import { Visibility } from "../../../icons/Visibility.tsx";
+import { captureException } from "../../../util/sentry.ts";
 
 type Output = {
   id: string;

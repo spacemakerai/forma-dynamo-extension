@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "preact/compat";
 
-import { DynamoOutput } from "./components/DynamoOutput.js";
-import { DynamoInput } from "./components/DynamoInput.js";
+import { DynamoOutput } from "./components/DynamoOutputs/DynamoOutput.js";
+import { DynamoInput } from "./components/DynamoInputs/DynamoInput.js";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { isSelect } from "../utils/node.js";
 import { NotTrustedGraph } from "./components/NotTrustedGraph.js";

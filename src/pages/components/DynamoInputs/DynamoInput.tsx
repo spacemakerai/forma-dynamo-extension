@@ -1,5 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
-import { isSelect } from "../../utils/node";
+import { isSelect } from "../../../utils/node";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { Template } from "forma-embedded-view-sdk/dist/internal/experimental/housing";
 
