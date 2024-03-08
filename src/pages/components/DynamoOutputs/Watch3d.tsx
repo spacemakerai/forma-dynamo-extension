@@ -76,6 +76,7 @@ function PreviewAndAdd({ id, value }: { id: string; value: string }) {
 
 export function Watch3D({ output }: { output: Output }) {
   if (typeof output.value !== "string") {
+    console.error("Unexpected type: Watch3D output value is not a string");
     captureException(
       new Error("Unexpected output value type"),
       "Watch3D output value is not a string",
