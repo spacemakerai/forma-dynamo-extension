@@ -19,7 +19,15 @@ export function isSelect(input: Input) {
     "FormaSelectFootprints",
     "FormaSelectElements",
     "FormaSelectElement",
+    "SelectElements",
+    "SelectMetrics",
   ];
 
   return names.includes(input.name) || types.includes(input.type);
+}
+
+export function isGet(input: Input) {
+  const types = ["FormaProject", "FormaTerrain", "GetTerrain", "GetProject"];
+
+  return types.includes(input.type);
 }

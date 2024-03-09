@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect, useRef } from "preact/compat";
 import { DynamoOutput } from "./components/DynamoOutputs/DynamoOutput.js";
 import { DynamoInput } from "./components/DynamoInputs/DynamoInput.js";
 import { Forma } from "forma-embedded-view-sdk/auto";
-import { isSelect } from "../utils/node.js";
+import { isGet, isSelect } from "../utils/node.js";
 import { NotTrustedGraph } from "./components/NotTrustedGraph.js";
 import { SelectMode } from "./components/SelectMode.tsx";
 import { captureException } from "../util/sentry.ts";
@@ -14,7 +14,7 @@ function getDefaultValues(scriptInfo: any) {
     const state: any = {};
 
     for (const input of inputs) {
-      if (isSelect(input) || input.type === "FormaTerrain" || input.type === "FormaProject") {
+      if (isSelect(input) || isGet(input)) {
         // Intentionally ignored does not work between sessions
         continue;
       }
@@ -193,11 +193,15 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         code.inputs.map(async ({ id, type, name }: any) => {
           const value = state[id];
 
-          if (type === "FormaSelectElements" || type === "FormaSelectElement") {
+          if (
+            type === "FormaSelectElements" ||
+            type === "FormaSelectElement" ||
+            type === "SelectElements"
+          ) {
             const paths = (value || []) as string[];
             const elements = await readElementsByPaths(paths);
             return { nodeId: id, value: JSON.stringify(elements) };
-          } else if (name === "GetFormaElements") {
+          } else if (name === "GetFormaElements" || type === "GetAllElements") {
             const paths = await getAllPaths();
             const elements = await readElementsByPaths(paths);
             return { nodeId: id, value: JSON.stringify(elements) };
@@ -209,7 +213,17 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
               nodeId: id,
               value: JSON.stringify([[...(await Forma.geometry.getTriangles({ path }))]]),
             };
-          } else if (type === "FormaProject") {
+          } else if (type === "GetTerrain") {
+            const paths = await Forma.geometry.getPathsByCategory({
+              category: "terrain",
+            });
+
+            const elements = await readElementsByPaths(paths);
+            return {
+              nodeId: id,
+              value: JSON.stringify(elements[0]),
+            };
+          } else if (type === "FormaProject" || type === "GetProject") {
             const project = await Forma.project.get();
             return {
               nodeId: id,
@@ -240,7 +254,11 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                 ),
               ),
             };
-          } else if (name === "Metrics" || type === "FormaSelectMetrics") {
+          } else if (
+            name === "Metrics" ||
+            type === "FormaSelectMetrics" ||
+            type === "SelectMetrics"
+          ) {
             return {
               nodeId: id,
               value: JSON.stringify(

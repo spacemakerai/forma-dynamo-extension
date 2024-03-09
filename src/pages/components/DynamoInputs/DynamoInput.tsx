@@ -13,9 +13,9 @@ function DynamoInputComponent({
   setValue: (id: string, v: any) => void;
   setActiveSelectionNode?: (v: any) => void;
 }) {
-  if (input.type === "FormaTerrain") {
+  if (input.type === "FormaTerrain" || input.type === "GetTerrain") {
     return null;
-  } else if (input.type === "FormaProject") {
+  } else if (input.type === "FormaProject" || input.type === "GetProject") {
     return null;
   } else if (input.type === "FormaHousingTemplate") {
     return <Housing input={input} value={value} setValue={setValue} />;
