@@ -371,7 +371,7 @@
       "NodeType": "CodeBlockNode",
       "Inputs": [
         {
-          "Id": "507a81d092c44090b61ace549e400d48",
+          "Id": "2e128bd25a87486b9fcbe88a1177c2fb",
           "Name": "formaMetrics",
           "Description": "formaMetrics",
           "UsingDefaultValue": false,
@@ -382,7 +382,7 @@
       ],
       "Outputs": [
         {
-          "Id": "8ddf742cccd143aa812b9dd47fb9fec8",
+          "Id": "a535afa15ef34c6fb73b4740ea85538f",
           "Name": "",
           "Description": "areaMetrics",
           "UsingDefaultValue": false,
@@ -391,7 +391,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "4a730273b9f048f787039569b79b93c3",
+          "Id": "e14df254636441299e5b55005c2c9682",
           "Name": "",
           "Description": "functionValues",
           "UsingDefaultValue": false,
@@ -400,7 +400,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "c368f3ef773c4945a651168918d1290e",
+          "Id": "134d67777f82498c977413b0ad262144",
           "Name": "",
           "Description": "gia",
           "UsingDefaultValue": false,
@@ -409,7 +409,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "92c66428d9f74af8be2820f54e1840a2",
+          "Id": "656ef176453849d1b1d9a2483d16e772",
           "Name": "",
           "Description": "nia",
           "UsingDefaultValue": false,
@@ -420,7 +420,7 @@
       ],
       "Replication": "Disabled",
       "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "//Get to Area Metrics from Dictionary\nareaMetrics = formaMetrics\n\t[\"customMetrics\"]\n\t[\"functionBreakdown\"];\n\n//Get to Functions and Values from Dictionary\nfunctionValues = DesignScript.Dictionary.ValueAtKey(\n\tareaMetrics,\n\t[\"functionId\", \"value\"]@L1<1>\n\t);\n\n//Split out results into GIA and NIA\ngia = List.FirstItem(functionValues@L3<1>);\nnia = List.LastItem(functionValues@L3<1>);"
+      "Code": "//Get to Area Metrics from Dictionary\nareaMetrics = formaMetrics\n\t[\"customMetrics\"]\n\t[\"functionBreakdown\"];\n\n//Get to Functions and Values from Dictionary\nfunctionValues = DesignScript.Dictionary.ValueAtKey(\n\tareaMetrics,\n\t[\"functionName\", \"value\"]@L1<1>\n\t);\n\n//Split out results into GIA and NIA\ngia = List.FirstItem(functionValues@L3<1>);\nnia = List.LastItem(functionValues@L3<1>);"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -428,7 +428,7 @@
       "NodeType": "CodeBlockNode",
       "Inputs": [
         {
-          "Id": "9738de6ed6404a81824879071b810d5d",
+          "Id": "96df50bdee1f4f48a126bf9838c09df3",
           "Name": "ifResult",
           "Description": "ifResult",
           "UsingDefaultValue": false,
@@ -437,7 +437,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "4e7668c84271422a9ce549c33ee714ca",
+          "Id": "0f3e05d8f0354c5990a81c42c9aad6bb",
           "Name": "resiRate",
           "Description": "resiRate",
           "UsingDefaultValue": false,
@@ -446,7 +446,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "ec5943f5d2ec4348b07621c80af91b26",
+          "Id": "b78e5f7d115642b6ba265ebe5c6517bf",
           "Name": "commRate",
           "Description": "commRate",
           "UsingDefaultValue": false,
@@ -455,7 +455,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "30dafe9dd75f413e9ad97d5d873aefee",
+          "Id": "324c5380a23f4613998576f66bfc824d",
           "Name": "unspRate",
           "Description": "unspRate",
           "UsingDefaultValue": false,
@@ -464,7 +464,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "7579aa1178c84b66b399630f754f37e9",
+          "Id": "cd164a8f56db47649a4a6a895bdd1268",
           "Name": "consultantPercentage",
           "Description": "consultantPercentage",
           "UsingDefaultValue": false,
@@ -475,7 +475,7 @@
       ],
       "Outputs": [
         {
-          "Id": "6885400aa35a4d9a8c1c2bf9ca4812b8",
+          "Id": "570cdbb75ad04911862814d4f8602b84",
           "Name": "",
           "Description": "areaTypologies",
           "UsingDefaultValue": false,
@@ -484,7 +484,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "1658ab6bc85246be9195a82c2a9c7ad1",
+          "Id": "6886552be1464bcb8a9c44a3ffb4f5d2",
           "Name": "",
           "Description": "pairTypologies",
           "UsingDefaultValue": false,
@@ -493,7 +493,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "55c48cc26b994941a92009f9c3e7f8dd",
+          "Id": "3b5752188b6f4530bc0e60d447bc1c53",
           "Name": "",
           "Description": "residential",
           "UsingDefaultValue": false,
@@ -502,7 +502,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "64d698081c8048b0a10e2893333dc7e9",
+          "Id": "59b306b81a9e4059be3b4d6e7904a89b",
           "Name": "",
           "Description": "commercial",
           "UsingDefaultValue": false,
@@ -511,7 +511,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "ce0c681a4a6d4fc4a4baba28525fd370",
+          "Id": "43929c57f8b24418bc826d792a90b206",
           "Name": "",
           "Description": "unspecified",
           "UsingDefaultValue": false,
@@ -520,7 +520,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "f0196b4d588649aa85bafab22c9d73f4",
+          "Id": "58bec2d3d9554ff8a21d255e2edf9708",
           "Name": "",
           "Description": "resiCost",
           "UsingDefaultValue": false,
@@ -529,7 +529,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "165ab1585298483990744f0eb1ec01c7",
+          "Id": "3d0b3b0249ac41c2a977043eb22bf9c8",
           "Name": "",
           "Description": "commCost",
           "UsingDefaultValue": false,
@@ -538,7 +538,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "11ea17c150294bb9989e6fe65fe26e36",
+          "Id": "2073ae39c509455db9c47ef46fc90a34",
           "Name": "",
           "Description": "unspCost",
           "UsingDefaultValue": false,
@@ -547,7 +547,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "edaee06bc41041209fb322a48a1e9c11",
+          "Id": "2e233029dee1407f98d5a630a8b7a2d4",
           "Name": "",
           "Description": "buildingCost",
           "UsingDefaultValue": false,
@@ -556,7 +556,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "626227593e9343d986255e8f7500f064",
+          "Id": "715fa7142693427b8c756ebf94a97598",
           "Name": "",
           "Description": "consultantFee",
           "UsingDefaultValue": false,
@@ -565,7 +565,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "aa35578673bc4d9ab37880a4dec26632",
+          "Id": "f7e4ba735c9744fd85d05929f1a6715a",
           "Name": "",
           "Description": "totalCost",
           "UsingDefaultValue": false,
@@ -576,7 +576,7 @@
       ],
       "Replication": "Disabled",
       "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "//Define salient Area Typologies\nareaTypologies = [\n\t\"residential\",\n\t\"commercial\",\n\t\"unspecified\"];\n\n//Pair typologies to Dictionary results\npairTypologies = List.FirstIndexOf(\n\tifResult@L2<1>,\n\tareaTypologies);\n\n//Pulling out individual Data Lists\nresidential = pairTypologies[0][0];\ncommercial = pairTypologies[0][1];\nunspecified = pairTypologies[0][2];\n\n//Calculating cost based on Area * Rate\nresiCost = Math.Ceiling(\n\tList.LastItem(\n\t\tList.GetItemAtIndex(\n\t\t\tifResult@L2<1>,\n\t\t\tresidential)) * resiRate);\ncommCost = Math.Ceiling(\n\tList.LastItem(\n\t\tList.GetItemAtIndex(\n\t\t\tifResult@L2<1>,\n\t\t\tcommercial)) * commRate);\nunspCost = Math.Ceiling(\n\tList.LastItem(\n\t\tList.GetItemAtIndex(\n\t\t\tifResult@L2<1>,\n\t\t\tunspecified)) * unspRate);\n\n//Calculating Building Costs\nbuildingCost = resiCost + commCost + unspCost;\nconsultantFee = Math.Ceiling(\n\tbuildingCost * (consultantPercentage/100));\ntotalCost = Math.Ceiling(buildingCost + consultantFee);"
+      "Code": "//Define salient Area Typologies\nareaTypologies = [\n\t\"Residential\",\n\t\"Commercial\",\n\t\"Unspecified\"];\n\n//Pair typologies to Dictionary results\npairTypologies = List.FirstIndexOf(\n\tifResult@L2<1>,\n\tareaTypologies);\n\n//Pulling out individual Data Lists\nresidential = pairTypologies[0][0];\ncommercial = pairTypologies[0][1];\nunspecified = pairTypologies[0][2];\n\n//Calculating cost based on Area * Rate\nresiCost = Math.Ceiling(\n\tList.LastItem(\n\t\tList.GetItemAtIndex(\n\t\t\tifResult@L2<1>,\n\t\t\tresidential)) * resiRate);\ncommCost = Math.Ceiling(\n\tList.LastItem(\n\t\tList.GetItemAtIndex(\n\t\t\tifResult@L2<1>,\n\t\t\tcommercial)) * commRate);\nunspCost = Math.Ceiling(\n\tList.LastItem(\n\t\tList.GetItemAtIndex(\n\t\t\tifResult@L2<1>,\n\t\t\tunspecified)) * unspRate);\n\n//Calculating Building Costs\nbuildingCost = resiCost + commCost + unspCost;\nconsultantFee = Math.Ceiling(\n\tbuildingCost * (consultantPercentage/100));\ntotalCost = Math.Ceiling(buildingCost + consultantFee);"
     },
     {
       "ConcreteType": "DynamoForma.NodeModels.FormaSelectMetrics, DynamoForma.NodeModels",
@@ -904,62 +904,62 @@
   "Connectors": [
     {
       "Start": "729190de5ca944b3b46841acc85e4a5a",
-      "End": "9738de6ed6404a81824879071b810d5d",
-      "Id": "eaac1b63bf71406caa87283db179ec78",
+      "End": "96df50bdee1f4f48a126bf9838c09df3",
+      "Id": "bcda8c61282547e486b7ea6b9cc977d0",
       "IsHidden": "False"
     },
     {
-      "Start": "c368f3ef773c4945a651168918d1290e",
+      "Start": "134d67777f82498c977413b0ad262144",
       "End": "e7d2d96e33ce47b2a873e79d6a6c20e5",
-      "Id": "c3b56f09101645be83bb60d48afad940",
+      "Id": "81d432bd3bcc48ad99bec59e97bf73fb",
       "IsHidden": "False"
     },
     {
-      "Start": "92c66428d9f74af8be2820f54e1840a2",
+      "Start": "656ef176453849d1b1d9a2483d16e772",
       "End": "aa88b1d3f95f432283df0a4f4982aea2",
-      "Id": "cd49767e0b094a8ca07bc4a68274ff49",
+      "Id": "c49f0049728e4a51b4a6433b6411668a",
       "IsHidden": "False"
     },
     {
-      "Start": "f0196b4d588649aa85bafab22c9d73f4",
+      "Start": "58bec2d3d9554ff8a21d255e2edf9708",
       "End": "11b1d7bafc0c43d2b2b06744de134bff",
-      "Id": "b6ea61fe1dd04cd6b742c807cb9e4c92",
+      "Id": "f09436b3086e4e778077d2f76289097c",
       "IsHidden": "False"
     },
     {
-      "Start": "165ab1585298483990744f0eb1ec01c7",
+      "Start": "3d0b3b0249ac41c2a977043eb22bf9c8",
       "End": "57f14ee176b147f5a1fce83a30ceba31",
-      "Id": "f60ad4defe11487bb4efd135c51aee31",
+      "Id": "9a6c3d1c85b7469190759e35eb2f10c4",
       "IsHidden": "False"
     },
     {
-      "Start": "11ea17c150294bb9989e6fe65fe26e36",
+      "Start": "2073ae39c509455db9c47ef46fc90a34",
       "End": "761d529afb764022abf7001669eb179a",
-      "Id": "89c3c9a0dcfa48048f4f1c29da4b7202",
+      "Id": "2feda9f40422487bb3ba7b891070ec7d",
       "IsHidden": "False"
     },
     {
-      "Start": "edaee06bc41041209fb322a48a1e9c11",
+      "Start": "2e233029dee1407f98d5a630a8b7a2d4",
       "End": "0cc35a63c75a45199a4c42d0ad36e26f",
-      "Id": "f55b977700f643c5990462a9ef3fb87a",
+      "Id": "022d6fa1ed8148759e9e1bcbc1231677",
       "IsHidden": "False"
     },
     {
-      "Start": "626227593e9343d986255e8f7500f064",
+      "Start": "715fa7142693427b8c756ebf94a97598",
       "End": "fbb6b427acb14f6484ed1a9ece3f28a8",
-      "Id": "887a278da03f4f1a8f59f1de3dea2a57",
+      "Id": "b73452a456e34b9cbf2e51d8ec4c9809",
       "IsHidden": "False"
     },
     {
-      "Start": "aa35578673bc4d9ab37880a4dec26632",
+      "Start": "f7e4ba735c9744fd85d05929f1a6715a",
       "End": "69183a30a10d4f939c093e0e43360f41",
-      "Id": "9ee6a5c8734b41a0afef69e3fb9f2436",
+      "Id": "1713260234d94a3bb72048341562f08f",
       "IsHidden": "False"
     },
     {
       "Start": "2f1a3a52683d4241bd2062799a171d1e",
-      "End": "507a81d092c44090b61ace549e400d48",
-      "Id": "f3ba38aa402345038a4807d6d6e4414f",
+      "End": "2e128bd25a87486b9fcbe88a1177c2fb",
+      "Id": "35ca4341745349e3b3e731184d9160c8",
       "IsHidden": "False"
     },
     {
@@ -970,26 +970,26 @@
     },
     {
       "Start": "66d64497c9d045189dedf5ea1b2f66c3",
-      "End": "4e7668c84271422a9ce549c33ee714ca",
-      "Id": "4365c457e0c34ed1bbdde2d497fcfc9e",
+      "End": "0f3e05d8f0354c5990a81c42c9aad6bb",
+      "Id": "62c874c36127466085236b736e0cb0f6",
       "IsHidden": "False"
     },
     {
       "Start": "34d04321f9d043239884b9a281b2babe",
-      "End": "ec5943f5d2ec4348b07621c80af91b26",
-      "Id": "344cc1733e0742668258490eee30cf6e",
+      "End": "b78e5f7d115642b6ba265ebe5c6517bf",
+      "Id": "215624b611c3456484e73b6e0f52003e",
       "IsHidden": "False"
     },
     {
       "Start": "f3cbfe0996f54387b26d68133e955277",
-      "End": "30dafe9dd75f413e9ad97d5d873aefee",
-      "Id": "c47b3e7b77e040079daf102246648e2e",
+      "End": "324c5380a23f4613998576f66bfc824d",
+      "Id": "053eda58aa524989a79b9a9387971206",
       "IsHidden": "False"
     },
     {
       "Start": "6539e5bdb2a04ef5ba4b9650ecd0fc28",
-      "End": "7579aa1178c84b66b399630f754f37e9",
-      "Id": "e37dec2e0bcd41a497d1f7a874086d26",
+      "End": "cd164a8f56db47649a4a6a895bdd1268",
+      "Id": "9ce87655b42e43ac8f823f9326201c36",
       "IsHidden": "False"
     },
     {
