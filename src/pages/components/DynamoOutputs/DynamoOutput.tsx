@@ -2,6 +2,7 @@ import { Output } from "./types.tsx";
 import { Watch3D } from "./Watch3d.tsx";
 import { HousingByLine } from "./HousingByLine.tsx";
 import { WatchImage } from "./WatchImage.tsx";
+import { SendToForma } from "./SendToForma.tsx";
 
 function DynamoOutputComponent({ output }: { output: Output }) {
   if (output.type === "Watch3D") {
@@ -13,6 +14,10 @@ function DynamoOutputComponent({ output }: { output: Output }) {
 
   if (output.name === "FormaHousing.ByLine") {
     return <HousingByLine output={output} />;
+  }
+
+  if (output.name === "Send.SendToForma") {
+    return <SendToForma output={output} />;
   }
 
   return (
