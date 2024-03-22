@@ -1,6 +1,6 @@
 import { Forma } from "forma-embedded-view-sdk/auto";
 
-export async function addElement(glb: ArrayBuffer, name?: string) {
+export async function addGlbElement(glb: ArrayBuffer, name?: string) {
   const { fileId } = await Forma.integrateElements.uploadFile({
     authcontext: Forma.getProjectId(),
     data: glb,

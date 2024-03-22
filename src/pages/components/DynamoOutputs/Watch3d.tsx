@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
-import { addElement } from "../../../service/element.ts";
+import { addGlbElement } from "../../../service/element.ts";
 import { Visibility } from "../../../icons/Visibility.tsx";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { captureException } from "../../../util/sentry.ts";
@@ -42,7 +42,7 @@ function PreviewAndAdd({ id, value }: { id: string; value: string }) {
   const add = useCallback(async () => {
     setIsAdding(true);
     try {
-      await addElement(glb);
+      await addGlbElement(glb);
       await togglePreview(false);
       setIsAdded(true);
     } catch (e) {
