@@ -16,7 +16,7 @@ function DynamoOutputComponent({ output }: { output: Output }) {
     return <HousingByLine output={output} />;
   }
 
-  if (output.name === "Send.SendToForma") {
+  if (output.type === "SendToForma") {
     return <SendToForma output={output} />;
   }
 
