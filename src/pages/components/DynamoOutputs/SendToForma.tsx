@@ -124,7 +124,7 @@ function PreviewAndAdd({ id, value }: { id: string; value: string[] }) {
   const [isPreviewActive, setIsPreviewActive] = useState(true);
 
   const elements: CreateIntegrateElement[] = useMemo(
-    () => value.map((value) => JSON.parse(value)),
+    () => value.map((value) => JSON.parse(value)).flat(1),
     [value],
   );
 
