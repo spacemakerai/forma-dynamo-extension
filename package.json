@@ -4,8 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start": "DEV_SERVER=1 vite",
-    "build": "VITE_SENTRY_RELEASE=$(git rev-parse --short HEAD) vite build",
+    "start": "cross-env DEV_SERVER=1 vite",
+    "build": "cross-env VITE_SENTRY_RELEASE=$(git rev-parse --short HEAD) vite build",
     "typecheck": "tsc --noEmit",
     "prettier:check": "prettier --check ./src",
     "prettier:write": "prettier --write ./src",
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@sentry/browser": "^7.80.0",
+    "cross-env": "^7.0.3",
     "forma-elements": "^1.2.0",
     "forma-embedded-view-sdk": "0.52.2",
     "preact": "^10.18.2"
