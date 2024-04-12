@@ -29,16 +29,16 @@
   },
   "Inputs": [
     {
-      "Id": "e07bc53f6d1b4fe393145f4dc329cb77",
-      "Name": "Select Building and Site",
+      "Id": "8178dd81afc14d2982498d4a6ae1c3c8",
+      "Name": "Select Building And Site",
       "Type": "string",
       "Type2": "string",
-      "Value": "{\"customMetrics\":[{\"id\":\"gia\",\"name\":\"GIA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":44640.002182500044},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":21285.000931499995},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":3555.0002925000213},{\"functionId\":\"0e80a986-151f-4262-bf55-95bd423e8019\",\"functionName\":\"Mechanical\",\"functionColor\":\"#F0D3F8\",\"value\":3667.500193500002}]},{\"id\":\"nia\",\"name\":\"NIA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":40176.00196425004},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":19156.50083835},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":3199.500263250019},{\"functionId\":\"0e80a986-151f-4262-bf55-95bd423e8019\",\"functionName\":\"Mechanical\",\"functionColor\":\"#F0D3F8\",\"value\":3300.750174150002}]}],\"builtInMetrics\":{\"grossFloorArea\":{\"id\":\"gfa\",\"name\":\"GFA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":49600.00242500006},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":23650.001035},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":3950.0003250000236},{\"functionId\":\"0e80a986-151f-4262-bf55-95bd423e8019\",\"functionName\":\"Mechanical\",\"functionColor\":\"#F0D3F8\",\"value\":4075.0002150000023}]},\"siteArea\":{\"id\":\"site_area\",\"name\":\"Site Area\",\"unitOfMeasurement\":\"SQUARE_METER\",\"value\":0},\"buildingCoverage\":{\"id\":\"bc\",\"name\":\"Building Coverage\",\"unitOfMeasurement\":\"SQUARE_METER\",\"value\":1600.0000800000007}},\"unitStatistics\":{\"count\":{\"id\":\"unit_count\",\"name\":\"Number of units\",\"unitOfMeasurement\":\"COUNT\",\"value\":0}}}",
+      "Value": "{\"customMetrics\":[{\"id\":\"bra\",\"name\":\"BRA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":4558.906742027155},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":4498.789893368959},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":0}]},{\"id\":\"bras\",\"name\":\"BRAS\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":4103.016067824436},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":0}]}],\"builtInMetrics\":{\"grossFloorArea\":{\"id\":\"gfa\",\"name\":\"BTA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":5065.451935585724},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":4998.655437076623},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":0}]},\"siteArea\":{\"id\":\"site_area\",\"name\":\"Site Area\",\"unitOfMeasurement\":\"SQUARE_METER\",\"value\":0},\"buildingCoverage\":{\"id\":\"bc\",\"name\":\"Building Coverage\",\"unitOfMeasurement\":\"SQUARE_METER\",\"value\":2516.026843165586}},\"unitStatistics\":{\"count\":{\"id\":\"unit_count\",\"name\":\"Number of units\",\"unitOfMeasurement\":\"COUNT\",\"value\":0}},\"parkingStatistics\":{\"spots\":0,\"area\":0}}",
       "Description": "Selection Forma Metrics",
       "SelectedIndex": 0
     },
     {
-      "Id": "358aecda1e3e478db734c776abe6bc6c",
+      "Id": "15a4046b31b246308e6fad4f2fe9a1e9",
       "Name": "GIA = Tick | NIA = Untick",
       "Type": "boolean",
       "Type2": "boolean",
@@ -47,7 +47,7 @@
       "SelectedIndex": 0
     },
     {
-      "Id": "1e705914459a4c759fa329b1a11c14de",
+      "Id": "685b408dac87422aba8e4ea802f4af55",
       "Name": "Residential Rate ($)",
       "Type": "number",
       "Type2": "number",
@@ -57,7 +57,7 @@
       "SelectedIndex": 0
     },
     {
-      "Id": "6e23e778cf354208adad153b658d67fc",
+      "Id": "26e4f92571394b16ab4b328595bc0f42",
       "Name": "Commercial Rate ($)",
       "Type": "number",
       "Type2": "number",
@@ -67,7 +67,7 @@
       "SelectedIndex": 0
     },
     {
-      "Id": "00746d6435cf4bdb9d9e9ea25393bd18",
+      "Id": "a6a957f190934f1d864cb7f22d1ba6c9",
       "Name": "Unspecified Rate ($)",
       "Type": "number",
       "Type2": "number",
@@ -77,7 +77,7 @@
       "SelectedIndex": 0
     },
     {
-      "Id": "75090daca3fc47d99ecd0aee04d51b66",
+      "Id": "20c2fc0a17db47c297d6f516fc1c6f29",
       "Name": "Consultant Percentage (%)",
       "Type": "number",
       "Type2": "number",
@@ -91,43 +91,43 @@
     {
       "Id": "e98da3f9ef59411aa856b198abd3ae5e",
       "Name": "Residential Cost ($)",
-      "Type": "unknown",
-      "InitialValue": "",
+      "Type": "string",
+      "InitialValue": "$455,891",
       "Description": "Visualizes a node's output"
     },
     {
       "Id": "28e75dd1856f4de2bfc5ca318b5fdd0a",
       "Name": "Commercial Cost ($)",
-      "Type": "unknown",
-      "InitialValue": "",
+      "Type": "string",
+      "InitialValue": "$899,758",
       "Description": "Visualizes a node's output"
     },
     {
       "Id": "931940ce91e44f16ad5d23199ecb3a13",
       "Name": "Unspecified Cost ($)",
-      "Type": "unknown",
-      "InitialValue": "",
+      "Type": "string",
+      "InitialValue": "$0",
       "Description": "Visualizes a node's output"
     },
     {
       "Id": "75c7ba74e9984b308c78185418e8310c",
       "Name": "BUILDING COST ($)",
-      "Type": "unknown",
-      "InitialValue": "",
+      "Type": "string",
+      "InitialValue": "$1,355,649",
       "Description": "Visualizes a node's output"
     },
     {
       "Id": "d31dea33ee9040c9a063383577fcecb6",
       "Name": "Consultant Fee ($)",
-      "Type": "unknown",
-      "InitialValue": "",
+      "Type": "string",
+      "InitialValue": "$67,783",
       "Description": "Visualizes a node's output"
     },
     {
       "Id": "8b6e3879c8044813bf9b4515c440f258",
       "Name": "TOTAL COST ($)",
-      "Type": "unknown",
-      "InitialValue": "",
+      "Type": "string",
+      "InitialValue": "$1,423,432",
       "Description": "Visualizes a node's output"
     }
   ],
@@ -181,7 +181,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
-      "WatchWidth": 95.0,
+      "WatchWidth": 80.0,
       "WatchHeight": 38.0,
       "Id": "e98da3f9ef59411aa856b198abd3ae5e",
       "NodeType": "ExtensionNode",
@@ -212,7 +212,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
-      "WatchWidth": 95.0,
+      "WatchWidth": 80.0,
       "WatchHeight": 38.0,
       "Id": "28e75dd1856f4de2bfc5ca318b5fdd0a",
       "NodeType": "ExtensionNode",
@@ -243,7 +243,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
-      "WatchWidth": 95.0,
+      "WatchWidth": 35.0,
       "WatchHeight": 38.0,
       "Id": "931940ce91e44f16ad5d23199ecb3a13",
       "NodeType": "ExtensionNode",
@@ -305,7 +305,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
-      "WatchWidth": 80.0,
+      "WatchWidth": 72.0,
       "WatchHeight": 38.0,
       "Id": "d31dea33ee9040c9a063383577fcecb6",
       "NodeType": "ExtensionNode",
@@ -336,7 +336,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
-      "WatchWidth": 102.5,
+      "WatchWidth": 95.0,
       "WatchHeight": 38.0,
       "Id": "8b6e3879c8044813bf9b4515c440f258",
       "NodeType": "ExtensionNode",
@@ -371,7 +371,7 @@
       "NodeType": "CodeBlockNode",
       "Inputs": [
         {
-          "Id": "2e128bd25a87486b9fcbe88a1177c2fb",
+          "Id": "fa6b741e68334141979f2f5841550dc4",
           "Name": "formaMetrics",
           "Description": "formaMetrics",
           "UsingDefaultValue": false,
@@ -382,7 +382,7 @@
       ],
       "Outputs": [
         {
-          "Id": "a535afa15ef34c6fb73b4740ea85538f",
+          "Id": "fb5ffc0f82304f688227a46be57add9c",
           "Name": "",
           "Description": "areaMetrics",
           "UsingDefaultValue": false,
@@ -391,7 +391,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "e14df254636441299e5b55005c2c9682",
+          "Id": "cd8e763923f34f3691a3e0734c9f482f",
           "Name": "",
           "Description": "functionValues",
           "UsingDefaultValue": false,
@@ -400,7 +400,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "134d67777f82498c977413b0ad262144",
+          "Id": "bb479495caf042e8a75edcaae2aa10a8",
           "Name": "",
           "Description": "gia",
           "UsingDefaultValue": false,
@@ -409,7 +409,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "656ef176453849d1b1d9a2483d16e772",
+          "Id": "3ad7440b9d084307b0b4b2304038cfca",
           "Name": "",
           "Description": "nia",
           "UsingDefaultValue": false,
@@ -577,130 +577,6 @@
       "Replication": "Disabled",
       "Description": "Allows for DesignScript code to be authored directly",
       "Code": "//Define salient Area Typologies\nareaTypologies = [\n\t\"Residential\",\n\t\"Commercial\",\n\t\"Unspecified\"];\n\n//Pair typologies to Dictionary results\npairTypologies = List.FirstIndexOf(\n\tifResult@L2<1>,\n\tareaTypologies);\n\n//Pulling out individual Data Lists\nresidential = pairTypologies[0][0];\ncommercial = pairTypologies[0][1];\nunspecified = pairTypologies[0][2];\n\n//Calculating cost based on Area * Rate\nresiCost = Math.Ceiling(\n\tList.LastItem(\n\t\tList.GetItemAtIndex(\n\t\t\tifResult@L2<1>,\n\t\t\tresidential)) * resiRate);\ncommCost = Math.Ceiling(\n\tList.LastItem(\n\t\tList.GetItemAtIndex(\n\t\t\tifResult@L2<1>,\n\t\t\tcommercial)) * commRate);\nunspCost = Math.Ceiling(\n\tList.LastItem(\n\t\tList.GetItemAtIndex(\n\t\t\tifResult@L2<1>,\n\t\t\tunspecified)) * unspRate);\n\n//Calculating Building Costs\nbuildingCost = resiCost + commCost + unspCost;\nconsultantFee = Math.Ceiling(\n\tbuildingCost * (consultantPercentage/100));\ntotalCost = Math.Ceiling(buildingCost + consultantFee);"
-    },
-    {
-      "ConcreteType": "DynamoForma.NodeModels.FormaSelectMetrics, DynamoForma.NodeModels",
-      "Id": "e07bc53f6d1b4fe393145f4dc329cb77",
-      "NodeType": "ExtensionNode",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "2f1a3a52683d4241bd2062799a171d1e",
-          "Name": "Dictionary",
-          "Description": "Dictionary Data",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Selection Forma Metrics",
-      "InputValue": "{\"customMetrics\":[{\"id\":\"gia\",\"name\":\"GIA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":44640.002182500044},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":21285.000931499995},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":3555.0002925000213},{\"functionId\":\"0e80a986-151f-4262-bf55-95bd423e8019\",\"functionName\":\"Mechanical\",\"functionColor\":\"#F0D3F8\",\"value\":3667.500193500002}]},{\"id\":\"nia\",\"name\":\"NIA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":40176.00196425004},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":19156.50083835},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":3199.500263250019},{\"functionId\":\"0e80a986-151f-4262-bf55-95bd423e8019\",\"functionName\":\"Mechanical\",\"functionColor\":\"#F0D3F8\",\"value\":3300.750174150002}]}],\"builtInMetrics\":{\"grossFloorArea\":{\"id\":\"gfa\",\"name\":\"GFA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":49600.00242500006},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":23650.001035},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":3950.0003250000236},{\"functionId\":\"0e80a986-151f-4262-bf55-95bd423e8019\",\"functionName\":\"Mechanical\",\"functionColor\":\"#F0D3F8\",\"value\":4075.0002150000023}]},\"siteArea\":{\"id\":\"site_area\",\"name\":\"Site Area\",\"unitOfMeasurement\":\"SQUARE_METER\",\"value\":0},\"buildingCoverage\":{\"id\":\"bc\",\"name\":\"Building Coverage\",\"unitOfMeasurement\":\"SQUARE_METER\",\"value\":1600.0000800000007}},\"unitStatistics\":{\"count\":{\"id\":\"unit_count\",\"name\":\"Number of units\",\"unitOfMeasurement\":\"COUNT\",\"value\":0}}}"
-    },
-    {
-      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
-      "Id": "358aecda1e3e478db734c776abe6bc6c",
-      "NodeType": "BooleanInputNode",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "d05d10f333d74e61a1ec949ddc4f764a",
-          "Name": "",
-          "Description": "Boolean",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Enables selection between True and False",
-      "InputValue": true
-    },
-    {
-      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
-      "NumberType": "Double",
-      "Id": "1e705914459a4c759fa329b1a11c14de",
-      "NodeType": "NumberInputNode",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "66d64497c9d045189dedf5ea1b2f66c3",
-          "Name": "",
-          "Description": "Double",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Creates a number",
-      "InputValue": 100.0
-    },
-    {
-      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
-      "NumberType": "Double",
-      "Id": "6e23e778cf354208adad153b658d67fc",
-      "NodeType": "NumberInputNode",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "34d04321f9d043239884b9a281b2babe",
-          "Name": "",
-          "Description": "Double",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Creates a number",
-      "InputValue": 200.0
-    },
-    {
-      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
-      "NumberType": "Double",
-      "Id": "00746d6435cf4bdb9d9e9ea25393bd18",
-      "NodeType": "NumberInputNode",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "f3cbfe0996f54387b26d68133e955277",
-          "Name": "",
-          "Description": "Double",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Creates a number",
-      "InputValue": 350.0
-    },
-    {
-      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
-      "NumberType": "Double",
-      "Id": "75090daca3fc47d99ecd0aee04d51b66",
-      "NodeType": "NumberInputNode",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "6539e5bdb2a04ef5ba4b9650ecd0fc28",
-          "Name": "",
-          "Description": "Double",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Creates a number",
-      "InputValue": 5.0
     },
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
@@ -899,6 +775,130 @@
       ],
       "Replication": "Disabled",
       "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "DynamoForma.NodeModels.SelectMetrics, DynamoForma.NodeModels",
+      "Id": "8178dd81afc14d2982498d4a6ae1c3c8",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "65dfb9c78b7e48eda4458df95fc46412",
+          "Name": "Dictionary",
+          "Description": "Dictionary Data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection Forma Metrics",
+      "InputValue": "{\"customMetrics\":[{\"id\":\"bra\",\"name\":\"BRA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":4558.906742027155},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":4498.789893368959},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":0}]},{\"id\":\"bras\",\"name\":\"BRAS\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":4103.016067824436},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":0}]}],\"builtInMetrics\":{\"grossFloorArea\":{\"id\":\"gfa\",\"name\":\"BTA\",\"unitOfMeasurement\":\"SQUARE_METER\",\"functionBreakdown\":[{\"functionId\":\"residential\",\"functionName\":\"Residential\",\"functionColor\":\"#FFEAA5\",\"value\":5065.451935585724},{\"functionId\":\"commercial\",\"functionName\":\"Commercial\",\"functionColor\":\"#D8DCFF\",\"value\":4998.655437076623},{\"functionId\":\"unspecified\",\"functionName\":\"Unspecified\",\"functionColor\":\"#FFFFFF\",\"value\":0}]},\"siteArea\":{\"id\":\"site_area\",\"name\":\"Site Area\",\"unitOfMeasurement\":\"SQUARE_METER\",\"value\":0},\"buildingCoverage\":{\"id\":\"bc\",\"name\":\"Building Coverage\",\"unitOfMeasurement\":\"SQUARE_METER\",\"value\":2516.026843165586}},\"unitStatistics\":{\"count\":{\"id\":\"unit_count\",\"name\":\"Number of units\",\"unitOfMeasurement\":\"COUNT\",\"value\":0}},\"parkingStatistics\":{\"spots\":0,\"area\":0}}"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "15a4046b31b246308e6fad4f2fe9a1e9",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "dd9768850d3645799b34e2484f047513",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "685b408dac87422aba8e4ea802f4af55",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3960706f488745f493197734c1fdea2e",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 100.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "26e4f92571394b16ab4b328595bc0f42",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5a885eb5ce8440e385d2ac29c7dde865",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 200.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "a6a957f190934f1d864cb7f22d1ba6c9",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d4914270504f44ec95d0d872713e3824",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 350.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "20c2fc0a17db47c297d6f516fc1c6f29",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "440fc1059f674ee29d38cd440ba68fc2",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 5.0
     }
   ],
   "Connectors": [
@@ -909,13 +909,13 @@
       "IsHidden": "False"
     },
     {
-      "Start": "134d67777f82498c977413b0ad262144",
+      "Start": "bb479495caf042e8a75edcaae2aa10a8",
       "End": "e7d2d96e33ce47b2a873e79d6a6c20e5",
       "Id": "81d432bd3bcc48ad99bec59e97bf73fb",
       "IsHidden": "False"
     },
     {
-      "Start": "656ef176453849d1b1d9a2483d16e772",
+      "Start": "3ad7440b9d084307b0b4b2304038cfca",
       "End": "aa88b1d3f95f432283df0a4f4982aea2",
       "Id": "c49f0049728e4a51b4a6433b6411668a",
       "IsHidden": "False"
@@ -957,42 +957,6 @@
       "IsHidden": "False"
     },
     {
-      "Start": "2f1a3a52683d4241bd2062799a171d1e",
-      "End": "2e128bd25a87486b9fcbe88a1177c2fb",
-      "Id": "35ca4341745349e3b3e731184d9160c8",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "d05d10f333d74e61a1ec949ddc4f764a",
-      "End": "c129e027fc1e4b0d8fdcb183a8ac81b4",
-      "Id": "49c593529c3d4e19abac90bf830ee586",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "66d64497c9d045189dedf5ea1b2f66c3",
-      "End": "0f3e05d8f0354c5990a81c42c9aad6bb",
-      "Id": "62c874c36127466085236b736e0cb0f6",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "34d04321f9d043239884b9a281b2babe",
-      "End": "b78e5f7d115642b6ba265ebe5c6517bf",
-      "Id": "215624b611c3456484e73b6e0f52003e",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "f3cbfe0996f54387b26d68133e955277",
-      "End": "324c5380a23f4613998576f66bfc824d",
-      "Id": "053eda58aa524989a79b9a9387971206",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "6539e5bdb2a04ef5ba4b9650ecd0fc28",
-      "End": "cd164a8f56db47649a4a6a895bdd1268",
-      "Id": "9ce87655b42e43ac8f823f9326201c36",
-      "IsHidden": "False"
-    },
-    {
       "Start": "9074f6b45ffd45988f38f9391fa6b43d",
       "End": "e9a61b3827d140178bd6501ab3a7be15",
       "Id": "5f2f17ed087049dba049d2bd727ecab7",
@@ -1027,16 +991,52 @@
       "End": "9eedbb6836f4458da64a52fc6aa0e5c7",
       "Id": "851280e3599e49b8bab8be0d8e4e78c4",
       "IsHidden": "False"
+    },
+    {
+      "Start": "65dfb9c78b7e48eda4458df95fc46412",
+      "End": "fa6b741e68334141979f2f5841550dc4",
+      "Id": "f3e9475062de4e34b7505198dacb33ec",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "dd9768850d3645799b34e2484f047513",
+      "End": "c129e027fc1e4b0d8fdcb183a8ac81b4",
+      "Id": "d6865d2048254caea1e56f0eda0df417",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3960706f488745f493197734c1fdea2e",
+      "End": "0f3e05d8f0354c5990a81c42c9aad6bb",
+      "Id": "a68068a5bb114409836393e6ef67c69a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5a885eb5ce8440e385d2ac29c7dde865",
+      "End": "b78e5f7d115642b6ba265ebe5c6517bf",
+      "Id": "b81844b4e57540bea61f4406ceb4f065",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d4914270504f44ec95d0d872713e3824",
+      "End": "324c5380a23f4613998576f66bfc824d",
+      "Id": "fef6dee996e84c58b5bcd79bec56ee72",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "440fc1059f674ee29d38cd440ba68fc2",
+      "End": "cd164a8f56db47649a4a6a895bdd1268",
+      "Id": "cddbff83fccd40a1b1c26868f55f9fce",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [
     {
       "Name": "DynamoFormaBeta",
-      "Version": "1.0.1",
+      "Version": "1.4.3",
       "ReferenceType": "Package",
       "Nodes": [
-        "e07bc53f6d1b4fe393145f4dc329cb77"
+        "8178dd81afc14d2982498d4a6ae1c3c8"
       ]
     }
   ],
@@ -1047,6 +1047,12 @@
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
       "Name": "Properties",
       "Version": "2.19",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "6.1",
       "Data": {}
     }
   ],
@@ -1158,8 +1164,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": false,
-        "X": 2284.2318712455549,
-        "Y": 111.06176333475389
+        "X": 2284.23187124555,
+        "Y": 111.061763334754
       },
       {
         "Id": "a7bae2a3749d4bca8954142afd3f348e",
@@ -1170,66 +1176,6 @@
         "ShowGeometry": false,
         "X": 3272.6292095874428,
         "Y": 262.52930742333
-      },
-      {
-        "Id": "e07bc53f6d1b4fe393145f4dc329cb77",
-        "Name": "Select Building and Site",
-        "IsSetAsInput": true,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": false,
-        "X": 1889.7318712455549,
-        "Y": -47.536848976720876
-      },
-      {
-        "Id": "358aecda1e3e478db734c776abe6bc6c",
-        "Name": "GIA = Tick | NIA = Untick",
-        "IsSetAsInput": true,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": false,
-        "X": 1889.7318712455549,
-        "Y": 96.889613583299479
-      },
-      {
-        "Id": "1e705914459a4c759fa329b1a11c14de",
-        "Name": "Residential Rate ($)",
-        "IsSetAsInput": true,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": false,
-        "X": 1889.7318712455549,
-        "Y": 241.31607614331983
-      },
-      {
-        "Id": "6e23e778cf354208adad153b658d67fc",
-        "Name": "Commercial Rate ($)",
-        "IsSetAsInput": true,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": false,
-        "X": 1889.7318712455549,
-        "Y": 385.74253870334019
-      },
-      {
-        "Id": "00746d6435cf4bdb9d9e9ea25393bd18",
-        "Name": "Unspecified Rate ($)",
-        "IsSetAsInput": true,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": false,
-        "X": 1889.7318712455549,
-        "Y": 530.16900126336054
-      },
-      {
-        "Id": "75090daca3fc47d99ecd0aee04d51b66",
-        "Name": "Consultant Percentage (%)",
-        "IsSetAsInput": true,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": false,
-        "X": 1889.7318712455549,
-        "Y": 674.5954638233809
       },
       {
         "Id": "67f11bbe923c45679fcaf8743cfd3b76",
@@ -1290,6 +1236,66 @@
         "ShowGeometry": false,
         "X": 4061.304462652422,
         "Y": 841.10189968636848
+      },
+      {
+        "Id": "8178dd81afc14d2982498d4a6ae1c3c8",
+        "Name": "Select Building And Site",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1899.6214917193561,
+        "Y": -45.04397959531434
+      },
+      {
+        "Id": "15a4046b31b246308e6fad4f2fe9a1e9",
+        "Name": "GIA = Tick | NIA = Untick",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1903.616854661293,
+        "Y": 82.916375685928074
+      },
+      {
+        "Id": "685b408dac87422aba8e4ea802f4af55",
+        "Name": "Residential Rate ($)",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1911.4386215222567,
+        "Y": 226.40224929229362
+      },
+      {
+        "Id": "26e4f92571394b16ab4b328595bc0f42",
+        "Name": "Commercial Rate ($)",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1910.3721500104152,
+        "Y": 363.636357782286
+      },
+      {
+        "Id": "a6a957f190934f1d864cb7f22d1ba6c9",
+        "Name": "Unspecified Rate ($)",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1918.246267452228,
+        "Y": 511.81105522593168
+      },
+      {
+        "Id": "20c2fc0a17db47c297d6f516fc1c6f29",
+        "Name": "Consultant Percentage (%)",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1902.7880273348305,
+        "Y": 658.42281139048441
       }
     ],
     "Annotations": [
@@ -1317,7 +1323,7 @@
         "HasNestedGroups": false,
         "Left": 4042.1292095874428,
         "Top": 294.42613218967671,
-        "Width": 521.17525306497964,
+        "Width": 520.67525306497964,
         "Height": 1005.5963504673066,
         "FontSize": 36.0,
         "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
@@ -1334,22 +1340,22 @@
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
         "Nodes": [
-          "e07bc53f6d1b4fe393145f4dc329cb77",
-          "358aecda1e3e478db734c776abe6bc6c",
-          "1e705914459a4c759fa329b1a11c14de",
-          "6e23e778cf354208adad153b658d67fc",
-          "00746d6435cf4bdb9d9e9ea25393bd18",
-          "75090daca3fc47d99ecd0aee04d51b66"
+          "8178dd81afc14d2982498d4a6ae1c3c8",
+          "15a4046b31b246308e6fad4f2fe9a1e9",
+          "685b408dac87422aba8e4ea802f4af55",
+          "26e4f92571394b16ab4b328595bc0f42",
+          "a6a957f190934f1d864cb7f22d1ba6c9",
+          "20c2fc0a17db47c297d6f516fc1c6f29"
         ],
         "HasNestedGroups": false,
-        "Left": 1879.7318712455549,
-        "Top": -120.53684897672088,
-        "Width": 294.5,
-        "Height": 939.13231280010177,
+        "Left": 1889.6214917193561,
+        "Top": -118.04397959531434,
+        "Width": 297.16653561547446,
+        "Height": 920.46679098579875,
         "FontSize": 36.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
-        "InitialTop": -47.536848976720876,
-        "InitialHeight": 867.13231280010177,
+        "InitialTop": -45.04397959531434,
+        "InitialHeight": 867.132312800102,
         "TextblockHeight": 63.0,
         "Background": "#FFFFB8D8"
       },
@@ -1366,20 +1372,20 @@
           "a7bae2a3749d4bca8954142afd3f348e"
         ],
         "HasNestedGroups": false,
-        "Left": 2274.2318712455549,
-        "Top": 38.061763334753891,
-        "Width": 1667.8973383418879,
-        "Height": 966.46754408857612,
+        "Left": 2274.23187124555,
+        "Top": 38.061763334754005,
+        "Width": 1668.3973383418929,
+        "Height": 966.467544088576,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
-        "InitialTop": 111.06176333475389,
+        "InitialTop": 111.061763334754,
         "InitialHeight": 298.485,
         "TextblockHeight": 63.0,
         "Background": "#FFB9F9E1"
       }
     ],
-    "X": -681.25430072379049,
-    "Y": 339.62215933062447,
-    "Zoom": 0.43246625113509563
+    "X": -902.73850593895168,
+    "Y": 253.04728661922013,
+    "Zoom": 0.63981930311546031
   }
 }
