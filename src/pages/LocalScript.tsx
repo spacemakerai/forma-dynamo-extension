@@ -93,6 +93,29 @@ function AnimatedLoading() {
   );
 }
 
+async function getVolume25DForSubTree(path: string) {
+  const { element, elements } = await Forma.elements.getByPath({ path, recursive: true });
+
+  const collections = [];
+  const stack = [{ path, element }];
+  while (stack.length) {
+    const { path, element } = stack.pop()!;
+
+    for (const child of element?.children ?? []) {
+      stack.push({ path: `${path}/${child.key}`, element: elements[child.urn] });
+    }
+
+    collections.push(await Forma.experimental.geometry.getVolume25DCollection({ path }));
+  }
+
+  const features = collections
+    .filter((fc) => !!fc)
+    .map((fc) => fc?.features)
+    .flat();
+
+  return { type: "FeatureCollection", features };
+}
+
 async function readElementsByPaths(paths: string[]) {
   const elements = await Promise.all(
     paths.map((path) =>
@@ -114,10 +137,13 @@ async function readElementsByPaths(paths: string[]) {
     ),
   );
 
+  const volume25DCollections = await Promise.all(paths.map((path) => getVolume25DForSubTree(path)));
+
   return paths.map((_, index) => ({
     element: elements[index],
     triangles: triangles[index],
     footprints: footprints[index],
+    volume25DCollection: volume25DCollections[index],
   }));
 }
 
