@@ -213,6 +213,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         return;
       }
       const code = scriptInfo.data;
+      console.log({code});
       setOutput({ type: "running" });
       const urn = await Forma.proposal.getRootUrn();
       const inputs = await Promise.all(

@@ -16,8 +16,7 @@ export function createTarget(code: any) {
     };
   }
   return {
-    type: "JsonGraphTarget",
-    contents: JSON.stringify(code),
+    type: "CurrentGraphTarget",
   };
 }
 

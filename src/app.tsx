@@ -103,6 +103,17 @@ function ScriptList({ setScript, dynamoHandler }: any) {
   const [error, setError] = useState<string | null>(null);
   const [folder, setFolder] = useState<undefined | string>();
   const [isLoading, setIsLoading] = useState(false);
+  
+  const getCurrentGraphPath = useCallback(
+    () => {
+      (async function () {
+        const resp = await dynamoHandler("getCurrentGraphInfo");
+        console.log(resp.id)
+        setFolder(resp.id);
+      })();
+    },
+    [dynamoHandler],
+  );
 
   const reload = useCallback(
     (folder: string | undefined) => {
@@ -168,9 +179,13 @@ function ScriptList({ setScript, dynamoHandler }: any) {
           showlabel="true"
           name="height"
           placeholder="Enter folder name"
-          onBlur={(e: any) => {
-            const folder = e?.target?.value;
+          onBlur={ (e: any) => {
+            getCurrentGraphPath();
+            
+            console.log({folder})
             setFolder(folder);
+            //const folder = e?.target?.value;
+            // setFolder(folder);
           }}
         />
 

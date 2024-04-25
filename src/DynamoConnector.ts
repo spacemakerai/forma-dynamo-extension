@@ -84,6 +84,13 @@ export const useDynamoConnector = () => {
             }
             throw e;
           });
+        case "getCurrentGraphInfo":
+          return Dynamo.info(getDynamoUrl(), {}).catch((e) => {
+            if (!(e.status === 500)) {
+              setState(DynamoState.LOST_CONNECTION);
+            }
+            throw e;
+          });
         case "runGraph":
           // eslint-disable-next-line no-case-declarations
           const { code, inputs } = payload;
