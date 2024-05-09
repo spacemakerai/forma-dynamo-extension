@@ -10,8 +10,13 @@ export enum DynamoConnectionState {
   LOST_CONNECTION = "LOST_CONNECTION",
 }
 
+type DynamoState = {
+  currentOpenGraph?: string,
+  connectionState: DynamoConnectionState
+}
+
 export const useDynamoConnector = () => {
-  const [state, setState] = useState<DynamoConnectionState>(DynamoConnectionState.INIT);
+  const [state, setState] = useState<DynamoState>({connectionState: DynamoConnectionState.INIT});
   const [dynamoPort, setDynamoPort] = useState<number | undefined>(undefined);
 
   const getDynamoUrl = useCallback(() => {
@@ -24,7 +29,7 @@ export const useDynamoConnector = () => {
 
     const defaultHealth = await Dynamo.health(defaultPort);
     if (defaultHealth.status === 200) {
-      setState(DynamoConnectionState.CONNECTED);
+      setState((state) => ({...state, connectionState: DynamoConnectionState.CONNECTED}));
       setDynamoPort(defaultPort);
       return;
     }
@@ -33,25 +38,25 @@ export const useDynamoConnector = () => {
     const responses = await Promise.all(portsToCheck.map((port) => Dynamo.health(port)));
     const connections = responses.filter((response) => response.status === 200);
     if (connections.length === 1) {
-      setState(DynamoConnectionState.CONNECTED);
+      setState((state) => ({...state, connectionState: DynamoConnectionState.CONNECTED}));
       setDynamoPort(connections[0].port);
     } else if (connections.length > 1) {
-      setState(DynamoConnectionState.MULTIPLE_CONNECTIONS);
+      setState((state) => ({...state, connectionState: DynamoConnectionState.MULTIPLE_CONNECTIONS}));
     } else {
       const blockedConnections = responses.filter((response) => response.status === 503);
       if (blockedConnections.length > 0) {
-        setState(DynamoConnectionState.BLOCKED);
+        setState((state) => ({...state, connectionState: DynamoConnectionState.BLOCKED}));
       } else {
-        setState(DynamoConnectionState.NOT_CONNECTED);
+        setState((state) => ({...state, connectionState: DynamoConnectionState.NOT_CONNECTED}));
       }
     }
   };
 
   useEffect(() => {
-    if (state === DynamoConnectionState.INIT) {
+    if (state.connectionState === DynamoConnectionState.INIT) {
       portDiscovery();
     }
-  }, [state]);
+  }, [state.connectionState]);
 
   useEffect(() => {
     let intervalId: number | undefined;
@@ -61,26 +66,26 @@ export const useDynamoConnector = () => {
         DynamoConnectionState.MULTIPLE_CONNECTIONS,
         DynamoConnectionState.BLOCKED,
         DynamoConnectionState.LOST_CONNECTION,
-      ].includes(state)
+      ].includes(state.connectionState)
     ) {
       // @ts-ignore
       intervalId = setInterval(() => portDiscovery(), 2000);
     }
     return () => clearInterval(intervalId);
-  }, [state]);
+  }, [state.connectionState]);
 
   const handler = useCallback(
     (method: string, payload: any) => {
       switch (method) {
         case "getFolderInfo":
           return Dynamo.graphFolderInfo(getDynamoUrl(), payload.path).catch((e) => {
-            setState(DynamoConnectionState.LOST_CONNECTION);
+            setState((state) => ({...state, connectionState: DynamoConnectionState.LOST_CONNECTION}));
             throw e;
           });
         case "getGraphInfo":
           return Dynamo.info(getDynamoUrl(), payload.code).catch((e) => {
             if (!(e.status === 500 && e.message === "Graph is not trusted.")) {
-              setState(DynamoConnectionState.LOST_CONNECTION);
+              setState((state) => ({...state, connectionState: DynamoConnectionState.LOST_CONNECTION}));
             }
             throw e;
           });
@@ -88,17 +93,17 @@ export const useDynamoConnector = () => {
           // eslint-disable-next-line no-case-declarations
           const { code, inputs } = payload;
           return Dynamo.run(getDynamoUrl(), code, inputs).catch((e) => {
-            setState(DynamoConnectionState.LOST_CONNECTION);
+            setState((state) => ({...state, connectionState: DynamoConnectionState.LOST_CONNECTION}));
             throw e;
           });
         case "trustFolder":
           return Dynamo.trust(getDynamoUrl(), payload.path).catch((e) => {
-            setState(DynamoConnectionState.LOST_CONNECTION);
+            setState((state) => ({...state, connectionState: DynamoConnectionState.LOST_CONNECTION}));
             throw e;
           });
       }
     },
     [getDynamoUrl],
   );
-  return { connectionState: state, dynamoHandler: handler };
+  return { state, dynamoHandler: handler };
 };
