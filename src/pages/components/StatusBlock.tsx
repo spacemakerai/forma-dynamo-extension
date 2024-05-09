@@ -1,6 +1,6 @@
 import { BlockedView } from "./BlockedView";
 import { ErrorView } from "./ErrorView";
-import { DynamoState } from "../../DynamoConnector.ts";
+import { DynamoConnectionState } from "../../DynamoConnector.ts";
 
 function Loading() {
   return (
@@ -11,18 +11,18 @@ function Loading() {
   );
 }
 
-export function StatusBlock({ dynamoState }: { dynamoState: DynamoState }) {
-  switch (dynamoState) {
-    case DynamoState.INIT:
-    case DynamoState.LOST_CONNECTION:
+export function StatusBlock({ connectionState }: { connectionState: DynamoConnectionState }) {
+  switch (connectionState) {
+    case DynamoConnectionState.INIT:
+    case DynamoConnectionState.LOST_CONNECTION:
       return <Loading />;
-    case DynamoState.NOT_CONNECTED:
+    case DynamoConnectionState.NOT_CONNECTED:
       return <ErrorView />;
-    case DynamoState.MULTIPLE_CONNECTIONS:
+    case DynamoConnectionState.MULTIPLE_CONNECTIONS:
       return <>Multiple instances of Dynamo was found running. Close all except one instance.</>;
-    case DynamoState.BLOCKED:
+    case DynamoConnectionState.BLOCKED:
       return <BlockedView />;
-    case DynamoState.CONNECTED:
+    case DynamoConnectionState.CONNECTED:
       return null;
   }
 }

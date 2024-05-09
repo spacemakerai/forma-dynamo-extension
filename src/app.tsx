@@ -197,9 +197,9 @@ function ScriptList({ setScript, dynamoHandler }: any) {
 }
 
 export function App() {
-  const { dynamoState, dynamoHandler } = useDynamoConnector();
+  const { connectionState, dynamoHandler } = useDynamoConnector();
   const [script, setScript] = useState(undefined);
-  if (dynamoState === "CONNECTED") {
+  if (connectionState === "CONNECTED") {
     return (
       <div style={{ padding: "0 2px", height: "100%" }}>
         {!script && <ScriptList dynamoHandler={dynamoHandler} setScript={setScript} />}
@@ -209,5 +209,5 @@ export function App() {
       </div>
     );
   }
-  return <StatusBlock dynamoState={dynamoState} />;
+  return <StatusBlock connectionState={connectionState} />;
 }
