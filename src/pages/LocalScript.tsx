@@ -105,9 +105,9 @@ async function getVolume25DForSubTree(path: string) {
       stack.push({ path: `${path}/${child.key}`, element: elements[child.urn] });
     }
 
-    const volume25DCollection = await Forma.experimental.geometry.getVolume25DCollection({ path })
+    const volume25DCollection = await Forma.experimental.geometry.getVolume25DCollection({ path });
 
-    console.log({volume25DCollection})
+    console.log({ volume25DCollection });
 
     collections.push(volume25DCollection);
   }
