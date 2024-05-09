@@ -199,6 +199,7 @@ function ScriptList({ setScript, dynamoHandler }: any) {
 export function App() {
   const { state, dynamoHandler } = useDynamoConnector();
   const [script, setScript] = useState(undefined);
+
   if (state.connectionState === "CONNECTED") {
     return (
       <div style={{ padding: "0 2px", height: "100%" }}>

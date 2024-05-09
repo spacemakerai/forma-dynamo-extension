@@ -82,20 +82,31 @@ export const useDynamoConnector = () => {
             setState((state) => ({...state, connectionState: DynamoConnectionState.LOST_CONNECTION}));
             throw e;
           });
-        case "getGraphInfo":
-          return Dynamo.info(getDynamoUrl(), payload.code).catch((e) => {
+        case "getGraphInfo": {
+          const target = {
+            type: "PathGraphTarget",
+            path: payload.code.id,
+            forceReopen: false,
+          };
+
+          return Dynamo.info(getDynamoUrl(), target).catch((e) => {
             if (!(e.status === 500 && e.message === "Graph is not trusted.")) {
               setState((state) => ({...state, connectionState: DynamoConnectionState.LOST_CONNECTION}));
             }
             throw e;
           });
-        case "runGraph":
-          // eslint-disable-next-line no-case-declarations
-          const { code, inputs } = payload;
-          return Dynamo.run(getDynamoUrl(), code, inputs).catch((e) => {
+        }
+        case "runGraph": {
+          const target = {
+            type: "PathGraphTarget",
+            path: payload.code.id,
+            forceReopen: false,
+          };
+          return Dynamo.run(getDynamoUrl(), target, payload.inputs).catch((e) => {
             setState((state) => ({...state, connectionState: DynamoConnectionState.LOST_CONNECTION}));
             throw e;
           });
+        }
         case "trustFolder":
           return Dynamo.trust(getDynamoUrl(), payload.path).catch((e) => {
             setState((state) => ({...state, connectionState: DynamoConnectionState.LOST_CONNECTION}));

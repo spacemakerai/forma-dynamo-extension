@@ -7,22 +7,7 @@ class FetchError extends Error {
   }
 }
 
-export function createTarget(code: any) {
-  if (code.id) {
-    return {
-      type: "PathGraphTarget",
-      path: code.id,
-      forceReopen: false,
-    };
-  }
-  return {
-    type: "JsonGraphTarget",
-    contents: JSON.stringify(code),
-  };
-}
-
-export async function run(url: string, code: any, inputs: any) {
-  const target = createTarget(code);
+export async function run(url: string, target: any, inputs: any) {
   const response = await fetch(`${url}/v1/graph/run`, {
     method: "POST",
     body: JSON.stringify({
@@ -46,9 +31,7 @@ export async function graphFolderInfo(url: string, path: string) {
   }).then((res) => res.json());
 }
 
-export async function info(url: string, code: any) {
-  const target = createTarget(code);
-
+export async function info(url: string, target: any) {
   const response = await fetch(`${url}/v1/graph/info`, {
     method: "POST",
     body: JSON.stringify({
