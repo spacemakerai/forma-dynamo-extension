@@ -143,10 +143,10 @@ async function readElementsByPaths(paths: string[]) {
   );
 
   const volume25DCollections = await Promise.all(paths.map((path) => getVolume25DForSubTree(path)));
-  
+
   let graphs = {};
   try {
-    graphs = await Promise.all(paths.map(path => getGraphBuildingForSubTree(path)));
+    graphs = await Promise.all(paths.map((path) => getGraphBuildingForSubTree(path)));
   } catch (e) {
     console.warn(e);
   }
@@ -156,7 +156,7 @@ async function readElementsByPaths(paths: string[]) {
     triangles: triangles[index],
     footprints: footprints[index],
     volume25DCollection: volume25DCollections[index],
-    graphs: graphs[index] || undefined
+    graphs: graphs[index] || undefined,
   }));
 }
 
