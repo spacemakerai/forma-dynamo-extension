@@ -8,6 +8,7 @@ import { NotTrustedGraph } from "./components/NotTrustedGraph.js";
 import { SelectMode } from "./components/SelectMode.tsx";
 import { captureException } from "../util/sentry.ts";
 import { getGraphBuildingForSubTree } from "../representations/graphBuilding.ts";
+import { Child } from "forma-elements";
 
 function getDefaultValues(scriptInfo: any) {
   if (scriptInfo.type === "loaded") {
@@ -156,23 +157,26 @@ async function readElementsByPaths(paths: string[]) {
     triangles: triangles[index],
     footprints: footprints[index],
     volume25DCollection: volume25DCollections[index],
-    graphs: graphs[index] || undefined,
+    // @ts-ignore
+    graphs: (graphs[index] as any) || undefined,
   }));
 }
 
 async function getAllPaths() {
   const urn = await Forma.proposal.getRootUrn();
+  // @ts-ignore
   const { elements } = await Forma.elements.get({ urn, recursive: true });
 
   function getElementsByPath(path: string) {
     if (path === "root") {
+      // @ts-ignore
       return elements[urn];
     }
     const keys = path.split("/").slice(1);
-
+    // @ts-ignore
     let element = elements[urn];
     for (const key of keys) {
-      const child = element.children?.find((child) => child.key === key);
+      const child = element.children?.find((child: Child) => child.key === key);
       if (!child) {
         throw new Error(`Element not found at path ${path}`);
       }

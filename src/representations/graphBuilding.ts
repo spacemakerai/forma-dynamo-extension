@@ -1,3 +1,5 @@
+import { Forma } from "forma-embedded-view-sdk/auto";
+
 export async function getGraphBuildingForSubTree(path: string) {
   const { element, elements } = await Forma.elements.getByPath({ path, recursive: true });
 
@@ -48,19 +50,20 @@ export function transformCoordinates(v: [number, number], t: Transform) {
   return [v[0] * t[0] + v[1] * t[4] + 1 * t[12], v[0] * t[1] + v[1] * t[5] + 1 * t[13]];
 }
 
-function transformLevel(level, transform: Transform) {
+function transformLevel(level: any, transform: Transform) {
   const xyPoints = {};
 
   for (const key of Object.keys(level.xyPoints)) {
+    // @ts-ignore
     xyPoints[key] = transformCoordinates(level.xyPoints[key], transform);
   }
 
   return { ...level, xyPoints };
 }
 
-function applyTransform(graph, transform: Transform) {
+function applyTransform(graph: any, transform: Transform) {
   return {
     ...graph,
-    buildingLevels: graph.buildingLevels.map((level) => transformLevel(level, transform)),
+    buildingLevels: graph.buildingLevels.map((level: any) => transformLevel(level, transform)),
   };
 }
