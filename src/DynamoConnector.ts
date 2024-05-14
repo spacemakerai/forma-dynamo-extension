@@ -11,7 +11,7 @@ export enum DynamoConnectionState {
 }
 
 type DynamoState = {
-  currentOpenGraph?: string,
+  currentOpenGraph?: any,
   connectionState: DynamoConnectionState
 }
 
