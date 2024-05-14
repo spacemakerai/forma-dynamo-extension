@@ -7,6 +7,7 @@ import { isGet, isSelect } from "../utils/node.js";
 import { NotTrustedGraph } from "./components/NotTrustedGraph.js";
 import { SelectMode } from "./components/SelectMode.tsx";
 import { captureException } from "../util/sentry.ts";
+import { getGraphBuildingForSubTree } from "../representations/graphBuilding.ts";
 
 function getDefaultValues(scriptInfo: any) {
   if (scriptInfo.type === "loaded") {
@@ -142,12 +143,20 @@ async function readElementsByPaths(paths: string[]) {
   );
 
   const volume25DCollections = await Promise.all(paths.map((path) => getVolume25DForSubTree(path)));
+  
+  let graphs = {};
+  try {
+    graphs = await Promise.all(paths.map(path => getGraphBuildingForSubTree(path)));
+  } catch (e) {
+    console.warn(e);
+  }
 
   return paths.map((_, index) => ({
     element: elements[index],
     triangles: triangles[index],
     footprints: footprints[index],
     volume25DCollection: volume25DCollections[index],
+    graphs: graphs[index] || undefined
   }));
 }
 

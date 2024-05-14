@@ -1556,12 +1556,18 @@ forma-elements@^1.2.0:
   dependencies:
     zod "^3.22.4"
 
-forma-embedded-view-sdk@0.52.2:
-  version "0.52.2"
-  resolved "https://registry.yarnpkg.com/forma-embedded-view-sdk/-/forma-embedded-view-sdk-0.52.2.tgz#f35888c986f27f4aed4e48ed6d06aba9d53bfd54"
-  integrity sha512-F3auAD2pgVtSWJnPGxO4SdEUduLVPRPpCFktFkZ7ZIiEtUMdw7fU8Qp4xClPcjI31ZVX1A9qOdvSa/XNcmyArA==
+forma-elements@^1.5.2:
+  version "1.5.6"
+  resolved "https://registry.yarnpkg.com/forma-elements/-/forma-elements-1.5.6.tgz#26adcd928a7fe27d4cd421e28dc6f6711cb72a3d"
+  integrity sha512-lpmrKhMKdPL6nIcdxwH1cPiFb7wBDeeWitzBGKLPksFpouwIVuMqQTxQFA21zwmcRM7a5nfBpOZ9WOXm6uEDDA==
+
+forma-embedded-view-sdk@0.62.0:
+  version "0.62.0"
+  resolved "https://registry.yarnpkg.com/forma-embedded-view-sdk/-/forma-embedded-view-sdk-0.62.0.tgz#9c9875a594d060e904ae92cbdbf4ea47a53c3505"
+  integrity sha512-6x10ptHraEtAk1DIAaXekSMnY1NxufXUroY1lhtajJI7F5I8261cfogDE7JDVn+vMzSmpd2Ffz45xR2qgern5g==
   dependencies:
     "@types/geojson" "^7946.0.13"
+    forma-elements "^1.5.2"
 
 fs.realpath@^1.0.0:
   version "1.0.0"
