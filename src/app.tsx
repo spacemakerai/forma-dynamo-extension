@@ -5,8 +5,8 @@ import { useDynamoConnector } from "./DynamoConnector.ts";
 import { SampleFiles } from "./pages/components/SampleFiles.tsx";
 import { StatusBlock } from "./pages/components/StatusBlock.tsx";
 
-function CurrentOpenGraphPrompt({ dynamoHandler, setScript }) {
-  const [suggestOpenGraph, setSuggestOpenGraph] = useState(false);
+function CurrentOpenGraphPrompt({ dynamoHandler, setScript }: any) {
+  const [suggestOpenGraph, setSuggestOpenGraph] = useState<any>(null);
   const [isClosed, setIsClosed] = useState(false);
 
   const currentFolder = localStorage.getItem("dynamo-folder");
@@ -14,12 +14,12 @@ function CurrentOpenGraphPrompt({ dynamoHandler, setScript }) {
   useEffect(() => {
     function handler() {
       dynamoHandler("getCurrentGraphInfo", {})
-        .then((currentGraph) => {
+        .then((currentGraph: any) => {
           if (currentGraph && currentGraph.id) {
             setSuggestOpenGraph(currentGraph);
           }
         })
-        .catch((e) => {
+        .catch((e: Error) => {
           console.error(e);
         });
     }
