@@ -88,6 +88,14 @@ export const useDynamoConnector = () => {
             }));
             throw e;
           });
+        case "getCurrentGraphInfo":
+          return Dynamo.info(getDynamoUrl(), { type: "CurrentGraphTarget" }).catch((e) => {
+            setState((state) => ({
+              ...state,
+              connectionState: DynamoConnectionState.LOST_CONNECTION,
+            }));
+            throw e;
+          });
         case "getGraphInfo": {
           const target = {
             type: "PathGraphTarget",
@@ -128,6 +136,8 @@ export const useDynamoConnector = () => {
             throw e;
           });
       }
+
+      return Promise.reject("Unknown method");
     },
     [getDynamoUrl],
   );
