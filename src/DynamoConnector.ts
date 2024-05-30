@@ -89,13 +89,7 @@ export const useDynamoConnector = () => {
             throw e;
           });
         case "getCurrentGraphInfo":
-          return Dynamo.info(getDynamoUrl(), { type: "CurrentGraphTarget" }).catch((e) => {
-            setState((state) => ({
-              ...state,
-              connectionState: DynamoConnectionState.LOST_CONNECTION,
-            }));
-            throw e;
-          });
+          return Dynamo.info(getDynamoUrl(), { type: "CurrentGraphTarget" });
         case "getGraphInfo": {
           const target = {
             type: "PathGraphTarget",
