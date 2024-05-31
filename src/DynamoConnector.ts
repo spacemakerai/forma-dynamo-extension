@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
-import * as Dynamo from "./service/dynamo.ts";
+import { default as Dynamo } from "./service/dynamo.ts";
 
 export enum DynamoConnectionState {
   INIT = "INIT",

@@ -7,6 +7,14 @@ class FetchError extends Error {
   }
 }
 
+export type DynamoService = {
+  run: (url: string, target: any, inputs: any) => Promise<Run>;
+  graphFolderInfo: (url: string, path: string) => Promise<FolderGraphInfo[]>;
+  info: (url: string, target: any) => Promise<GraphInfo>;
+  trust: (url: string, path: string) => Promise<boolean>;
+  health: (port: number) => Promise<Health>;
+};
+
 export type Output = {
   id: string;
   name: string;
@@ -58,7 +66,7 @@ type Health = {
   port: number;
 };
 
-export async function run(url: string, target: any, inputs: any): Promise<Run> {
+async function run(url: string, target: any, inputs: any): Promise<Run> {
   const response = await fetch(`${url}/v1/graph/run`, {
     method: "POST",
     body: JSON.stringify({
@@ -73,7 +81,7 @@ export async function run(url: string, target: any, inputs: any): Promise<Run> {
   return await response.json();
 }
 
-export async function graphFolderInfo(url: string, path: string): Promise<FolderGraphInfo[]> {
+async function graphFolderInfo(url: string, path: string): Promise<FolderGraphInfo[]> {
   return fetch(`${url}/v1/graph-folder/info`, {
     method: "POST",
     body: JSON.stringify({
@@ -82,7 +90,7 @@ export async function graphFolderInfo(url: string, path: string): Promise<Folder
   }).then((res) => res.json());
 }
 
-export async function info(url: string, target: any): Promise<GraphInfo> {
+async function info(url: string, target: any): Promise<GraphInfo> {
   const response = await fetch(`${url}/v1/graph/info`, {
     method: "POST",
     body: JSON.stringify({
@@ -106,7 +114,7 @@ export async function info(url: string, target: any): Promise<GraphInfo> {
   throw new FetchError(body?.title || response.statusText, response.status);
 }
 
-export async function trust(url: string, path: string): Promise<boolean> {
+async function trust(url: string, path: string): Promise<boolean> {
   const response = await fetch(`${url}/v1/settings/trusted-folder`, {
     method: "POST",
     body: JSON.stringify({
@@ -116,7 +124,7 @@ export async function trust(url: string, path: string): Promise<boolean> {
   return await response.json();
 }
 
-export async function health(port: number): Promise<Health> {
+async function health(port: number): Promise<Health> {
   try {
     const response = await fetch(`http://localhost:${port}/v1/health`);
     if (response.status === 200) {
@@ -131,3 +139,11 @@ export async function health(port: number): Promise<Health> {
     return { status: 500, port };
   }
 }
+
+export default {
+  run,
+  graphFolderInfo,
+  info,
+  trust,
+  health,
+} as DynamoService;
