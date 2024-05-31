@@ -1,7 +1,7 @@
 import { useCallback } from "preact/hooks";
 
 import { Forma } from "forma-embedded-view-sdk/auto";
-import { captureException } from "../../../util/sentry.ts";
+import { captureException } from "../../util/sentry.ts";
 import { Output } from "./types.tsx";
 
 export function HousingByLine({ output }: { output: Output }) {

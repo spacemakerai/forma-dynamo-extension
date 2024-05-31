@@ -1,4 +1,4 @@
-import { captureException, Sentry } from "../../util/sentry";
+import { captureException, Sentry } from "../util/sentry";
 import { ComponentChildren } from "preact";
 import { useCallback, useErrorBoundary } from "preact/hooks";
 

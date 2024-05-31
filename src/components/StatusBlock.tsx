@@ -1,6 +1,6 @@
 import { BlockedView } from "./BlockedView";
 import { ErrorView } from "./ErrorView";
-import { DynamoConnectionState } from "../../DynamoConnector.ts";
+import { DynamoConnectionState } from "../DynamoConnector.ts";
 
 function Loading() {
   return (

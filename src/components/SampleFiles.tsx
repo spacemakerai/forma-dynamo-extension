@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
-import downloadCreateTower from "../../assets/Geometry-CreatePixelTower.dyn?url";
-import downloadMetrics from "../../assets/Metrics-BuildingCostCalculator.dyn?url";
+import downloadCreateTower from "../assets/Geometry-CreatePixelTower.dyn?url";
+import downloadMetrics from "../assets/Metrics-BuildingCostCalculator.dyn?url";
 
 function download(url: string, name: string) {
   const a = document.createElement("a");

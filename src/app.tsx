@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from "preact/compat";
 import { LocalScript } from "./pages/LocalScript";
 import { Next } from "./icons/Next";
 import { useDynamoConnector } from "./DynamoConnector.ts";
-import { SampleFiles } from "./pages/components/SampleFiles.tsx";
-import { StatusBlock } from "./pages/components/StatusBlock.tsx";
+import { SampleFiles } from "./components/SampleFiles.tsx";
+import { StatusBlock } from "./components/StatusBlock.tsx";
 
 function CurrentOpenGraphPrompt({ dynamoHandler, setScript }: any) {
   const [suggestOpenGraph, setSuggestOpenGraph] = useState<any>(null);

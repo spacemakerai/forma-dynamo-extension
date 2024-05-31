@@ -1,11 +1,11 @@
 import { useState, useCallback, useEffect, useRef } from "preact/compat";
 
-import { DynamoOutput } from "./components/DynamoOutputs/DynamoOutput.js";
-import { DynamoInput } from "./components/DynamoInputs/DynamoInput.js";
+import { DynamoOutput } from "../components/DynamoOutputs/DynamoOutput.js";
+import { DynamoInput } from "../components/DynamoInputs/DynamoInput.js";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { isGet, isSelect } from "../utils/node.js";
-import { NotTrustedGraph } from "./components/NotTrustedGraph.js";
-import { SelectMode } from "./components/SelectMode.tsx";
+import { NotTrustedGraph } from "../components/NotTrustedGraph.js";
+import { SelectMode } from "../components/SelectMode.tsx";
 import { captureException } from "../util/sentry.ts";
 import { getGraphBuildingForSubTree } from "../representations/graphBuilding.ts";
 import { Child } from "forma-elements";

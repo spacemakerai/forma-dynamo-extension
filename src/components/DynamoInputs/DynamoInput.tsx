@@ -1,5 +1,5 @@
 import { Input } from "./types";
-import { isSelect } from "../../../utils/node";
+import { isSelect } from "../../utils/node";
 import { Housing } from "./Housing";
 
 function DynamoInputComponent({

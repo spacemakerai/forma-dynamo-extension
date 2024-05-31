@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
-import { addGlbElement } from "../../../service/element.ts";
-import { Visibility } from "../../../icons/Visibility.tsx";
+import { addGlbElement } from "../../service/element.ts";
+import { Visibility } from "../../icons/Visibility.tsx";
 import { Forma } from "forma-embedded-view-sdk/auto";
-import { captureException } from "../../../util/sentry.ts";
+import { captureException } from "../../util/sentry.ts";
 import { Output } from "./types.tsx";
 
 function base64ToArrayBuffer(base64: string) {
