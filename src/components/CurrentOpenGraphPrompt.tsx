@@ -20,6 +20,7 @@ export function CurrentOpenGraphPrompt({
         .then((currentGraph) => {
           if (currentGraph && currentGraph.id) {
             setSuggestOpenGraph(currentGraph);
+            clearInterval(interval);
           }
         })
         .catch((e: Error) => {
