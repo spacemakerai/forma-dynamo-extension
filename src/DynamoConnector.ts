@@ -1,5 +1,11 @@
-import { useCallback, useEffect, useState } from "preact/hooks";
-import { default as Dynamo } from "./service/dynamo.ts";
+import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
+import {
+  default as Dynamo,
+  DynamoService,
+  GraphInfo,
+  GraphTarget,
+  RunInputs,
+} from "./service/dynamo.ts";
 
 export enum DynamoConnectionState {
   INIT = "INIT",
@@ -11,7 +17,7 @@ export enum DynamoConnectionState {
 }
 
 type DynamoState = {
-  currentOpenGraph?: any;
+  currentOpenGraph?: GraphInfo;
   connectionState: DynamoConnectionState;
 };
 
@@ -77,63 +83,67 @@ export const useDynamoConnector = () => {
     return () => clearInterval(intervalId);
   }, [state.connectionState]);
 
-  const handler = useCallback(
-    (method: string, payload: any) => {
-      switch (method) {
-        case "getFolderInfo":
-          return Dynamo.graphFolderInfo(getDynamoUrl(), payload.path).catch((e) => {
-            setState((state) => ({
-              ...state,
-              connectionState: DynamoConnectionState.LOST_CONNECTION,
-            }));
-            throw e;
-          });
-        case "getCurrentGraphInfo":
-          return Dynamo.info(getDynamoUrl(), { type: "CurrentGraphTarget" });
-        case "getGraphInfo": {
-          const target = {
-            type: "PathGraphTarget",
-            path: payload.code.id,
-            forceReopen: false,
-          };
+  const dynamoLocalService: DynamoService = useMemo(() => {
+    const url = getDynamoUrl();
 
-          return Dynamo.info(getDynamoUrl(), target).catch((e) => {
-            if (!(e.status === 500 && e.message === "Graph is not trusted.")) {
-              setState((state) => ({
-                ...state,
-                connectionState: DynamoConnectionState.LOST_CONNECTION,
-              }));
-            }
-            throw e;
-          });
-        }
-        case "runGraph": {
-          const target = {
-            type: "PathGraphTarget",
-            path: payload.code.id,
-            forceReopen: false,
-          };
-          return Dynamo.run(getDynamoUrl(), target, payload.inputs).catch((e) => {
-            setState((state) => ({
-              ...state,
-              connectionState: DynamoConnectionState.LOST_CONNECTION,
-            }));
-            throw e;
-          });
-        }
-        case "trustFolder":
-          return Dynamo.trust(getDynamoUrl(), payload.path).catch((e) => {
-            setState((state) => ({
-              ...state,
-              connectionState: DynamoConnectionState.LOST_CONNECTION,
-            }));
-            throw e;
-          });
-      }
+    const dynamo = new Dynamo(url);
 
-      return Promise.reject("Unknown method");
-    },
-    [getDynamoUrl],
-  );
-  return { state, dynamoHandler: handler };
+    return {
+      folder: (path: string) => {
+        console.log("folder");
+        return dynamo.folder(path).catch((e) => {
+          console.log("folder", e);
+          setState((state) => ({
+            ...state,
+            connectionState: DynamoConnectionState.LOST_CONNECTION,
+          }));
+          throw e;
+        });
+      },
+      current: () => {
+        console.log("current");
+        return dynamo.info({ type: "CurrentGraphTarget" });
+      },
+      info: (target: GraphTarget) => {
+        console.log("info");
+        return dynamo.info(target).catch((e) => {
+          if (!(e.status === 500 && e.message === "Graph is not trusted.")) {
+            console.log("info", e);
+            setState((state) => ({
+              ...state,
+              connectionState: DynamoConnectionState.LOST_CONNECTION,
+            }));
+          }
+          throw e;
+        });
+      },
+      run: (target: GraphTarget, inputs: RunInputs) => {
+        console.log("run");
+        return dynamo.run(target, inputs).catch((e) => {
+          console.log("run", e);
+          setState((state) => ({
+            ...state,
+            connectionState: DynamoConnectionState.LOST_CONNECTION,
+          }));
+          throw e;
+        });
+      },
+      trust: (path: string) => {
+        console.log("trust");
+        return dynamo.trust(path).catch((e) => {
+          console.log("trust", e);
+          setState((state) => ({
+            ...state,
+            connectionState: DynamoConnectionState.LOST_CONNECTION,
+          }));
+          throw e;
+        });
+      },
+      health: (port: number) => {
+        return Dynamo.health(port);
+      },
+    };
+  }, [getDynamoUrl]);
+
+  return { state, dynamo: dynamoLocalService };
 };

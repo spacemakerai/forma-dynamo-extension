@@ -1,6 +1,7 @@
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { useState } from "preact/hooks";
 import { useEffect } from "preact/compat";
+import { Input } from "../service/dynamo";
 
 function useCurrentSelection() {
   const [selection, setSelection] = useState<string[]>([]);
@@ -16,7 +17,15 @@ function useCurrentSelection() {
   return selection;
 }
 
-export function SelectMode({ activeSelectionNode, setActiveSelectionNode, setValue }: any) {
+export function SelectMode({
+  activeSelectionNode,
+  setActiveSelectionNode,
+  setValue,
+}: {
+  activeSelectionNode: Input;
+  setActiveSelectionNode: (input: Input | undefined) => void;
+  setValue: (id: string, v: any) => void;
+}) {
   const selection = useCurrentSelection();
   const onClickConfirm = async () => {
     setValue(activeSelectionNode.id, selection);

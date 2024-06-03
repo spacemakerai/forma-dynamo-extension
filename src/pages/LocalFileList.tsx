@@ -2,6 +2,9 @@ import { useCallback, useEffect, useState } from "preact/compat";
 import { Next } from "../icons/Next";
 import { SampleFiles } from "../components/SampleFiles.tsx";
 import { CurrentOpenGraphPrompt } from "../components/CurrentOpenGraphPrompt.tsx";
+import { DynamoService, FolderGraphInfo } from "../service/dynamo.ts";
+
+type SetScript = (script: FolderGraphInfo) => void;
 
 function LoadingScriptList() {
   return (
@@ -70,16 +73,14 @@ function NoFolderEmptyState() {
   );
 }
 
-function ScriptListItem({ name, code, setScript }: any) {
+function ScriptListItem({ script, setScript }: { script: FolderGraphInfo; setScript: SetScript }) {
   const [hover, setHover] = useState(false);
 
   return (
     <div
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      onClick={() => {
-        setScript({ name, code });
-      }}
+      onClick={() => setScript(script)}
       style={{
         backgroundColor: hover ? "#80808020" : "#fff",
         cursor: "pointer",
@@ -90,14 +91,20 @@ function ScriptListItem({ name, code, setScript }: any) {
         padding: "0 10px",
       }}
     >
-      {name}
+      {script.name}
       {hover && <Next />}
     </div>
   );
 }
 
-export function LocalFileList({ setScript, dynamoHandler }: any) {
-  const [programs, setPrograms] = useState({});
+export function LocalFileList({
+  setScript,
+  dynamo,
+}: {
+  setScript: SetScript;
+  dynamo: DynamoService;
+}) {
+  const [programs, setPrograms] = useState<Record<string, FolderGraphInfo>>({});
   const [error, setError] = useState<string | null>(null);
   const [folder, setFolder] = useState<undefined | string>();
   const [isLoading, setIsLoading] = useState(false);
@@ -109,10 +116,8 @@ export function LocalFileList({ setScript, dynamoHandler }: any) {
         setIsLoading(true);
         try {
           setError(null);
-          setPrograms([]);
-          const localFiles = await dynamoHandler("getFolderInfo", {
-            path: folder,
-          });
+          setPrograms({});
+          const localFiles = await dynamo.folder(folder);
           localStorage.setItem("dynamo-folder", folder);
           const localPrograms = Object.fromEntries(
             localFiles.map((file: any) => [file.name, file]),
@@ -125,7 +130,7 @@ export function LocalFileList({ setScript, dynamoHandler }: any) {
         }
       })();
     },
-    [dynamoHandler],
+    [dynamo],
   );
 
   useEffect(() => {
@@ -176,7 +181,7 @@ export function LocalFileList({ setScript, dynamoHandler }: any) {
           Load
         </weave-button>
       </div>
-      <CurrentOpenGraphPrompt dynamoHandler={dynamoHandler} setScript={setScript} />
+      <CurrentOpenGraphPrompt dynamo={dynamo as any} setScript={setScript} />
 
       {error && <div style={{ color: "red" }}>{error}</div>}
       {!folder && <NoFolderEmptyState />}
@@ -184,8 +189,8 @@ export function LocalFileList({ setScript, dynamoHandler }: any) {
         <div>
           {isLoading && <LoadingScriptList />}
           {!isLoading &&
-            Object.entries(programs).map(([name, code]) => (
-              <ScriptListItem key={name} name={name} code={code} setScript={setScript} />
+            Object.values(programs).map((script) => (
+              <ScriptListItem key={script.id} script={script} setScript={setScript} />
             ))}
           {!isLoading && !error && Object.keys(programs).length === 0 && (
             <div style={{ color: "gray" }}>No graphs found in folder.</div>

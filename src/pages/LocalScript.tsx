@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from "preact/compat";
 
-import { DynamoOutput } from "../components/DynamoOutputs/DynamoOutput.js";
+import { DynamoOutput, RunResult } from "../components/DynamoOutputs/DynamoOutput.js";
 import { DynamoInput } from "../components/DynamoInputs/DynamoInput.js";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { isGet, isSelect } from "../utils/node.js";
@@ -9,8 +9,9 @@ import { SelectMode } from "../components/SelectMode.tsx";
 import { captureException } from "../util/sentry.ts";
 import { getGraphBuildingForSubTree } from "../representations/graphBuilding.ts";
 import { Child } from "forma-elements";
+import { DynamoService, FolderGraphInfo, GraphInfo, Input } from "../service/dynamo.js";
 
-function getDefaultValues(scriptInfo: any) {
+function getDefaultValues(scriptInfo: ScriptResult) {
   if (scriptInfo.type === "loaded") {
     const inputs = scriptInfo?.data?.inputs || []; // JSON.parse(code).Inputs;
     const state: any = {};
@@ -39,15 +40,16 @@ type ScriptResult =
   | { type: "init" }
   | { type: "loading" }
   | { type: "error"; data: any }
-  | { type: "loaded"; data: any };
+  | { type: "loaded"; data: GraphInfo };
 
-function useScript(script: any, dynamoHandler: any): [ScriptResult, () => void] {
+function useScript(script: any, dynamo: DynamoService): [ScriptResult, () => void] {
   const [state, setState] = useState<ScriptResult>({ type: "init" });
 
   const reload = useCallback(() => {
     setState({ type: "loading" });
 
-    dynamoHandler("getGraphInfo", { code: script.code })
+    dynamo
+      .info({ path: script.id, type: "PathGraphTarget" })
       .then((data: any) => {
         setState({ type: "loaded", data });
       })
@@ -58,7 +60,7 @@ function useScript(script: any, dynamoHandler: any): [ScriptResult, () => void] 
           setState({ type: "error", data: err.message });
         }
       });
-  }, [dynamoHandler, script.code]);
+  }, [dynamo, script.id]);
 
   useEffect(() => {
     reload();
@@ -197,17 +199,17 @@ async function getAllPaths() {
   return findAllPaths("root");
 }
 
-type Output =
-  | { type: "init" }
-  | { type: "running" }
-  | { type: "success"; data: any }
-  | { type: "error"; data: any };
-
-export function LocalScript({ script, setScript, dynamoHandler }: any) {
-  const [scriptInfo, reload] = useScript(script, dynamoHandler);
-  const [activeSelectionNode, setActiveSelectionNode] = useState<
-    { id: string; name: string } | undefined
-  >(undefined);
+export function LocalScript({
+  script,
+  setScript,
+  dynamo,
+}: {
+  script: FolderGraphInfo;
+  setScript: (script: FolderGraphInfo | undefined) => void;
+  dynamo: DynamoService;
+}) {
+  const [scriptInfo, reload] = useScript(script, dynamo);
+  const [activeSelectionNode, setActiveSelectionNode] = useState<Input | undefined>(undefined);
 
   const [state, setState] = useState<Record<string, any>>({});
 
@@ -217,7 +219,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
     }
   }, [scriptInfo]);
 
-  const [output, setOutput] = useState<Output>({ type: "init" });
+  const [result, setResult] = useState<RunResult>({ type: "init" });
 
   const setValue = useCallback(
     (id: string, value: any) => setState((state) => ({ ...state, [id]: value })),
@@ -230,10 +232,10 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         return;
       }
       const code = scriptInfo.data;
-      setOutput({ type: "running" });
+      setResult({ type: "running" });
       const urn = await Forma.proposal.getRootUrn();
       const inputs = await Promise.all(
-        code.inputs.map(async ({ id, type, name }: any) => {
+        code.inputs.map(async ({ id, type, name }: Input) => {
           const value = state[id];
 
           if (
@@ -316,19 +318,19 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
         }),
       );
 
-      setOutput({
+      setResult({
         type: "success",
-        data: await dynamoHandler("runGraph", { code, inputs }),
+        data: await dynamo.run({ type: "PathGraphTarget", path: scriptInfo.data.id }, inputs),
       });
     } catch (e) {
       console.error(e);
       captureException(e, "Error running Dynamo graph");
-      setOutput({ type: "error", data: e });
+      setResult({ type: "error", data: e });
     }
-  }, [dynamoHandler, scriptInfo, state]);
+  }, [dynamo, scriptInfo, state]);
 
   useEffect(() => {
-    setOutput({ type: "init" });
+    setResult({ type: "init" });
   }, [state]);
 
   const fixedFooterHeight = 44;
@@ -384,24 +386,22 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
             flexWrap: "nowrap",
           }}
         >
-          {script?.code?.metadata?.description && (
-            <div>
-              <span style={{ fontWeight: "600" }}>Description: </span>
-              <span>{script?.code?.metadata?.description}</span>
-            </div>
-          )}
           {scriptInfo.type === "error" && scriptInfo.data === "GRAPH_NOT_TRUSTED" && (
             <NotTrustedGraph
               script={script}
               setScript={setScript}
               reload={reload}
-              dynamoHandler={dynamoHandler}
+              dynamo={dynamo}
             />
           )}
           {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
 
           {scriptInfo.type === "loaded" && (
             <>
+              <div>
+                <span style={{ fontWeight: "600" }}>Description: </span>
+                <span>{scriptInfo.data.metadata.description}</span>
+              </div>
               <div
                 style={{
                   marginBottom: "5px",
@@ -415,14 +415,13 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
                 }}
               >
                 <DynamoInput
-                  code={scriptInfo.data}
+                  script={scriptInfo.data}
                   state={state}
                   setValue={setValue}
-                  activeSelectionNode={activeSelectionNode}
                   setActiveSelectionNode={setActiveSelectionNode}
                 />
 
-                <DynamoOutput output={output} />
+                <DynamoOutput result={result} />
               </div>
             </>
           )}
@@ -446,7 +445,7 @@ export function LocalScript({ script, setScript, dynamoHandler }: any) {
           <weave-button
             style={{ width: "80px" }}
             variant="solid"
-            disabled={output.type === "running" || scriptInfo.type !== "loaded"}
+            disabled={result.type === "running" || scriptInfo.type !== "loaded"}
             onClick={onRun}
           >
             Run

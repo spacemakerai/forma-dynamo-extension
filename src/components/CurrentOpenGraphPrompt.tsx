@@ -1,15 +1,23 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
+import { DynamoService, FolderGraphInfo, GraphInfo } from "../service/dynamo";
 
-export function CurrentOpenGraphPrompt({ dynamoHandler, setScript }: any) {
-  const [suggestOpenGraph, setSuggestOpenGraph] = useState<any>(null);
+export function CurrentOpenGraphPrompt({
+  dynamo,
+  setScript,
+}: {
+  dynamo: DynamoService & { current: () => Promise<GraphInfo> };
+  setScript: (script: FolderGraphInfo) => void;
+}) {
+  const [suggestOpenGraph, setSuggestOpenGraph] = useState<GraphInfo | null>(null);
   const [isClosed, setIsClosed] = useState(false);
 
   const currentFolder = localStorage.getItem("dynamo-folder");
 
   useEffect(() => {
     function handler() {
-      dynamoHandler("getCurrentGraphInfo", {})
-        .then((currentGraph: any) => {
+      dynamo
+        .current()
+        .then((currentGraph) => {
           if (currentGraph && currentGraph.id) {
             setSuggestOpenGraph(currentGraph);
           }
@@ -19,18 +27,20 @@ export function CurrentOpenGraphPrompt({ dynamoHandler, setScript }: any) {
         });
     }
 
-    const internval = setInterval(handler, 1000);
+    const interval = setInterval(handler, 1000);
 
-    return () => clearInterval(internval);
-  }, [dynamoHandler]);
+    return () => clearInterval(interval);
+  }, [dynamo]);
 
   const onOpenGraph = useCallback(() => {
-    setScript({ name: suggestOpenGraph.name, code: suggestOpenGraph });
-    const file = suggestOpenGraph.id.replaceAll("\\\\", "\\");
-    const folder = file.split("\\").slice(0, -1).join("\\");
+    if (suggestOpenGraph) {
+      setScript(suggestOpenGraph);
+      const file = suggestOpenGraph.id.replaceAll("\\\\", "\\");
+      const folder = file.split("\\").slice(0, -1).join("\\");
 
-    if (!currentFolder) {
-      localStorage.setItem("dynamo-folder", folder);
+      if (!currentFolder) {
+        localStorage.setItem("dynamo-folder", folder);
+      }
     }
   }, [setScript, suggestOpenGraph, currentFolder]);
 

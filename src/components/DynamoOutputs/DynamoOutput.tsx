@@ -3,6 +3,13 @@ import { Watch3D } from "./Watch3d.tsx";
 import { HousingByLine } from "./HousingByLine.tsx";
 import { WatchImage } from "./WatchImage.tsx";
 import { SendToForma } from "./SendToForma.tsx";
+import { Run } from "../../service/dynamo.ts";
+
+export type RunResult =
+  | { type: "init" }
+  | { type: "running" }
+  | { type: "success"; data: Run }
+  | { type: "error"; data: any };
 
 function DynamoOutputComponent({ output }: { output: Output }) {
   if (output.type === "Watch3D") {
@@ -37,10 +44,10 @@ function DynamoOutputComponent({ output }: { output: Output }) {
   );
 }
 
-export function DynamoOutput({ output }: any) {
-  if (output.type === "init") return null;
-  if (output.type === "error") return <div>Failed</div>;
-  if (output.type === "running")
+export function DynamoOutput({ result }: { result: RunResult }) {
+  if (result.type === "init") return null;
+  if (result.type === "error") return <div>Failed</div>;
+  if (result.type === "running")
     return (
       <div>
         <weave-progress-bar />
@@ -48,7 +55,7 @@ export function DynamoOutput({ output }: any) {
       </div>
     );
 
-  const outputs = (output.data?.info?.outputs || []) as Output[];
+  const outputs = (result.data?.info?.outputs || []) as Output[];
 
   return (
     <>

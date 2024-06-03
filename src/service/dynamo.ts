@@ -7,12 +7,40 @@ class FetchError extends Error {
   }
 }
 
-export type DynamoService = {
-  run: (url: string, target: any, inputs: any) => Promise<Run>;
-  graphFolderInfo: (url: string, path: string) => Promise<FolderGraphInfo[]>;
-  info: (url: string, target: any) => Promise<GraphInfo>;
-  trust: (url: string, path: string) => Promise<boolean>;
-  health: (port: number) => Promise<Health>;
+export interface DynamoService {
+  run: (target: GraphTarget, inputs: RunInputs) => Promise<Run>;
+  folder: (path: string) => Promise<FolderGraphInfo[]>;
+  info: (target: GraphTarget) => Promise<GraphInfo>;
+  trust: (path: string) => Promise<boolean>;
+  //health: (port: number) => Promise<Health>;
+}
+
+export type GraphTarget =
+  | {
+      type: "PathGraphTarget";
+      path: string;
+      forceReopen?: boolean;
+    }
+  | {
+      type: "CurrentGraphTarget";
+    }
+  | {
+      type: "JsonGraphTarget";
+      json?: unknown;
+      code: string;
+    };
+
+export type Input = {
+  id: string;
+  name: string;
+  type: string;
+  value: string;
+  nodeTypeProperties: {
+    options: string[];
+    minimumValue: number;
+    maximumValue: number;
+    stepValue: number;
+  };
 };
 
 export type Output = {
@@ -53,7 +81,7 @@ export type FolderGraphInfo = {
 export type GraphInfo = {
   dependencies: Array<{ name: string; version: string; type: string; state: string }>;
   id: string;
-  inputs: Array<unknown>;
+  inputs: Array<Input>;
   issues: Array<unknown>;
   metadata: Metadata;
   name: string;
@@ -66,84 +94,88 @@ type Health = {
   port: number;
 };
 
-async function run(url: string, target: any, inputs: any): Promise<Run> {
-  const response = await fetch(`${url}/v1/graph/run`, {
-    method: "POST",
-    body: JSON.stringify({
-      target,
-      ignoreInputs: false,
-      getImage: false,
-      getGeometry: false,
-      getContents: false,
-      inputs,
-    }),
-  });
-  return await response.json();
-}
+export type RunInputs = { nodeId: string; value: any }[];
 
-async function graphFolderInfo(url: string, path: string): Promise<FolderGraphInfo[]> {
-  return fetch(`${url}/v1/graph-folder/info`, {
-    method: "POST",
-    body: JSON.stringify({
-      path: path.replaceAll(/\\/g, "\\\\"),
-    }),
-  }).then((res) => res.json());
-}
+class Dynamo implements DynamoService {
+  private url: string;
 
-async function info(url: string, target: any): Promise<GraphInfo> {
-  const response = await fetch(`${url}/v1/graph/info`, {
-    method: "POST",
-    body: JSON.stringify({
-      target,
-      options: {
-        metadata: true,
-        issues: true,
-        status: true,
-        inputs: true,
-        outputs: true,
-        dependencies: true,
-      },
-    }),
-  });
+  constructor(url: string) {
+    this.url = url;
+  }
 
-  if (response.status === 200) {
+  async run(target: GraphTarget, inputs: RunInputs): Promise<Run> {
+    const response = await fetch(`${this.url}/v1/graph/run`, {
+      method: "POST",
+      body: JSON.stringify({
+        target,
+        ignoreInputs: false,
+        getImage: false,
+        getGeometry: false,
+        getContents: false,
+        inputs,
+      }),
+    });
     return await response.json();
   }
-  const body = await response.json();
 
-  throw new FetchError(body?.title || response.statusText, response.status);
-}
+  async folder(path: string): Promise<FolderGraphInfo[]> {
+    return fetch(`${this.url}/v1/graph-folder/info`, {
+      method: "POST",
+      body: JSON.stringify({
+        path: path.replaceAll(/\\/g, "\\\\"),
+      }),
+    }).then((res) => res.json());
+  }
 
-async function trust(url: string, path: string): Promise<boolean> {
-  const response = await fetch(`${url}/v1/settings/trusted-folder`, {
-    method: "POST",
-    body: JSON.stringify({
-      path,
-    }),
-  });
-  return await response.json();
-}
+  async info(target: GraphTarget): Promise<GraphInfo> {
+    const response = await fetch(`${this.url}/v1/graph/info`, {
+      method: "POST",
+      body: JSON.stringify({
+        target,
+        options: {
+          metadata: true,
+          issues: true,
+          status: true,
+          inputs: true,
+          outputs: true,
+          dependencies: true,
+        },
+      }),
+    });
 
-async function health(port: number): Promise<Health> {
-  try {
-    const response = await fetch(`http://localhost:${port}/v1/health`);
     if (response.status === 200) {
-      return { status: 200, port };
+      return await response.json();
     }
-    // TODO: make sure 503 errors end up here
-    else if (response.status === 503) {
-      return { status: 503, port };
+    const body = await response.json();
+
+    throw new FetchError(body?.title || response.statusText, response.status);
+  }
+
+  async trust(path: string): Promise<boolean> {
+    const response = await fetch(`${this.url}/v1/settings/trusted-folder`, {
+      method: "POST",
+      body: JSON.stringify({
+        path,
+      }),
+    });
+    return await response.json();
+  }
+
+  static async health(port: number): Promise<Health> {
+    try {
+      const response = await fetch(`http://localhost:${port}/v1/health`);
+      if (response.status === 200) {
+        return { status: 200, port };
+      }
+      // TODO: make sure 503 errors end up here
+      else if (response.status === 503) {
+        return { status: 503, port };
+      }
+      return { status: 500, port };
+    } catch (e) {
+      return { status: 500, port };
     }
-    return { status: 500, port };
-  } catch (e) {
-    return { status: 500, port };
   }
 }
 
-export default {
-  run,
-  graphFolderInfo,
-  info,
-  trust,
-  health,
-} as DynamoService;
+export default Dynamo;

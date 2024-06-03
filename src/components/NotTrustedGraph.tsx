@@ -1,15 +1,26 @@
 import { useCallback } from "preact/hooks";
+import { DynamoService, FolderGraphInfo } from "../service/dynamo";
 
-export function NotTrustedGraph({ script, setScript, reload, dynamoHandler }: any) {
+export function NotTrustedGraph({
+  script,
+  setScript,
+  reload,
+  dynamo,
+}: {
+  dynamo: DynamoService;
+  script: FolderGraphInfo;
+  setScript: (script: FolderGraphInfo | undefined) => void;
+  reload: () => void;
+}) {
   const trust = useCallback(async () => {
-    const { id } = script.code;
+    const { id } = script;
 
     const parts = id.split("\\");
     parts.pop();
 
-    await dynamoHandler("trustFolder", { path: parts.join("\\") });
+    await dynamo.trust(parts.join("\\"));
     reload();
-  }, [script.code, dynamoHandler, reload]);
+  }, [script, dynamo, reload]);
 
   return (
     <div>

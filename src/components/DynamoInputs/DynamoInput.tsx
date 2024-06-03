@@ -1,6 +1,7 @@
 import { Input } from "./types";
 import { isSelect } from "../../utils/node";
 import { Housing } from "./Housing";
+import { GraphInfo } from "../../service/dynamo";
 
 function DynamoInputComponent({
   input,
@@ -11,7 +12,7 @@ function DynamoInputComponent({
   input: Input;
   value: any;
   setValue: (id: string, v: any) => void;
-  setActiveSelectionNode?: (v: any) => void;
+  setActiveSelectionNode?: (input: Input) => void;
 }) {
   if (input.type === "FormaTerrain" || input.type === "GetTerrain") {
     return null;
@@ -26,7 +27,7 @@ function DynamoInputComponent({
         <weave-button
           style={{ marginLeft: "5px" }}
           variant="outlined"
-          onClick={() => setActiveSelectionNode?.({ id: input.id, name: input.name })}
+          onClick={() => setActiveSelectionNode?.(input)}
         >
           Select
         </weave-button>
@@ -116,7 +117,17 @@ function DynamoInputComponent({
   return null;
 }
 
-export function DynamoInput({ code, state, setValue, setActiveSelectionNode }: any) {
+export function DynamoInput({
+  script,
+  state,
+  setValue,
+  setActiveSelectionNode,
+}: {
+  script: GraphInfo;
+  state: Record<string, any>;
+  setValue: (id: string, v: any) => void;
+  setActiveSelectionNode?: (input: Input | undefined) => void;
+}) {
   return (
     <div>
       <div
@@ -132,7 +143,7 @@ export function DynamoInput({ code, state, setValue, setActiveSelectionNode }: a
         Inputs
       </div>
 
-      {(code?.inputs || []).map((input: Input) => (
+      {(script.inputs || []).map((input: Input) => (
         <div
           style={{
             display: "flex",
@@ -154,7 +165,7 @@ export function DynamoInput({ code, state, setValue, setActiveSelectionNode }: a
         </div>
       ))}
 
-      {code?.inputs?.length === 0 && (
+      {script.inputs?.length === 0 && (
         <div
           style={{
             padding: "5px",
