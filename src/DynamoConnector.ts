@@ -90,9 +90,7 @@ export const useDynamoConnector = () => {
 
     return {
       folder: (path: string) => {
-        console.log("folder");
         return dynamo.folder(path).catch((e) => {
-          console.log("folder", e);
           setState((state) => ({
             ...state,
             connectionState: DynamoConnectionState.LOST_CONNECTION,
@@ -101,14 +99,11 @@ export const useDynamoConnector = () => {
         });
       },
       current: () => {
-        console.log("current");
         return dynamo.info({ type: "CurrentGraphTarget" });
       },
       info: (target: GraphTarget) => {
-        console.log("info");
         return dynamo.info(target).catch((e) => {
           if (!(e.status === 500 && e.message === "Graph is not trusted.")) {
-            console.log("info", e);
             setState((state) => ({
               ...state,
               connectionState: DynamoConnectionState.LOST_CONNECTION,
@@ -118,9 +113,7 @@ export const useDynamoConnector = () => {
         });
       },
       run: (target: GraphTarget, inputs: RunInputs) => {
-        console.log("run");
         return dynamo.run(target, inputs).catch((e) => {
-          console.log("run", e);
           setState((state) => ({
             ...state,
             connectionState: DynamoConnectionState.LOST_CONNECTION,
@@ -129,9 +122,7 @@ export const useDynamoConnector = () => {
         });
       },
       trust: (path: string) => {
-        console.log("trust");
         return dynamo.trust(path).catch((e) => {
-          console.log("trust", e);
           setState((state) => ({
             ...state,
             connectionState: DynamoConnectionState.LOST_CONNECTION,

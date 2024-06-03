@@ -115,6 +115,7 @@ class Dynamo implements DynamoService {
         inputs,
       }),
     });
+
     return await response.json();
   }
 
