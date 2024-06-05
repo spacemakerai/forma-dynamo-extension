@@ -27,7 +27,8 @@ export type GraphTarget =
   | {
       type: "JsonGraphTarget";
       json?: unknown;
-      code: string;
+      code?: string;
+      contents?: string;
     };
 
 export type Input = {
@@ -130,6 +131,9 @@ class Dynamo implements DynamoService {
 
   async info(target: GraphTarget): Promise<GraphInfo> {
     const response = await fetch(`${this.url}/v1/graph/info`, {
+      headers: {
+        Authorization: "", // TODO
+      },
       method: "POST",
       body: JSON.stringify({
         target,
