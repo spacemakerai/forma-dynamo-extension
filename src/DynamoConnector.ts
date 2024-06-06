@@ -33,32 +33,17 @@ export const useDynamoConnector = () => {
     setDynamoPort(undefined);
     const defaultPort = 55100;
 
-    const defaultHealth = await Dynamo.health(defaultPort);
-    if (defaultHealth.status === 200) {
+    const portsToCheck = [...Array(10)].map((_, i) => defaultPort + i);
+    const response = await Promise.race(portsToCheck.map((port) => Dynamo.health(port)));
+    if (response.status === 200) {
       setState((state) => ({ ...state, connectionState: DynamoConnectionState.CONNECTED }));
-      setDynamoPort(defaultPort);
+      setDynamoPort(response.port);
+      return;
+    } else if (response.status === 503) {
+      setState((state) => ({ ...state, connectionState: DynamoConnectionState.BLOCKED }));
       return;
     }
-
-    const portsToCheck = [...Array(10)].map((_, i) => defaultPort + i);
-    const responses = await Promise.all(portsToCheck.map((port) => Dynamo.health(port)));
-    const connections = responses.filter((response) => response.status === 200);
-    if (connections.length === 1) {
-      setState((state) => ({ ...state, connectionState: DynamoConnectionState.CONNECTED }));
-      setDynamoPort(connections[0].port);
-    } else if (connections.length > 1) {
-      setState((state) => ({
-        ...state,
-        connectionState: DynamoConnectionState.MULTIPLE_CONNECTIONS,
-      }));
-    } else {
-      const blockedConnections = responses.filter((response) => response.status === 503);
-      if (blockedConnections.length > 0) {
-        setState((state) => ({ ...state, connectionState: DynamoConnectionState.BLOCKED }));
-      } else {
-        setState((state) => ({ ...state, connectionState: DynamoConnectionState.NOT_CONNECTED }));
-      }
-    }
+    setState((state) => ({ ...state, connectionState: DynamoConnectionState.NOT_CONNECTED }));
   };
 
   useEffect(() => {
