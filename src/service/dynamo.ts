@@ -109,9 +109,9 @@ class Dynamo implements DynamoService {
 
   async _fetch(input: RequestInfo, init?: RequestInit | undefined): Promise<Response> {
     if (this.authProvider && init) {
-      let headers = new Headers(init.headers);
+      const headers = new Headers(init.headers);
       if (!headers.has("Authorization")) {
-        let authzString = await this.authProvider();
+        const authzString = await this.authProvider();
         headers.set("Authorization", authzString);
         init.headers = headers;
       }

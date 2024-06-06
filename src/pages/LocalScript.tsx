@@ -72,7 +72,7 @@ function useScript(script: Script, dynamo: DynamoService): [ScriptResult, () => 
           setState({ type: "error", data: err.message });
         }
       });
-  }, [dynamo, script.id]);
+  }, [dynamo, script]);
 
   useEffect(() => {
     reload();
@@ -345,7 +345,7 @@ export function LocalScript({
       captureException(e, "Error running Dynamo graph");
       setResult({ type: "error", data: e });
     }
-  }, [dynamo, scriptInfo, state]);
+  }, [dynamo, scriptInfo, state, script]);
 
   useEffect(() => {
     setResult({ type: "init" });

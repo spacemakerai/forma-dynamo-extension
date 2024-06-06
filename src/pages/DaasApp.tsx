@@ -25,7 +25,7 @@ export function DaasApp() {
   const daas = new Dynamo("https://0z63s658g5.execute-api.us-west-2.amazonaws.com", async () => {
     // let { accessToken } = await Forma.auth.acquireTokenOverlay();
     // return `Bearer ${accessToken}`;
-    return `Bearer <YOUR TOKEN HERE>`;
+    return `Bearer <YOUR_TOKEN_HERE>`;
   });
 
   return (
