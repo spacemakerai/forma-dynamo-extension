@@ -9,7 +9,14 @@ import { SelectMode } from "../components/SelectMode.tsx";
 import { captureException } from "../util/sentry.ts";
 import { getGraphBuildingForSubTree } from "../representations/graphBuilding.ts";
 import { Child } from "forma-elements";
-import { DynamoService, FolderGraphInfo, GraphInfo, Input } from "../service/dynamo.js";
+import {
+  DynamoService,
+  FolderGraphInfo,
+  GraphInfo,
+  GraphTarget,
+  Input,
+} from "../service/dynamo.js";
+import { JSONGraph } from "./DaasApp.tsx";
 
 function getDefaultValues(scriptInfo: ScriptResult) {
   if (scriptInfo.type === "loaded") {
@@ -42,14 +49,19 @@ type ScriptResult =
   | { type: "error"; data: any }
   | { type: "loaded"; data: GraphInfo };
 
-function useScript(script: any, dynamo: DynamoService): [ScriptResult, () => void] {
+function useScript(script: Script, dynamo: DynamoService): [ScriptResult, () => void] {
   const [state, setState] = useState<ScriptResult>({ type: "init" });
 
   const reload = useCallback(() => {
     setState({ type: "loading" });
 
+    const target: GraphTarget =
+      script.type === "JSON"
+        ? { type: "JsonGraphTarget", contents: JSON.stringify(script.graph) }
+        : { path: script.id, type: "PathGraphTarget" };
+
     dynamo
-      .info({ path: script.id, type: "PathGraphTarget" })
+      .info(target)
       .then((data: any) => {
         setState({ type: "loaded", data });
       })
@@ -69,7 +81,7 @@ function useScript(script: any, dynamo: DynamoService): [ScriptResult, () => voi
   return [state, reload];
 }
 
-function AnimatedLoading() {
+export function AnimatedLoading() {
   const [slow, setSlow] = useState(false);
 
   useEffect(() => {
@@ -199,13 +211,15 @@ async function getAllPaths() {
   return findAllPaths("root");
 }
 
+export type Script = FolderGraphInfo | JSONGraph;
+
 export function LocalScript({
   script,
   setScript,
   dynamo,
 }: {
-  script: FolderGraphInfo;
-  setScript: (script: FolderGraphInfo | undefined) => void;
+  script: Script;
+  setScript: any;
   dynamo: DynamoService;
 }) {
   const [scriptInfo, reload] = useScript(script, dynamo);
@@ -318,9 +332,13 @@ export function LocalScript({
         }),
       );
 
+      const target: GraphTarget =
+        script.type === "FolderGraph"
+          ? { type: "PathGraphTarget", path: scriptInfo.data.id }
+          : { type: "JsonGraphTarget", contents: JSON.stringify(script.graph) };
       setResult({
         type: "success",
-        data: await dynamo.run({ type: "PathGraphTarget", path: scriptInfo.data.id }, inputs),
+        data: await dynamo.run(target, inputs),
       });
     } catch (e) {
       console.error(e);

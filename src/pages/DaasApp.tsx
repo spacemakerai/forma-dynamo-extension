@@ -1,43 +1,44 @@
 import { useState } from "preact/hooks";
-import { DaasScript } from "./DaasScript";
 import Dynamo from "../service/dynamo";
-import testGraph from "../assets/test.json";
+import sphereAreaGraph from "../assets/spherearea.json";
+import { LocalScript } from "./LocalScript";
 
-type Script = {
+export type JSONGraph = {
+  type: "JSON";
   id: string;
   name: string;
   graph?: any;
 };
 
-function useSampleScripts(): Script[] {
+function useSampleGraphs(): JSONGraph[] {
   return [
-    { id: "1", name: "Sample Script 1" },
-    { id: "2", name: "Sample Script 2", graph: testGraph },
+    { id: "1", type: "JSON", name: "Sample Script 1" },
+    { id: "2", type: "JSON", name: "Sphere Area", graph: sphereAreaGraph },
   ];
 }
 
 export function DaasApp() {
-  const [script, setScript] = useState<Script | undefined>(undefined);
+  const [graph, setGraph] = useState<JSONGraph | undefined>(undefined);
 
-  const scripts = useSampleScripts();
+  const sampleGraphs = useSampleGraphs();
 
-  const daas = new Dynamo("https://0z63s658g5.execute-api.us-west-2.amazonaws.com");
-
-  console.log(scripts);
-
-  console.log(script);
+  const daas = new Dynamo("https://0z63s658g5.execute-api.us-west-2.amazonaws.com", async () => {
+    // let { accessToken } = await Forma.auth.acquireTokenOverlay();
+    // return `Bearer ${accessToken}`;
+    return `Bearer <YOUR TOKEN HERE>`;
+  });
 
   return (
     <div>
-      {!script &&
-        scripts.map((script) => {
+      {!graph &&
+        sampleGraphs.map((script) => {
           return (
             <div key={script.id}>
-              {script.name} <weave-button onClick={() => setScript(script)}>Load</weave-button>
+              {script.name} <weave-button onClick={() => setGraph(script)}>Load</weave-button>
             </div>
           );
         })}
-      {script && <DaasScript script={script} setScript={setScript} dynamo={daas} />}
+      {graph && <LocalScript script={graph} setScript={setGraph} dynamo={daas} />}
     </div>
   );
 }

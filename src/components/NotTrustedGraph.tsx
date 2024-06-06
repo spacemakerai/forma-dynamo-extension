@@ -1,5 +1,6 @@
 import { useCallback } from "preact/hooks";
 import { DynamoService, FolderGraphInfo } from "../service/dynamo";
+import { Script } from "../pages/LocalScript";
 
 export function NotTrustedGraph({
   script,
@@ -8,7 +9,7 @@ export function NotTrustedGraph({
   dynamo,
 }: {
   dynamo: DynamoService;
-  script: FolderGraphInfo;
+  script: Script;
   setScript: (script: FolderGraphInfo | undefined) => void;
   reload: () => void;
 }) {
