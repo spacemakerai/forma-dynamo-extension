@@ -2,6 +2,7 @@ import { useState } from "preact/hooks";
 import Dynamo from "../service/dynamo";
 import sphereAreaGraph from "../assets/spherearea.json";
 import { LocalScript } from "./LocalScript";
+import { Forma } from "forma-embedded-view-sdk/auto";
 
 export type JSONGraph = {
   type: "JSON";
@@ -22,10 +23,14 @@ export function DaasApp() {
 
   const sampleGraphs = useSampleGraphs();
 
+  Forma.auth.configure({
+    clientId: import.meta.env.VITE_EXTENSION_CLIENT_ID,
+    callbackUrl: `${window.location.origin}/`, // we recommend a blank html page here
+    scopes: ["data:read", "data:write"],
+  });
   const daas = new Dynamo("https://0z63s658g5.execute-api.us-west-2.amazonaws.com", async () => {
-    // let { accessToken } = await Forma.auth.acquireTokenOverlay();
-    // return `Bearer ${accessToken}`;
-    return `Bearer <YOUR_TOKEN_HERE>`;
+    const { accessToken } = await Forma.auth.acquireTokenOverlay();
+    return `Bearer ${accessToken}`;
   });
 
   return (
