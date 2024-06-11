@@ -35,7 +35,7 @@ export function CurrentOpenGraphPrompt({
 
   const onOpenGraph = useCallback(() => {
     if (suggestOpenGraph) {
-      setScript(suggestOpenGraph);
+      setScript({ type: "FolderGraph", ...suggestOpenGraph });
       const file = suggestOpenGraph.id.replaceAll("\\\\", "\\");
       const folder = file.split("\\").slice(0, -1).join("\\");
 

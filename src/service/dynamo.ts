@@ -26,8 +26,8 @@ export type GraphTarget =
     }
   | {
       type: "JsonGraphTarget";
-      json?: unknown;
-      code: string;
+      graph?: unknown;
+      contents?: string;
     };
 
 export type Input = {
@@ -73,6 +73,7 @@ export type Run = {
 };
 
 export type FolderGraphInfo = {
+  type: "FolderGraph";
   id: string;
   metadata: Metadata;
   name: string;
@@ -98,13 +99,28 @@ export type RunInputs = { nodeId: string; value: any }[];
 
 class Dynamo implements DynamoService {
   private url: string;
+  private authProvider?: () => Promise<string>;
 
-  constructor(url: string) {
+  constructor(url: string, authProvider?: () => Promise<string>) {
     this.url = url;
+    this.authProvider = authProvider;
+  }
+
+  async _fetch(input: RequestInfo, init?: RequestInit | undefined): Promise<Response> {
+    if (this.authProvider && init) {
+      const headers = new Headers(init.headers);
+      if (!headers.has("Authorization")) {
+        const authzString = await this.authProvider();
+        headers.set("Authorization", authzString);
+        init.headers = headers;
+      }
+    }
+
+    return fetch(input, init);
   }
 
   async run(target: GraphTarget, inputs: RunInputs): Promise<Run> {
-    const response = await fetch(`${this.url}/v1/graph/run`, {
+    const response = await this._fetch(`${this.url}/v1/graph/run`, {
       method: "POST",
       body: JSON.stringify({
         target,
@@ -120,7 +136,7 @@ class Dynamo implements DynamoService {
   }
 
   async folder(path: string): Promise<FolderGraphInfo[]> {
-    return fetch(`${this.url}/v1/graph-folder/info`, {
+    return this._fetch(`${this.url}/v1/graph-folder/info`, {
       method: "POST",
       body: JSON.stringify({
         path: path.replaceAll(/\\/g, "\\\\"),
@@ -129,7 +145,7 @@ class Dynamo implements DynamoService {
   }
 
   async info(target: GraphTarget): Promise<GraphInfo> {
-    const response = await fetch(`${this.url}/v1/graph/info`, {
+    const response = await this._fetch(`${this.url}/v1/graph/info`, {
       method: "POST",
       body: JSON.stringify({
         target,
@@ -153,7 +169,7 @@ class Dynamo implements DynamoService {
   }
 
   async trust(path: string): Promise<boolean> {
-    const response = await fetch(`${this.url}/v1/settings/trusted-folder`, {
+    const response = await this._fetch(`${this.url}/v1/settings/trusted-folder`, {
       method: "POST",
       body: JSON.stringify({
         path,

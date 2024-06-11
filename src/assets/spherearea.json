@@ -1,0 +1,496 @@
+{
+  "Uuid": "a4547257-ef5e-4139-8e41-70f388fcfe1b",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "spherearea",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "788ab7d9abed42d398c13422b9204090",
+      "Name": "Integer Slider",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "11",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "NumberType": "Integer",
+      "Description": "Produces integer values",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [
+    {
+      "Id": "723fec890ce6456dace083a1e28cc191",
+      "Name": "*",
+      "Type": "float",
+      "InitialValue": "1520.53084433746",
+      "Description": "Returns multiplication of x times y\n\n* (x: var[]..[], y: var[]..[]): var[]..[]"
+    }
+  ],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NumberType": "Integer",
+      "MaximumValue": 100,
+      "MinimumValue": 0,
+      "StepValue": 1,
+      "Id": "788ab7d9abed42d398c13422b9204090",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a9d1fbcccb5f4382af9d9ce6f0e46d31",
+          "Name": "",
+          "Description": "Int64",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Produces integer values",
+      "InputValue": 11
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "5bb63a5c148d4841997a565717268387",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "b08b92fe3d514a5c959162bad74e185b",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e7b6c34fadfd4a9b87ab3670b1695308",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0d26345f634d4446976904bf99a1fea6",
+          "Name": "Sphere",
+          "Description": "Sphere",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Replication": "Auto",
+      "Description": "Create a Solid Sphere cetered at the input Point, with given radius.\n\nSphere.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Sphere"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "adfaef72d1694eb1b8af56aa10908643",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "1253ad22932844fb86782b05d8778185",
+          "Name": "sphere",
+          "Description": "Autodesk.DesignScript.Geometry.Sphere",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "471d45922b3f4bc88cec1c132fb11cdd",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Sphere.Radius",
+      "Replication": "Auto",
+      "Description": "Return the radius of the Sphere.\n\nSphere.Radius: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "691a236bafbf4b14a8a1b0cb36bc6c7d",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "11a593a7fda344db8bb9ea37a9b40528",
+          "Name": "number",
+          "Description": "Number to be raised to a power.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b6c0028938ad4918a3d98be823c070f2",
+          "Name": "power",
+          "Description": "Power to raise the number to.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c5f304cbfb9843f6a159483dd20da6d3",
+          "Name": "result",
+          "Description": "Number raised to the power.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Math.Pow@double,double",
+      "Replication": "Auto",
+      "Description": "Raises a number to the specified power.\n\nMath.Pow (number: double, power: double): double"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "622bbbc1b6e147b9b177eebbb74a4f81",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b052b71ee7634a0785deb125f69417b2",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 2.0
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "39b792551d8e470e9766d5545a5a6ac4",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "5012b7d5121e4fda8a9768a395dea825",
+          "Name": "x",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cfa903acc68a4462a1ce6236be328d0e",
+          "Name": "y",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b539378cbe5049fda265864d38d9a958",
+          "Name": "number",
+          "Description": "The product of the two input numbers",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "*@var[]..[],var[]..[]",
+      "Replication": "Auto",
+      "Description": "Returns multiplication of x times y\n\n* (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "da048d0a789e4cd4a7bc1129aba4d74d",
+      "NodeType": "FunctionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9b717f227cfd4440ae1e4d6500f8c04f",
+          "Name": "double",
+          "Description": "The constant Pi",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Math.PI",
+      "Replication": "Auto",
+      "Description": "The mathematical constant Pi, 3.14159...\n\nMath.PI: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "723fec890ce6456dace083a1e28cc191",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "896861a8ee3140ec8342460f9ecac82a",
+          "Name": "x",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "514864bbc78a4954beffda590b819466",
+          "Name": "y",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b4123f9fa8cc428e87731d0cc28cd6b0",
+          "Name": "number",
+          "Description": "The product of the two input numbers",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "*@var[]..[],var[]..[]",
+      "Replication": "Auto",
+      "Description": "Returns multiplication of x times y\n\n* (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "244692e041c640e4a4c678fd5cf9065d",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "75684dc4b7644c3b830b50f5edb6e78b",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 4.0
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "a9d1fbcccb5f4382af9d9ce6f0e46d31",
+      "End": "e7b6c34fadfd4a9b87ab3670b1695308",
+      "Id": "c8c94ededa7847e7a12410dd1c8cb1b6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0d26345f634d4446976904bf99a1fea6",
+      "End": "1253ad22932844fb86782b05d8778185",
+      "Id": "a4478def511e41ada5e101b139591125",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "471d45922b3f4bc88cec1c132fb11cdd",
+      "End": "11a593a7fda344db8bb9ea37a9b40528",
+      "Id": "741134c7bdb64f0b816d0a21a69c8e98",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c5f304cbfb9843f6a159483dd20da6d3",
+      "End": "5012b7d5121e4fda8a9768a395dea825",
+      "Id": "11b109e9cf954b62bc99fc261ffb726a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b052b71ee7634a0785deb125f69417b2",
+      "End": "b6c0028938ad4918a3d98be823c070f2",
+      "Id": "363b574d7dab411bbb2460662656bd88",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b539378cbe5049fda265864d38d9a958",
+      "End": "896861a8ee3140ec8342460f9ecac82a",
+      "Id": "6c7aff934db540de892c60ff860f3913",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9b717f227cfd4440ae1e4d6500f8c04f",
+      "End": "cfa903acc68a4462a1ce6236be328d0e",
+      "Id": "8044d91bb51748eead0e5f8c965fe849",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "75684dc4b7644c3b830b50f5edb6e78b",
+      "End": "514864bbc78a4954beffda590b819466",
+      "Id": "e3484e7e7ef9490abeb30a6e3cf88d4d",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.3.6394",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "788ab7d9abed42d398c13422b9204090",
+        "Name": "Integer Slider",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 551.5,
+        "Y": 570.0
+      },
+      {
+        "Id": "5bb63a5c148d4841997a565717268387",
+        "Name": "Sphere.ByCenterPointRadius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1078.5,
+        "Y": 537.0
+      },
+      {
+        "Id": "adfaef72d1694eb1b8af56aa10908643",
+        "Name": "Sphere.Radius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1467.6359724025701,
+        "Y": 539.12663440841334
+      },
+      {
+        "Id": "691a236bafbf4b14a8a1b0cb36bc6c7d",
+        "Name": "Math.Pow",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1800.0902089669794,
+        "Y": 524.87859569850991
+      },
+      {
+        "Id": "622bbbc1b6e147b9b177eebbb74a4f81",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1406.6860290324285,
+        "Y": 712.47777204556962
+      },
+      {
+        "Id": "39b792551d8e470e9766d5545a5a6ac4",
+        "Name": "*",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2122.3913696515237,
+        "Y": 532.50259196677951
+      },
+      {
+        "Id": "da048d0a789e4cd4a7bc1129aba4d74d",
+        "Name": "Math.PI",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1907.3785863653102,
+        "Y": 728.51826187027552
+      },
+      {
+        "Id": "723fec890ce6456dace083a1e28cc191",
+        "Name": "*",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2395.7852223921,
+        "Y": 529.56240725899443
+      },
+      {
+        "Id": "244692e041c640e4a4c678fd5cf9065d",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2183.7405984129132,
+        "Y": 742.71143032140571
+      }
+    ],
+    "Annotations": [],
+    "X": 136.55514179834108,
+    "Y": 290.76271124409351,
+    "Zoom": 0.71329603221310445
+  }
+}
