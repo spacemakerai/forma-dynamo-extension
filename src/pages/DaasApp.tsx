@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useMemo, useState } from "preact/hooks";
 import Dynamo from "../service/dynamo";
 import sphereAreaGraph from "../assets/spherearea.json";
 import { LocalScript } from "./LocalScript";
@@ -18,7 +18,14 @@ function useSampleGraphs(): JSONGraph[] {
   ];
 }
 
+const urls: Record<string, string> = {
+  DEV: "https://dev.service.dynamo.autodesk.com",
+  STG: "https://stg.service.dynamo.autodesk.com",
+  PROD: "https://service.dynamo.autodesk.com",
+};
+
 export function DaasApp() {
+  const [environment, setDynamoEnvironment] = useState<string>("STG");
   const [graph, setGraph] = useState<JSONGraph | undefined>(undefined);
 
   const sampleGraphs = useSampleGraphs();
@@ -28,13 +35,37 @@ export function DaasApp() {
     callbackUrl: `${window.location.origin}/`, // we recommend a blank html page here
     scopes: ["data:read", "data:write"],
   });
-  const daas = new Dynamo("https://0z63s658g5.execute-api.us-west-2.amazonaws.com", async () => {
-    const { accessToken } = await Forma.auth.acquireTokenOverlay();
-    return `Bearer ${accessToken}`;
-  });
+
+  const daas = useMemo(() => {
+    return new Dynamo(urls[environment] || urls["STG"], async () => {
+      const { accessToken } = await Forma.auth.acquireTokenOverlay();
+      return `Bearer ${accessToken}`;
+    });
+  }, [environment]);
 
   return (
     <div>
+      <div>
+        Environment:
+        <weave-button
+          variant={environment === "DEV" ? "solid" : undefined}
+          onClick={() => setDynamoEnvironment("DEV")}
+        >
+          Dev
+        </weave-button>
+        <weave-button
+          variant={environment === "STG" ? "solid" : undefined}
+          onClick={() => setDynamoEnvironment("STG")}
+        >
+          Stg
+        </weave-button>
+        <weave-button
+          variant={environment === "PROD" ? "solid" : undefined}
+          onClick={() => setDynamoEnvironment("PROD")}
+        >
+          Prod
+        </weave-button>
+      </div>
       {!graph &&
         sampleGraphs.map((script) => {
           return (
