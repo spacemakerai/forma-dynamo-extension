@@ -57,7 +57,7 @@ function useScript(script: Script, dynamo: DynamoService): [ScriptResult, () => 
 
     const target: GraphTarget =
       script.type === "JSON"
-        ? { type: "JsonGraphTarget", contents: JSON.stringify(script.graph) }
+        ? { type: "JsonGraphTarget", graph: script.graph }
         : { path: script.id, type: "PathGraphTarget" };
 
     dynamo
@@ -418,7 +418,7 @@ export function LocalScript({
             <>
               <div>
                 <span style={{ fontWeight: "600" }}>Description: </span>
-                <span>{scriptInfo.data.metadata.description}</span>
+                <span>{scriptInfo.data?.metadata?.description}</span>
               </div>
               <div
                 style={{

@@ -26,8 +26,7 @@ export type GraphTarget =
     }
   | {
       type: "JsonGraphTarget";
-      json?: unknown;
-      code?: string;
+      graph?: unknown;
       contents?: string;
     };
 
