@@ -31,7 +31,7 @@ export function DaasApp() {
   const sampleGraphs = useSampleGraphs();
 
   const isProd = import.meta.env.MODE === "production";
-  const callbackUrl = `${window.location.origin}/${isProd ? `${window.location.pathname}/` : ""}`;
+  const callbackUrl = `${window.location.origin}/${isProd ? `${window.location.pathname}` : ""}`;
   Forma.auth.configure({
     clientId: import.meta.env.VITE_EXTENSION_CLIENT_ID,
     callbackUrl,
