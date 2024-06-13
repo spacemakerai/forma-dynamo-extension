@@ -115,6 +115,9 @@ export const useDynamoConnector = () => {
           throw e;
         });
       },
+      serverInfo: () => {
+        return dynamo.serverInfo();
+      },
       health: (port: number) => {
         return Dynamo.health(port);
       },
