@@ -1,4 +1,4 @@
-import { useMemo, useState } from "preact/hooks";
+import { useCallback, useMemo, useRef, useState } from "preact/hooks";
 import Dynamo from "../service/dynamo";
 import sphereAreaGraph from "../assets/spherearea.json";
 import { LocalScript } from "./LocalScript";
@@ -13,10 +13,7 @@ export type JSONGraph = {
 };
 
 function useSampleGraphs(): JSONGraph[] {
-  return [
-    { id: "1", type: "JSON", name: "Sample Script 1" },
-    { id: "2", type: "JSON", name: "Sphere Area", graph: sphereAreaGraph },
-  ];
+  return [{ id: "1", type: "JSON", name: "Sphere Area", graph: sphereAreaGraph }];
 }
 
 const urls: Record<string, string> = {
@@ -48,6 +45,56 @@ export function DaasApp() {
     });
   }, [environment]);
 
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  // TODO: we don't need to handle multiple files
+  const onDrop = useCallback<JSX.DragEventHandler<HTMLDivElement>>(
+    (event) => {
+      event.preventDefault();
+      if (event.dataTransfer?.items) {
+        // Use DataTransferItemList interface to access the file(s)
+        [...(event.dataTransfer?.items || [])].forEach((item, i) => {
+          // If dropped items aren't files, reject them
+          if (item.kind === "file") {
+            const file = item.getAsFile();
+            if (file) {
+              file.text().then((t) => {
+                if (textAreaRef.current) {
+                  textAreaRef.current.value = t;
+                }
+              });
+            }
+          }
+        });
+      } else {
+        // Use DataTransfer interface to access the file(s)
+        [...(event.dataTransfer?.files || [])].forEach((file, i) => {
+          file.text().then((t) => {
+            if (textAreaRef.current) {
+              textAreaRef.current.value = t;
+            }
+          });
+        });
+      }
+    },
+    [textAreaRef],
+  );
+
+  const onLoadTextAreaContentsAsGraph = useCallback(() => {
+    if (!textAreaRef.current) {
+      return;
+    }
+
+    const contents = textAreaRef.current.value;
+    const graph: JSONGraph = {
+      id: "2",
+      type: "JSON",
+      name: "Manually input graph",
+      graph: JSON.parse(contents),
+    };
+    setGraph(graph);
+  }, []);
+
   return (
     <div>
       <div>
@@ -71,14 +118,27 @@ export function DaasApp() {
           Prod
         </weave-button>
       </div>
-      {!graph &&
-        sampleGraphs.map((script) => {
-          return (
-            <div key={script.id}>
-              {script.name} <weave-button onClick={() => setGraph(script)}>Load</weave-button>
-            </div>
-          );
-        })}
+      {!graph && (
+        <>
+          <h2>Upload a graph or load a sample graph:</h2>
+          <div id="dropzone" style={{ display: "flex" }} onDrop={onDrop}>
+            <textarea
+              placeholder="Drag-n-drop or paste the contents of a .dyn file here"
+              ref={textAreaRef}
+              style={{ flex: 1, minHeight: "80px" }}
+            />
+          </div>
+          <weave-button onClick={onLoadTextAreaContentsAsGraph}>Load</weave-button>
+          <h4>Sample Graphs</h4>
+          {sampleGraphs.map((script) => {
+            return (
+              <div key={script.id}>
+                {script.name} <weave-button onClick={() => setGraph(script)}>Load</weave-button>
+              </div>
+            );
+          })}
+        </>
+      )}
       {graph && <LocalScript script={graph} setScript={setGraph} dynamo={daas} />}
       <DaasServerInfo dynamo={daas} />
     </div>

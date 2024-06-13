@@ -11,7 +11,7 @@ export function DaasServerInfo({ dynamo }: { dynamo: DynamoService }) {
 
   return (
     <>
-      <h2>Dynamo Info:</h2>
+      <h3>Dynamo Info:</h3>
       {serverInfo
         ? Object.entries(serverInfo).map(([key, val]) => (
             <p key={key}>
