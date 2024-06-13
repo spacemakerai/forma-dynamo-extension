@@ -3,6 +3,7 @@ import Dynamo from "../service/dynamo";
 import sphereAreaGraph from "../assets/spherearea.json";
 import { LocalScript } from "./LocalScript";
 import { Forma } from "forma-embedded-view-sdk/auto";
+import { DaasServerInfo } from "./DaaSServerInfo";
 
 export type JSONGraph = {
   type: "JSON";
@@ -79,6 +80,7 @@ export function DaasApp() {
           );
         })}
       {graph && <LocalScript script={graph} setScript={setGraph} dynamo={daas} />}
+      <DaasServerInfo dynamo={daas} />
     </div>
   );
 }

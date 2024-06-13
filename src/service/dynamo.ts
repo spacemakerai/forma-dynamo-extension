@@ -12,6 +12,7 @@ export interface DynamoService {
   folder: (path: string) => Promise<FolderGraphInfo[]>;
   info: (target: GraphTarget) => Promise<GraphInfo>;
   trust: (path: string) => Promise<boolean>;
+  serverInfo: () => Promise<ServerInfo>;
   //health: (port: number) => Promise<Health>;
 }
 
@@ -97,6 +98,12 @@ type Health = {
 
 export type RunInputs = { nodeId: string; value: any }[];
 
+export type ServerInfo = {
+  apiVersion: string;
+  dynamoVersion: string;
+  playerVersion: string;
+};
+
 class Dynamo implements DynamoService {
   private url: string;
   private authProvider?: () => Promise<string>;
@@ -175,6 +182,11 @@ class Dynamo implements DynamoService {
         path,
       }),
     });
+    return await response.json();
+  }
+
+  async serverInfo(): Promise<ServerInfo> {
+    const response = await this._fetch(`${this.url}/v1/server-info`);
     return await response.json();
   }
 
