@@ -53,7 +53,7 @@ export function DaasApp() {
       event.preventDefault();
       if (event.dataTransfer?.items) {
         // Use DataTransferItemList interface to access the file(s)
-        [...(event.dataTransfer?.items || [])].forEach((item, i) => {
+        [...(event.dataTransfer?.items || [])].forEach((item) => {
           // If dropped items aren't files, reject them
           if (item.kind === "file") {
             const file = item.getAsFile();
@@ -68,7 +68,7 @@ export function DaasApp() {
         });
       } else {
         // Use DataTransfer interface to access the file(s)
-        [...(event.dataTransfer?.files || [])].forEach((file, i) => {
+        [...(event.dataTransfer?.files || [])].forEach((file) => {
           file.text().then((t) => {
             if (textAreaRef.current) {
               textAreaRef.current.value = t;
