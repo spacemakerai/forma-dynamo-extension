@@ -9,8 +9,6 @@ export function DaasServerInfo({ dynamo }: { dynamo: DynamoService }) {
     });
   }, [dynamo]);
 
-  console.log(serverInfo);
-
   return (
     <>
       <h2>Dynamo Info:</h2>
