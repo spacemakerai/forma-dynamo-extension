@@ -120,7 +120,7 @@ export function LocalFileList({
           const localFiles = await dynamo.folder(folder);
           localStorage.setItem("dynamo-folder", folder);
           const localPrograms = Object.fromEntries(
-            localFiles.map((file: any) => [file.name, file]),
+            localFiles.map((file: any) => [file.name, { type: "FolderGraph", ...file }]),
           );
           setPrograms(localPrograms);
           setIsLoading(false);
