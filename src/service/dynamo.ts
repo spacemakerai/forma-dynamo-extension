@@ -1,4 +1,4 @@
-class FetchError extends Error {
+export class FetchError extends Error {
   status: number;
   constructor(m: string, status: number) {
     super(m);
@@ -191,19 +191,12 @@ class Dynamo implements DynamoService {
   }
 
   static async health(port: number): Promise<Health> {
-    try {
-      const response = await fetch(`http://localhost:${port}/v1/health`);
-      if (response.status === 200) {
-        return { status: 200, port };
-      }
-      // TODO: make sure 503 errors end up here
-      else if (response.status === 503) {
-        return { status: 503, port };
-      }
-      return { status: 500, port };
-    } catch (e) {
-      return { status: 500, port };
+    const response = await fetch(`http://localhost:${port}/v1/health`);
+    if (response.status === 200) {
+      return { status: 200, port };
     }
+
+    throw new FetchError(response.statusText, response.status);
   }
 }
 

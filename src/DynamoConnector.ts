@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 import {
   default as Dynamo,
   DynamoService,
+  FetchError,
   GraphInfo,
   GraphTarget,
   RunInputs,
@@ -34,16 +35,20 @@ export const useDynamoConnector = () => {
     const defaultPort = 55100;
 
     const portsToCheck = [...Array(10)].map((_, i) => defaultPort + i);
-    const response = await Promise.race(portsToCheck.map((port) => Dynamo.health(port)));
-    if (response.status === 200) {
+    try {
+      const response = await Promise.any(portsToCheck.map((port) => Dynamo.health(port)));
+
       setState((state) => ({ ...state, connectionState: DynamoConnectionState.CONNECTED }));
       setDynamoPort(response.port);
-      return;
-    } else if (response.status === 503) {
-      setState((state) => ({ ...state, connectionState: DynamoConnectionState.BLOCKED }));
-      return;
+    } catch (e) {
+      if (e instanceof AggregateError) {
+        if (e.errors.find((e) => (e as FetchError).status === 503)) {
+          setState((state) => ({ ...state, connectionState: DynamoConnectionState.BLOCKED }));
+        } else {
+          setState((state) => ({ ...state, connectionState: DynamoConnectionState.NOT_CONNECTED }));
+        }
+      }
     }
-    setState((state) => ({ ...state, connectionState: DynamoConnectionState.NOT_CONNECTED }));
   };
 
   useEffect(() => {
