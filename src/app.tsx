@@ -1,7 +1,7 @@
 import { DaasApp } from "./pages/DaasApp";
 import { LocalApp } from "./pages/LocalApp";
 
-const useDaas = localStorage.getItem("useDaas") === "true";
+const useDaas = new URLSearchParams(window.location.search).has("ext:daas");
 
 export function App() {
   if (useDaas) {
