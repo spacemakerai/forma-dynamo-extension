@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "preact/hooks";
+import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 import Dynamo from "../service/dynamo";
 import sphereAreaGraph from "../assets/spherearea.json";
 import { LocalScript } from "./LocalScript";
@@ -22,11 +22,18 @@ const urls: Record<string, string> = {
   PROD: "https://service.dynamo.autodesk.com",
 };
 
-export function DaasApp() {
+export function DaasApp({ lucky }: { lucky?: boolean }) {
   const [environment, setDynamoEnvironment] = useState<string>("STG");
   const [graph, setGraph] = useState<JSONGraph | undefined>(undefined);
 
   const sampleGraphs = useSampleGraphs();
+
+  useEffect(() => {
+    if (lucky) {
+      setGraph(sampleGraphs[0]);
+      setDynamoEnvironment("DEV");
+    }
+  }, [lucky]);
 
   const isProd = import.meta.env.MODE === "production";
   const callbackUrl = isProd
@@ -139,7 +146,7 @@ export function DaasApp() {
           })}
         </>
       )}
-      {graph && <LocalScript script={graph} setScript={setGraph} dynamo={daas} />}
+      {graph && <LocalScript script={graph} setScript={setGraph} dynamo={daas} autoRun={lucky} />}
       <DaasServerInfo dynamo={daas} />
     </div>
   );
