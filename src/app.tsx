@@ -10,6 +10,7 @@ function Selection() {
   if (!selected) {
     return (
       <div
+        key={1}
         style={{
           display: "flex",
           flexDirection: "column",
@@ -23,13 +24,6 @@ function Selection() {
           You are now testing Dynamo as a Service for Forma. Please select the Dynamo instance you
           want to open.
         </div>
-        {/*<weave-button
-          style={{ width: "250px" }}
-          variant="solid"
-          onClick={() => setSelected("daas:lucky")}
-        >
-          I feel lucky
-        </weave-button>*/}
         <weave-button
           style={{ width: "250px" }}
           variant="solid"
@@ -49,7 +43,7 @@ function Selection() {
   }
 
   return (
-    <div>
+    <div key={2}>
       {selected === "local" && (
         <div style={{ display: "flex", width: "100%", alignItems: "space-between" }}>
           <div>Running Local Dynamo</div>
