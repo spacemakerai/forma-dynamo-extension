@@ -22,7 +22,7 @@ const urls: Record<string, string> = {
   PROD: "https://service.dynamo.autodesk.com",
 };
 
-export function DaasApp({ lucky }: { lucky?: boolean }) {
+export function DaasApp({ lucky }: { lucky: boolean }) {
   const [environment, setDynamoEnvironment] = useState<string>("STG");
   const [graph, setGraph] = useState<JSONGraph | undefined>(undefined);
 
@@ -33,7 +33,7 @@ export function DaasApp({ lucky }: { lucky?: boolean }) {
       setGraph(sampleGraphs[0]);
       setDynamoEnvironment("DEV");
     }
-  }, [lucky]);
+  }, [lucky, sampleGraphs]);
 
   const isProd = import.meta.env.MODE === "production";
   const callbackUrl = isProd
