@@ -104,8 +104,7 @@ export type ServerInfo = {
   playerVersion: string;
 };
 
-const runAsync = new URLSearchParams(window.location.search).get("ext:daas") === "lambda";
-const lambdaBaseUrl = "https://ker8gs38yi.execute-api.us-west-2.amazonaws.com";
+const runSync = new URLSearchParams(window.location.search).get("ext:daas") === "sync";
 
 class Dynamo implements DynamoService {
   private url: string;
@@ -130,7 +129,7 @@ class Dynamo implements DynamoService {
   }
 
   async runAsync(target: GraphTarget, inputs: RunInputs): Promise<Run> {
-    const response = await this._fetch(`${lambdaBaseUrl}/v1/graph/run-async`, {
+    const response = await this._fetch(`${this.url}/v1/graph/run-async?backend=lambda`, {
       method: "POST",
       body: JSON.stringify({
         target,
@@ -150,7 +149,7 @@ class Dynamo implements DynamoService {
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const jobResponse = await this._fetch(`${lambdaBaseUrl}/v1/graph/results/${jobId}`);
+      const jobResponse = await this._fetch(`${this.url}/v1/graph/results/${jobId}`);
       const job = await jobResponse.json();
 
       if (job.status === "SUCCESS") {
@@ -163,7 +162,7 @@ class Dynamo implements DynamoService {
   }
 
   async run(target: GraphTarget, inputs: RunInputs): Promise<Run> {
-    if (runAsync && !this.url.startsWith("http://localhost")) {
+    if (!runSync && !this.url.startsWith("http://localhost")) {
       return this.runAsync(target, inputs);
     }
 

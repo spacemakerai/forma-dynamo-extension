@@ -17,7 +17,7 @@ function useSampleGraphs(): JSONGraph[] {
 }
 
 const urls: Record<string, string> = {
-  DEV: "https://dev.service.dynamo.autodesk.com",
+  DEV: "https://0z63s658g5.execute-api.us-west-2.amazonaws.com",
   STG: "https://stg.service.dynamo.autodesk.com",
   PROD: "https://service.dynamo.autodesk.com",
 };
@@ -46,7 +46,7 @@ export function DaasApp({ lucky }: { lucky: boolean }) {
   });
 
   const daas = useMemo(() => {
-    return new Dynamo(urls[environment] || urls["STG"], async () => {
+    return new Dynamo(urls[environment] || urls["DEV"], async () => {
       const { accessToken } = await Forma.auth.acquireTokenOverlay();
       return `Bearer ${accessToken}`;
     });
