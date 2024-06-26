@@ -45,10 +45,24 @@ async function addBuildings(values: BasicBuildingValue[]) {
   );
 }
 
+function isCounterClockwise(points: { x: number; y: number }[]) {
+  let sum = 0;
+  for (let i = 0; i < points.length; i++) {
+    const current = points[i];
+    const next = points[(i + 1) % points.length];
+    sum += (next.x - current.x) * (next.y + current.y);
+  }
+  return sum > 0;
+}
+
 function generateGeometryData(values: BasicBuildingValue[]): GeometryData {
   const allPositions = [];
 
   for (const { position: offset, points, stories, storyHeight } of values) {
+    if (isCounterClockwise(points)) {
+      points.reverse();
+    }
+
     const positionFloor: number[] = points
       .map(({ x, y }) => [x + offset.x, y + offset.y, offset.z])
       .flat();
