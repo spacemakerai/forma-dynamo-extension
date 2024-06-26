@@ -14,7 +14,9 @@
   },
   "dependencies": {
     "@sentry/browser": "^7.80.0",
+    "@types/earcut": "^2.1.4",
     "cross-env": "^7.0.3",
+    "earcut": "^2.2.4",
     "forma-elements": "^1.2.0",
     "forma-embedded-view-sdk": "0.62.0",
     "preact": "^10.18.2"
