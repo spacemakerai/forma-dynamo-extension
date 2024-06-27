@@ -4,7 +4,6 @@ import { Forma } from "forma-embedded-view-sdk/auto";
 import { captureException } from "../../util/sentry.ts";
 import { Output } from "./types.tsx";
 import { Visibility } from "../../icons/Visibility.tsx";
-import { aquireToken } from "./auth.ts";
 import { v4 } from "uuid";
 import earcut from "earcut";
 import { GeometryData } from "forma-embedded-view-sdk/dist/internal/scene/render";
