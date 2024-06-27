@@ -35,16 +35,6 @@ export function DaasApp({ lucky }: { lucky: boolean }) {
     }
   }, [lucky, sampleGraphs]);
 
-  const isProd = import.meta.env.MODE === "production";
-  const callbackUrl = isProd
-    ? `${window.location.origin}${window.location.pathname}`
-    : `${window.location.origin}/`;
-  Forma.auth.configure({
-    clientId: import.meta.env.VITE_EXTENSION_CLIENT_ID,
-    callbackUrl,
-    scopes: ["data:read", "data:write"],
-  });
-
   const daas = useMemo(() => {
     return new Dynamo(urls[environment] || urls["DEV"], async () => {
       const { accessToken } = await Forma.auth.acquireTokenOverlay();
