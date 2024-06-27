@@ -5,6 +5,7 @@ import { WatchImage } from "./WatchImage.tsx";
 import { SendToForma } from "./SendToForma.tsx";
 import { Run } from "../../service/dynamo.ts";
 import { BasicBuilding } from "./BasicBuilding.tsx";
+import { GroundPolygon, SiteLimit } from "./GroundPolygon.tsx";
 
 export type RunResult =
   | { type: "init" }
@@ -26,6 +27,14 @@ function DynamoOutputComponent({ output }: { output: Output }) {
 
   if (output.name === "BasicBuilding.ByBasic") {
     return <BasicBuilding output={output} />;
+  }
+
+  if (output.name === "SiteLimit.ByAreaName") {
+    return <GroundPolygon category={"site_limit"} output={output} />;
+  }
+
+  if (output.name === "Zone.ByAreaName") {
+    return <GroundPolygon category={"zone"} output={output} />;
   }
 
   if (output.type === "SendToForma") {
