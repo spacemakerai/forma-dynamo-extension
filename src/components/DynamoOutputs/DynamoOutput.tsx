@@ -5,7 +5,8 @@ import { WatchImage } from "./WatchImage.tsx";
 import { SendToForma } from "./SendToForma.tsx";
 import { Run } from "../../service/dynamo.ts";
 import { BasicBuilding } from "./BasicBuilding.tsx";
-import { GroundPolygon, SiteLimit } from "./GroundPolygon.tsx";
+import { GroundPolygon } from "./GroundPolygon.tsx";
+import { ExtrudedPolygon } from "./ExtrudedPolygon.tsx";
 
 export type RunResult =
   | { type: "init" }
@@ -35,6 +36,10 @@ function DynamoOutputComponent({ output }: { output: Output }) {
 
   if (output.name === "Zone.ByAreaName") {
     return <GroundPolygon category={"zone"} output={output} />;
+  }
+
+  if (output.name === "Constraint.ByEnvelope") {
+    return <ExtrudedPolygon category={"constraints"} output={output} />;
   }
 
   if (output.type === "SendToForma") {

@@ -4,22 +4,32 @@ import { Forma } from "forma-embedded-view-sdk/auto";
 import { captureException } from "../../util/sentry.ts";
 import { Output } from "./types.tsx";
 import { Visibility } from "../../icons/Visibility.tsx";
-import { FeatureCollection, Polygon } from "geojson";
+import { aquireToken } from "./auth.ts";
 import { v4 } from "uuid";
+import earcut from "earcut";
+import { GeometryData } from "forma-embedded-view-sdk/dist/internal/scene/render";
 
-type SiteLimitValue = {
+type ConstraintValue = {
   closedCurve: { x: number; y: number }[];
-  name: string;
+  elevation: number;
+  height: number;
 };
 
 type BasicElement = {
   id: string;
   name: string;
   category: string;
-  geometry: {
-    type: "polygon";
-    coordinates: [number, number][][];
-  };
+  geometry:
+    | {
+        type: "polygon";
+        coordinates: [number, number][][];
+      }
+    | {
+        type: "extrudedPolygon";
+        coordinates: [number, number][][];
+        height: number;
+        elevation: number;
+      };
   userData: Record<string, unknown>;
 };
 
@@ -44,6 +54,69 @@ async function createBasicElement(elements: BasicElement[]) {
   return urns;
 }
 
+function isCounterClockwise(points: [number, number][]) {
+  let sum = 0;
+  for (let i = 0; i < points.length; i++) {
+    const current = points[i];
+    const next = points[(i + 1) % points.length];
+    sum += (next[0] - current[0]) * (next[1] + current[1]);
+  }
+  return sum > 0;
+}
+
+function generateGeometryData(values: ConstraintValue[]): GeometryData {
+  const allPositions = [];
+
+  for (const { closedCurve, elevation, height } of values) {
+    const curve = closeCurve(closedCurve.map(({ x, y }) => [x, y]));
+    if (isCounterClockwise(curve)) {
+      curve.reverse();
+    }
+
+    const positionFloor: number[] = curve.flat();
+
+    const positionCeiling: number[] = curve.map(([x, y]) => [x, y, elevation + height]).flat();
+
+    for (const index of earcut(
+      curve
+        .map(([x, y]) => [x, y])
+        .reverse()
+        .flat(),
+    )) {
+      allPositions.push(
+        positionFloor[index * 3],
+        positionFloor[index * 3 + 1],
+        positionFloor[index * 3 + 2],
+      );
+    }
+
+    for (const index of earcut(curve.map(([x, y]) => [x, y]).flat())) {
+      allPositions.push(
+        positionCeiling[index * 3],
+        positionCeiling[index * 3 + 1],
+        positionCeiling[index * 3 + 2],
+      );
+    }
+
+    for (let i = 0; i < curve.length; i++) {
+      const i_1 = i === curve.length - 1 ? 0 : i + 1;
+
+      const p1 = curve[i];
+      const p2 = curve[i_1];
+
+      allPositions.push(p1[0], p1[1], elevation);
+      allPositions.push(p2[0], p2[1], elevation);
+      allPositions.push(p1[0], p1[1], elevation + height);
+
+      allPositions.push(p2[0], p2[1], elevation);
+      allPositions.push(p2[0], p2[1], elevation + height);
+      allPositions.push(p1[0], p1[1], elevation + height);
+    }
+  }
+
+  return { position: new Float32Array(allPositions) };
+}
+
 function closeCurve(points: number[][]) {
   const first = points[0];
   const last = points[points.length - 1];
@@ -53,19 +126,19 @@ function closeCurve(points: number[][]) {
   return points as [number, number][];
 }
 
-async function addLimit(category: string, featureCollection: FeatureCollection<Polygon>) {
-  for (const feature of featureCollection.features) {
+async function addLimit(category: string, constaints: ConstraintValue[]) {
+  for (const constraint of constaints) {
     try {
-      const coordinates = feature.geometry.coordinates.map(closeCurve);
-
       const urns = await createBasicElement([
         {
           id: v4(),
-          name: feature.properties?.name,
           category,
+          name: "Extruded Polygon",
           geometry: {
-            type: "polygon",
-            coordinates,
+            type: "extrudedPolygon",
+            coordinates: [closeCurve(constraint.closedCurve.map(({ x, y }) => [x, y]))],
+            height: constraint.height,
+            elevation: constraint.elevation,
           },
           userData: {},
         },
@@ -73,7 +146,7 @@ async function addLimit(category: string, featureCollection: FeatureCollection<P
 
       if (urns.length > 0) {
         const { urn } = urns[0];
-        await Forma.proposal.addElement({ urn, name: feature.properties?.name });
+        await Forma.proposal.addElement({ urn });
       }
     } catch (e) {
       console.error(e);
@@ -98,47 +171,32 @@ function PreviewAndAdd({
 
   const values = useMemo(
     () =>
-      (typeof value === "string" ? [value] : value).map((v) => JSON.parse(v)) as SiteLimitValue[],
+      (typeof value === "string" ? [value] : value).map((v) => JSON.parse(v)) as ConstraintValue[],
     [value],
   );
 
-  const features = useMemo(() => {
-    return {
-      type: "FeatureCollection",
-      features: values.map((v) => ({
-        id: v.name,
-        type: "Feature",
-        properties: {
-          name: v.name,
-        },
-        geometry: {
-          type: "Polygon",
-          coordinates: [v.closedCurve.map((p) => [p.x, p.y])],
-        },
-      })),
-    } as FeatureCollection<Polygon>;
-  }, [values]);
+  const geometryData = useMemo(() => generateGeometryData(values), [values]);
 
   const togglePreview = useCallback(
     async (newPreviewActiveState: boolean) => {
       if (!isPreviewLoading && newPreviewActiveState !== isPreviewActive) {
         setIsPreviewLoading(true);
         if (newPreviewActiveState) {
-          await Forma.render.geojson.update({ id, geojson: features });
+          await Forma.render.updateMesh({ id, geometryData });
         } else {
-          await Forma.render.geojson.remove({ id });
+          await Forma.render.remove({ id });
         }
         setIsPreviewActive(newPreviewActiveState);
         setIsPreviewLoading(false);
       }
     },
-    [isPreviewLoading, isPreviewActive, id, features],
+    [isPreviewLoading, isPreviewActive, id, geometryData],
   );
 
   const add = useCallback(async () => {
     setIsAdding(true);
     try {
-      await addLimit(category, features);
+      await addLimit(category, values);
       await togglePreview(false);
       setIsAdded(true);
     } catch (e) {
@@ -146,20 +204,20 @@ function PreviewAndAdd({
     } finally {
       setIsAdding(false);
     }
-  }, [category, features, togglePreview]);
+  }, [category, values, togglePreview]);
 
   useEffect(() => {
     (async () => {
-      await Forma.render.geojson.update({ id, geojson: features });
+      await Forma.render.updateMesh({ id, geometryData });
     })();
     return async () => {
       try {
-        await Forma.render.geojson.remove({ id });
+        await Forma.render.remove({ id });
       } catch (e) {
         // ignore as we do not know if it is added or not
       }
     };
-  }, [features, id]);
+  }, [geometryData, id]);
 
   return (
     <div style={{ display: "flex" }}>
@@ -172,7 +230,7 @@ function PreviewAndAdd({
   );
 }
 
-export function GroundPolygon({ category, output }: { category: string; output: Output }) {
+export function ExtrudedPolygon({ category, output }: { category: string; output: Output }) {
   return (
     <div
       style={{
