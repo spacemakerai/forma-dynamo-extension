@@ -118,9 +118,13 @@ function PreviewAndAdd({ id, value }: { id: string; value: string | string[] }) 
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
 
-  const values = (typeof value === "string" ? [value] : value).map((v) =>
-    JSON.parse(v),
-  ) as BasicBuildingValue[];
+  const values = useMemo(
+    () =>
+      (typeof value === "string" ? [value] : value).map((v) =>
+        JSON.parse(v),
+      ) as BasicBuildingValue[],
+    [value],
+  );
 
   const geometryData = useMemo(() => generateGeometryData(values), [values]);
 

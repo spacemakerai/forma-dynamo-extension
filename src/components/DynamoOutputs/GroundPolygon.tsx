@@ -53,6 +53,14 @@ function closeCurve(points: number[][]) {
   return points as [number, number][];
 }
 
+function randomUUIDV4() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0,
+      v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 async function addLimit(category: string, featureCollection: FeatureCollection<Polygon>) {
   for (const feature of featureCollection.features) {
     try {
@@ -60,9 +68,9 @@ async function addLimit(category: string, featureCollection: FeatureCollection<P
 
       const urns = await createBasicElement([
         {
-          id: "1",
-          name: feature.properties?.name || "Site Limit",
-          category: "zone",
+          id: randomUUIDV4(),
+          name: feature.properties?.name,
+          category,
           geometry: {
             type: "polygon",
             coordinates,
@@ -96,9 +104,11 @@ function PreviewAndAdd({
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
 
-  const values = (typeof value === "string" ? [value] : value).map((v) =>
-    JSON.parse(v),
-  ) as SiteLimitValue[];
+  const values = useMemo(
+    () =>
+      (typeof value === "string" ? [value] : value).map((v) => JSON.parse(v)) as SiteLimitValue[],
+    [value],
+  );
 
   const features = useMemo(() => {
     return {
@@ -122,8 +132,10 @@ function PreviewAndAdd({
       if (!isPreviewLoading && newPreviewActiveState !== isPreviewActive) {
         setIsPreviewLoading(true);
         if (newPreviewActiveState) {
+          console.log("update", id);
           await Forma.render.geojson.update({ id, geojson: features });
         } else {
+          console.log("remove", id);
           await Forma.render.geojson.remove({ id });
         }
         setIsPreviewActive(newPreviewActiveState);
@@ -147,9 +159,13 @@ function PreviewAndAdd({
   }, [category, features, togglePreview]);
 
   useEffect(() => {
-    (async () => await Forma.render.geojson.update({ id, geojson: features }))();
+    (async () => {
+      console.log("update", id);
+      await Forma.render.geojson.update({ id, geojson: features });
+    })();
     return async () => {
       try {
+        console.log("remove", id);
         await Forma.render.geojson.remove({ id });
       } catch (e) {
         // ignore as we do not know if it is added or not
