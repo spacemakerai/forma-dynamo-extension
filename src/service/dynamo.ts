@@ -149,7 +149,9 @@ class Dynamo implements DynamoService {
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const jobResponse = await this._fetch(`${this.url}/v1/graph/results/${jobId}`);
+      const jobResponse = await this._fetch(`${this.url}/v1/graph/results/${jobId}`, {
+        method: "GET",
+      });
       const job = await jobResponse.json();
 
       if (job.status === "SUCCESS") {
