@@ -61,6 +61,16 @@ function mapLocalToState(state: DynamoConnectionState): Status {
   return "error";
 }
 
+function renderDaasDescription(state: DaasState) {
+  if (state.status === "online") {
+    return `Dynamo Core: ${state.serverInfo.dynamoVersion}
+    Dynamo API: ${state.serverInfo.apiVersion}
+    Dynamo Player ${state.serverInfo.playerVersion}`;
+  }
+
+  return "";
+}
+
 export function Health({ daas, local }: { daas: DynamoService; local: DynamoState }) {
   const [daasStatus, setDaasStatus] = useState<DaasState>({ status: "offline" });
 
@@ -75,9 +85,26 @@ export function Health({ daas, local }: { daas: DynamoService; local: DynamoStat
     })();
   }, [daas]);
 
+  const daasDescription = renderDaasDescription(daasStatus);
+
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "row" }}>
-      <Indicator status={daasStatus.status} name="Service (DaaS)" isLoading={false} />
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        paddingBottom: "8px",
+        borderBottom: "1px solid var(--divider-lightweight)",
+      }}
+    >
+      <weave-tooltip
+        text={"Dynamo as a Service (DaaS)"}
+        description={daasDescription}
+        link={"https://help.autodeskforma.com/"}
+        nub="up-left"
+      >
+        <Indicator status={daasStatus.status} name="Service (DaaS)" isLoading={false} />
+      </weave-tooltip>
       <Indicator status={mapLocalToState(local.connectionState)} name="Desktop" isLoading={true} />
       <weave-button style={{ flexBasis: 0, flexGrow: 1 }} onClick={() => alert("Setup")}>
         Setup Desktop

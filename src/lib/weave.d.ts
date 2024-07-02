@@ -7,6 +7,25 @@ export declare module "preact/src/jsx" {
         density?: "high" | "medium";
         iconposition?: "left" | "right";
       };
+      "weave-tooltip": JSXInternal.HTMLAttributes<HTMLElement> & {
+        nub?:
+          | "up-left"
+          | "up-right"
+          | "up-center"
+          | "down-center"
+          | "down-left"
+          | "down-right"
+          | "left-center"
+          | "right-center";
+        text?: string;
+        description?: string;
+        link?: string;
+        closedelay?: number;
+        width?: string;
+        shortcutmac?: string;
+        shortcutwindows?: string;
+        splitshortcutonspace?: boolean;
+      };
       "weave-slider": Omit<JSXInternal.HTMLAttributes<HTMLInputElement>, "onInput"> & {
         onInput?: (e: CustomEvent<string>) => void;
       };

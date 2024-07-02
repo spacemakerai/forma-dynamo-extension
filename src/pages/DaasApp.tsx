@@ -3,7 +3,6 @@ import Dynamo from "../service/dynamo";
 import sphereAreaGraph from "../assets/spherearea.json";
 import { LocalScript } from "./LocalScript";
 import { Forma } from "forma-embedded-view-sdk/auto";
-import { DaasServerInfo } from "./DaaSServerInfo";
 import { Health } from "../components/Health/Health";
 import { useDynamoConnector } from "../DynamoConnector";
 import { Import } from "../assets/icons/Import";
@@ -99,7 +98,7 @@ export function DaasApp() {
                 alignItems: "center",
                 justifyContent: "center",
                 height: "60px",
-                border: "1px dashed gray",
+                border: "1px dashed var(--border-base)",
                 borderRadius: "4px",
               }}
               onDragOver={(e) => {
@@ -142,7 +141,6 @@ export function DaasApp() {
         </>
       )}
       {graph && <LocalScript script={graph} setScript={setGraph} dynamo={daas} />}
-      <DaasServerInfo dynamo={daas} />
     </div>
   );
 }
