@@ -13,9 +13,7 @@ export function LocalApp() {
     return (
       <div style={{ padding: "0 2px", height: "100%" }}>
         {!script && <LocalFileList dynamo={dynamo} setScript={setScript} />}
-        {script && (
-          <LocalScript dynamo={dynamo} script={script} setScript={setScript} autoRun={false} />
-        )}
+        {script && <LocalScript dynamo={dynamo} script={script} setScript={setScript} />}
       </div>
     );
   }

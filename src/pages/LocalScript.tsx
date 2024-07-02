@@ -217,12 +217,10 @@ export function LocalScript({
   script,
   setScript,
   dynamo,
-  autoRun,
 }: {
   script: Script;
   setScript: any;
   dynamo: DynamoService;
-  autoRun: boolean;
 }) {
   const [scriptInfo, reload] = useScript(script, dynamo);
   const [activeSelectionNode, setActiveSelectionNode] = useState<Input | undefined>(undefined);
@@ -349,14 +347,12 @@ export function LocalScript({
     }
   }, [dynamo, scriptInfo, state, script]);
 
-  const [hasRun, setHasRun] = useState(false);
   useEffect(() => {
-    if (!hasRun && autoRun && scriptInfo.type === "loaded" && Object.keys(state).length > 0) {
+    if (scriptInfo.type === "loaded" && Object.keys(state).length > 0) {
       console.log("auto run");
       onRun();
-      setHasRun(true);
     }
-  }, [autoRun, scriptInfo, onRun, hasRun, state]);
+  }, [scriptInfo, onRun, state]);
 
   useEffect(() => {
     setResult({ type: "init" });

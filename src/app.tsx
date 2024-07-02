@@ -62,8 +62,7 @@ function Selection() {
       )}
 
       {selected === "local" && <LocalApp />}
-      {selected === "daas" && <DaasApp lucky={false} />}
-      {selected === "daas:lucky" && <DaasApp lucky={true} />}
+      {selected === "daas" && <DaasApp />}
     </div>
   );
 }
