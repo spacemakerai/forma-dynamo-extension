@@ -348,13 +348,6 @@ export function LocalScript({
   }, [dynamo, scriptInfo, state, script]);
 
   useEffect(() => {
-    if (scriptInfo.type === "loaded" && Object.keys(state).length > 0) {
-      console.log("auto run");
-      onRun();
-    }
-  }, [scriptInfo, onRun, state]);
-
-  useEffect(() => {
     setResult({ type: "init" });
   }, [state]);
 
