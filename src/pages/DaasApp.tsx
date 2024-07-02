@@ -16,24 +16,25 @@ function useSampleGraphs(): JSONGraph[] {
   return [{ id: "1", type: "JSON", name: "Sphere Area", graph: sphereAreaGraph }];
 }
 
+const env = new URLSearchParams(window.location.search).get("ext:daas") || "dev";
+
 const urls: Record<string, string> = {
-  DEV: "https://0z63s658g5.execute-api.us-west-2.amazonaws.com",
+  DEV: "https://dev.service.dynamo.autodesk.com",
   STG: "https://stg.service.dynamo.autodesk.com",
   PROD: "https://service.dynamo.autodesk.com",
 };
 
 export function DaasApp() {
-  const [environment, setDynamoEnvironment] = useState<string>("DEV");
   const [graph, setGraph] = useState<JSONGraph | undefined>(undefined);
 
   const sampleGraphs = useSampleGraphs();
 
   const daas = useMemo(() => {
-    return new Dynamo(urls[environment] || urls["DEV"], async () => {
+    return new Dynamo(urls[String(env).toUpperCase()] || urls["DEV"], async () => {
       const { accessToken } = await Forma.auth.acquireTokenOverlay();
       return `Bearer ${accessToken}`;
     });
-  }, [environment]);
+  }, []);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -87,27 +88,6 @@ export function DaasApp() {
 
   return (
     <div>
-      <div>
-        Environment:
-        <weave-button
-          variant={environment === "DEV" ? "solid" : undefined}
-          onClick={() => setDynamoEnvironment("DEV")}
-        >
-          Dev
-        </weave-button>
-        <weave-button
-          variant={environment === "STG" ? "solid" : undefined}
-          onClick={() => setDynamoEnvironment("STG")}
-        >
-          Stg
-        </weave-button>
-        <weave-button
-          variant={environment === "PROD" ? "solid" : undefined}
-          onClick={() => setDynamoEnvironment("PROD")}
-        >
-          Prod
-        </weave-button>
-      </div>
       {!graph && (
         <>
           <h2>Upload a graph or load a sample graph:</h2>
