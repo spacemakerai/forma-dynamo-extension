@@ -17,7 +17,7 @@ export enum DynamoConnectionState {
   LOST_CONNECTION = "LOST_CONNECTION",
 }
 
-type DynamoState = {
+export type DynamoState = {
   currentOpenGraph?: GraphInfo;
   connectionState: DynamoConnectionState;
 };

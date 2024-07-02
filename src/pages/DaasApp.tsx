@@ -4,6 +4,8 @@ import sphereAreaGraph from "../assets/spherearea.json";
 import { LocalScript } from "./LocalScript";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { DaasServerInfo } from "./DaaSServerInfo";
+import { Health } from "../components/Health/Health";
+import { useDynamoConnector } from "../DynamoConnector";
 
 export type JSONGraph = {
   type: "JSON";
@@ -86,8 +88,11 @@ export function DaasApp() {
     setGraph(graph);
   }, []);
 
+  const dynamoLocal = useDynamoConnector();
+
   return (
     <div>
+      <Health daas={daas} local={dynamoLocal.state} />
       {!graph && (
         <>
           <h2>Upload a graph or load a sample graph:</h2>
