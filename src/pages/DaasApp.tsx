@@ -1,23 +1,13 @@
 import { useCallback, useMemo, useState } from "preact/hooks";
 import Dynamo from "../service/dynamo";
-import sphereAreaGraph from "../assets/spherearea.json";
 import { LocalScript } from "./LocalScript";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { Health } from "../components/Health/Health";
 import { useDynamoConnector } from "../DynamoConnector";
 import { Import } from "../assets/icons/Import";
 import Logo from "../assets/Logo.png";
-
-export type JSONGraph = {
-  type: "JSON";
-  id: string;
-  name: string;
-  graph?: any;
-};
-
-function useSampleGraphs(): JSONGraph[] {
-  return [{ id: "1", type: "JSON", name: "Sphere Area", graph: sphereAreaGraph }];
-}
+import { PublicGraphs } from "../components/PublicGraphs/PublicGraphs";
+import { JSONGraph } from "../types/types";
 
 const env = new URLSearchParams(window.location.search).get("ext:daas") || "dev";
 
@@ -31,8 +21,6 @@ export function DaasApp() {
   const [graph, setGraph] = useState<JSONGraph | undefined>(undefined);
 
   const [dropped, setDropped] = useState<any | undefined>(undefined);
-
-  const sampleGraphs = useSampleGraphs();
 
   const daas = useMemo(() => {
     return new Dynamo(urls[String(env).toUpperCase()] || urls["DEV"], async () => {
@@ -130,14 +118,23 @@ export function DaasApp() {
               </weave-button>
             </div>
           )}
-          <h4>Sample Graphs</h4>
-          {sampleGraphs.map((script) => {
-            return (
-              <div key={script.id}>
-                {script.name} <weave-button onClick={() => setGraph(script)}>Load</weave-button>
+          <div
+            style={{ borderBottom: "1px solid var(--divider-lightweight)", paddingBottom: "8px" }}
+          >
+            <h4>Organization Graph</h4>
+            <div>
+              No graphs are shared within your organization.{" "}
+              <weave-button variant="flat">Learn more</weave-button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+              <div style={{ height: "24px", alignContent: "center" }}>
+                Share graph within my organisation
               </div>
-            );
-          })}
+              <weave-button onClick={() => alert("share")}>Publish graph</weave-button>
+            </div>
+          </div>
+          <PublicGraphs setGraph={setGraph} />
         </>
       )}
       {graph && <LocalScript script={graph} setScript={setGraph} dynamo={daas} />}

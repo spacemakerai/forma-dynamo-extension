@@ -16,7 +16,7 @@ import {
   GraphTarget,
   Input,
 } from "../service/dynamo.js";
-import { JSONGraph } from "./DaasApp.tsx";
+import { JSONGraph } from "../types/types.ts";
 
 function getDefaultValues(scriptInfo: ScriptResult) {
   if (scriptInfo.type === "loaded") {
