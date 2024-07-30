@@ -154,8 +154,8 @@ class Dynamo implements DynamoService {
       });
       const job = await jobResponse.json();
 
-      if (job.status === "SUCCESS") {
-        return job.results;
+      if (job.status === "SUCCESS" || job.status === "COMPLETE") {
+        return job.result;
       } else if (job.status === "FAILED") {
         throw new FetchError("Job failed", 500);
       }
