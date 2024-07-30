@@ -129,7 +129,7 @@ class Dynamo implements DynamoService {
   }
 
   async runAsync(target: GraphTarget, inputs: RunInputs): Promise<Run> {
-    const response = await this._fetch(`${this.url}/v1/graph/run-async?backend=lambda`, {
+    const response = await this._fetch(`${this.url}/v1/graph/run-async`, {
       method: "POST",
       body: JSON.stringify({
         target,
