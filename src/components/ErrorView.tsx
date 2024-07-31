@@ -70,11 +70,7 @@ function Sandbox() {
         <div style={{ width: "15px" }}>1.</div>
         <div>
           Download Dynamo 2.18.0 or higher from{" "}
-          <a
-            href="https://dynamobuilds.com/"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://dynamobuilds.com/" target="_blank" rel="noreferrer">
             daily builds
           </a>
         </div>
@@ -98,7 +94,10 @@ function Sandbox() {
       <br />
       <div style={{ display: "flex" }}>
         <div style={{ width: "15px" }}>4.</div>
-        <div>Install the DynamoFormaBeta package from the Package Manager in Dynamo. Package versions 2.0 and higher support Dynamo 3.x.</div>
+        <div>
+          Install the DynamoFormaBeta package from the Package Manager in Dynamo. Package versions
+          2.0 and higher support Dynamo 3.x.
+        </div>
       </div>
     </>
   );
@@ -121,7 +120,10 @@ function Revit() {
       <br />
       <div style={{ display: "flex" }}>
         <div style={{ width: "15px" }}>3.</div>
-        <div>Install the DynamoFormaBeta package from the Package Manager in Dynamo. Package versions 2.0 and higher support Dynamo for Revit 2025.</div>
+        <div>
+          Install the DynamoFormaBeta package from the Package Manager in Dynamo. Package versions
+          2.0 and higher support Dynamo for Revit 2025.
+        </div>
       </div>
     </>
   );
@@ -144,7 +146,10 @@ function Civil() {
       <br />
       <div style={{ display: "flex" }}>
         <div style={{ width: "15px" }}>3.</div>
-        <div>Install the DynamoFormaBeta package from the Package Manager in Dynamo. Package versions 2.0 and higher support Dynamo for Civil3D 2025.</div>
+        <div>
+          Install the DynamoFormaBeta package from the Package Manager in Dynamo. Package versions
+          2.0 and higher support Dynamo for Civil3D 2025.
+        </div>
       </div>
     </>
   );
