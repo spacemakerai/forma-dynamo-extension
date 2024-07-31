@@ -72,13 +72,31 @@ export function DaasApp() {
 
   const dynamoLocal = useDynamoConnector();
 
+  const onClickDropZone = useCallback(() => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".dyn";
+    input.onchange = async () => {
+      try {
+        if (!input.files) return;
+        const [file] = Array.from(input.files);
+        const graph = JSON.parse(await file.text());
+
+        setDropped(graph);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    input.click();
+  }, []);
+
   return (
     <div>
       <Health daas={daas} local={dynamoLocal.state} />
       {!graph && (
         <>
           <h4>My own graph</h4>
-          <div id="dropzone">
+          <div id="dropzone" style={{ cursor: "pointer" }} onClick={onClickDropZone}>
             <div
               style={{
                 display: "flex",
