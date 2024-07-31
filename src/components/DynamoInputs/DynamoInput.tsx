@@ -2,6 +2,7 @@ import { Input } from "./types";
 import { isSelect } from "../../utils/node";
 import { Housing } from "./Housing";
 import { GraphInfo } from "../../service/dynamo";
+import { WarningIcon } from "../../icons/Warning";
 
 function DynamoInputComponent({
   input,
@@ -22,8 +23,9 @@ function DynamoInputComponent({
     return <Housing input={input} value={value} setValue={setValue} />;
   } else if (isSelect(input)) {
     return (
-      <div>
+      <div style={{ display: "flex", flexDirection: "row" }}>
         {value && <span>{value.length} Selected</span>}
+        {!value && <WarningIcon />}
         <weave-button
           style={{ marginLeft: "5px" }}
           variant="outlined"
