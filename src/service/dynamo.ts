@@ -136,8 +136,16 @@ class Dynamo implements DynamoService {
   }
 
   async runAsync(target: GraphTarget, inputs: RunInputs): Promise<Run> {
-    const response = await this._fetch(`${this.url}/v1/graph/run-async`, {
-      method: "POST",
+    const createJob = await this._fetch(`${this.url}/v1/graph/job/create`, { method: "GET" });
+
+    if (createJob.status !== 200) {
+      throw new FetchError(createJob.statusText, createJob.status);
+    }
+
+    const { jobId, uploadUrl } = await createJob.json();
+
+    await fetch(uploadUrl, {
+      method: "PUT",
       body: JSON.stringify({
         target,
         ignoreInputs: false,
@@ -148,11 +156,13 @@ class Dynamo implements DynamoService {
       }),
     });
 
+    const response = await this._fetch(`${this.url}/v1/graph/job/${jobId}/run`, {
+      method: "POST",
+    });
+
     if (response.status !== 200) {
       throw new FetchError(response.statusText, response.status);
     }
-
-    const { jobId } = await response.json();
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
