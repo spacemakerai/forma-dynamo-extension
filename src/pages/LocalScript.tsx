@@ -384,6 +384,13 @@ export function LocalScript({
           height: "100%",
         }}
       >
+        <weave-button
+          style={{ marginTop: "16px" }}
+          variant="outlined"
+          onClick={() => setScript(undefined)}
+        >
+          {"<"} Back
+        </weave-button>
         <div
           ref={headerRef}
           style={{
@@ -393,13 +400,10 @@ export function LocalScript({
           }}
         >
           <h3>{script.name}</h3>
-          <weave-button variant="flat" onClick={reload}>
-            Refresh
-          </weave-button>
         </div>
         <div
           style={{
-            height: `calc(100% - ${fixedFooterHeight + headerHeight}px)`,
+            height: `calc(100% - ${fixedFooterHeight + headerHeight + 16 + 24}px)`,
             display: "flex",
             flexDirection: "column",
             flexWrap: "nowrap",
@@ -417,10 +421,11 @@ export function LocalScript({
 
           {scriptInfo.type === "loaded" && (
             <>
-              <div>
-                <span style={{ fontWeight: "600" }}>Description: </span>
-                <span>{scriptInfo.data?.metadata?.description}</span>
-              </div>
+              {scriptInfo.data?.metadata?.description && (
+                <div>
+                  <span>{scriptInfo.data?.metadata?.description}</span>
+                </div>
+              )}
               <div
                 style={{
                   marginBottom: "5px",
@@ -457,12 +462,8 @@ export function LocalScript({
             borderTop: "1px solid var(--divider-lightweight)",
           }}
         >
-          <weave-button
-            style={{ width: "60px", marginRight: "6px" }}
-            variant="outlined"
-            onClick={() => setScript(undefined)}
-          >
-            Back
+          <weave-button style={{ marginRight: "6px" }} onClick={reload}>
+            Refresh
           </weave-button>
           <weave-button
             style={{ width: "80px" }}
