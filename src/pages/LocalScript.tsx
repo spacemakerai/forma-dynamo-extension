@@ -17,6 +17,7 @@ import {
   Input,
 } from "../service/dynamo.js";
 import { JSONGraph } from "../types/types.ts";
+import { WarningBanner } from "../components/Warnings/WarningBanner.tsx";
 
 function getDefaultValues(scriptInfo: ScriptResult) {
   if (scriptInfo.type === "loaded") {
@@ -444,6 +445,9 @@ export function LocalScript({
             </>
           )}
         </div>
+        {result.type === "success" && result.data.info.issues && (
+          <WarningBanner issues={result.data.info.issues} />
+        )}
         <div
           style={{
             height: `${fixedFooterHeight - 1}px`,

@@ -63,10 +63,17 @@ export type Metadata = {
   thumbnail: string;
 };
 
+export type Issue = {
+  message: string;
+  nodeId: string;
+  nodeName: string;
+  type: string;
+};
+
 export type Run = {
   info: {
     id: string;
-    issues: unknown[];
+    issues: Issue[];
     name: string;
     outputs: Output[];
     status: string;
