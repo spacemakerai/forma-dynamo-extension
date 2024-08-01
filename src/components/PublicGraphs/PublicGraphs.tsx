@@ -1,5 +1,10 @@
 import { Download } from "../../assets/icons/Download";
 import sphereAreaGraph from "../../assets/spherearea.json";
+import buildingEnvelopeGraph from "../../assets/workflows/WorkFlow_01BuildingEnvelope.json";
+import buildingModification from "../../assets/workflows/WorkFlow_02BuildingModification.json";
+import customAnalysisIsovist from "../../assets/workflows/WorkFlow_04CustomAnalysis_Isovist.json";
+import customAnalysisTerrainSlope from "../../assets/workflows/WorkFlow_04CustomAnalysis_TerrainSlope.json";
+import customAnalysisViewToObject from "../../assets/workflows/WorkFlow_04CustomAnalysis_ViewToObject.json";
 import { JSONGraph } from "../../types/types";
 
 function download(jsonGraph: JSONGraph) {
@@ -19,7 +24,34 @@ function download(jsonGraph: JSONGraph) {
 }
 
 function useSampleGraphs(): JSONGraph[] {
-  return [{ id: "1", type: "JSON", name: "Sphere Area", graph: sphereAreaGraph }];
+  return [
+    { id: "1", type: "JSON", name: "Sphere Area", graph: sphereAreaGraph },
+    { id: "2", type: "JSON", name: "Workflow_01BuildingEnvelope", graph: buildingEnvelopeGraph },
+    {
+      id: "3",
+      type: "JSON",
+      name: "Workflow_02BuildingModification",
+      graph: buildingModification,
+    },
+    {
+      id: "4",
+      type: "JSON",
+      name: "Workflow_04CustomAnalysis_Isovist",
+      graph: customAnalysisIsovist,
+    },
+    {
+      id: "5",
+      type: "JSON",
+      name: "Workflow_04CustomAnalysis_TerrainSlope",
+      graph: customAnalysisTerrainSlope,
+    },
+    {
+      id: "6",
+      type: "JSON",
+      name: "Workflow_04CustomAnalysis_ViewToObject",
+      graph: customAnalysisViewToObject,
+    },
+  ];
 }
 
 export function PublicGraphs({ setGraph }: { setGraph: (graph: JSONGraph) => void }) {
