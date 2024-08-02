@@ -1,5 +1,5 @@
 import { useMemo, useState } from "preact/hooks";
-import Dynamo from "../service/dynamo";
+import Dynamo, { FolderGraphInfo } from "../service/dynamo";
 import { LocalScript } from "./LocalScript";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { Health } from "../components/Health/Health";
@@ -18,7 +18,7 @@ const urls: Record<string, string> = {
 };
 
 export function DaasApp() {
-  const [graph, setGraph] = useState<JSONGraph | undefined>(undefined);
+  const [graph, setGraph] = useState<JSONGraph | FolderGraphInfo | undefined>(undefined);
 
   const daas = useMemo(() => {
     return new Dynamo(urls[String(env).toUpperCase()] || urls["DEV"], async () => {
@@ -53,7 +53,12 @@ export function DaasApp() {
       <Health daas={daas} local={dynamoLocal.state} />
       {!graph && (
         <>
-          <MyGraphs setGraph={setGraph} dragging={dragging} setDragging={setDragging} />
+          <MyGraphs
+            setGraph={setGraph}
+            dragging={dragging}
+            setDragging={setDragging}
+            dynamoLocal={dynamoLocal}
+          />
           <div
             style={{ borderBottom: "1px solid var(--divider-lightweight)", paddingBottom: "8px" }}
           >

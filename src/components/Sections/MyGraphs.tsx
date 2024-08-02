@@ -1,8 +1,11 @@
-import { useCallback, useState } from "preact/hooks";
+import { useCallback, useEffect, useState } from "preact/hooks";
 import { Import } from "../../assets/icons/Import";
 import { JSONGraph } from "../../types/types";
 import { Delete } from "../../icons/Delete";
 import { File } from "../../icons/File";
+import Logo from "../../assets/Logo.png";
+import { DynamoState } from "../../DynamoConnector";
+import { DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo";
 
 function storeGraphs(graphs: any[]) {
   localStorage.setItem("dynamo-graphs", JSON.stringify(graphs));
@@ -10,14 +13,50 @@ function storeGraphs(graphs: any[]) {
   return graphs;
 }
 
+export function useLocalOpenGraph(
+  state: DynamoState,
+  dynamoService: DynamoService & { current: () => Promise<GraphInfo> },
+) {
+  const [suggestOpenGraph, setSuggestOpenGraph] = useState<GraphInfo | null>(null);
+
+  useEffect(() => {
+    function handler() {
+      if (state.connectionState === "CONNECTED") {
+        dynamoService
+          .current()
+          .then((currentGraph) => {
+            if (currentGraph && currentGraph.id) {
+              setSuggestOpenGraph(currentGraph);
+            }
+          })
+          .catch((e: Error) => {
+            console.error(e);
+          });
+      }
+    }
+
+    const interval = setInterval(handler, 1000);
+    handler();
+
+    return () => clearInterval(interval);
+  }, [dynamoService, state.connectionState]);
+
+  return suggestOpenGraph;
+}
+
 export function MyGraphs({
   setGraph,
   dragging,
   setDragging,
+  dynamoLocal,
 }: {
-  setGraph: (v: JSONGraph) => void;
+  setGraph: (v: FolderGraphInfo | JSONGraph) => void;
   dragging: boolean;
   setDragging: (v: boolean) => void;
+  dynamoLocal: {
+    state: DynamoState;
+    dynamo: DynamoService;
+  };
 }) {
   const graphs = () => {
     try {
@@ -26,6 +65,11 @@ export function MyGraphs({
       return [];
     }
   };
+
+  const localOpenGraph = useLocalOpenGraph(
+    dynamoLocal.state,
+    dynamoLocal.dynamo as DynamoService & { current: () => Promise<GraphInfo> },
+  );
 
   const [dropped, setDropped] = useState<any[]>(graphs);
 
@@ -164,6 +208,38 @@ export function MyGraphs({
           }}
         />
       )}
+
+      {localOpenGraph && (
+        <div
+          style={{
+            margin: "8px 4px 8px 4px",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "colum" }}>
+            <img style={{ margin: "4px 4px 4px 0" }} src={Logo} />
+            <div style={{ height: "24px", alignContent: "center" }}>
+              {localOpenGraph.name || "Untitled"}.dyn
+            </div>
+          </div>
+
+          <weave-button
+            onClick={() => {
+              setGraph({
+                type: "FolderGraph",
+                id: localOpenGraph.id,
+                name: localOpenGraph.name || "Untitled",
+                metadata: localOpenGraph.metadata,
+              });
+            }}
+          >
+            Open current local graph
+          </weave-button>
+        </div>
+      )}
+
       {!!dropped?.length &&
         dropped?.map((graph, i) => (
           <div
