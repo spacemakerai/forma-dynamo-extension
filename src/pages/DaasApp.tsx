@@ -8,6 +8,7 @@ import { Import } from "../assets/icons/Import";
 import Logo from "../assets/Logo.png";
 import { PublicGraphs } from "../components/PublicGraphs/PublicGraphs";
 import { JSONGraph } from "../types/types";
+import { createRef } from "preact";
 
 const env = new URLSearchParams(window.location.search).get("ext:daas") || "dev";
 
@@ -32,8 +33,8 @@ export function DaasApp() {
   // TODO: we don't need to handle multiple files
   const onDrop = useCallback<JSX.DragEventHandler<HTMLDivElement>>(
     (event) => {
-      console.log(123);
       event.preventDefault();
+      setDragging(false);
       if (event.dataTransfer?.items) {
         // Use DataTransferItemList interface to access the file(s)
         [...(event.dataTransfer?.items || [])].forEach((item) => {
@@ -90,26 +91,53 @@ export function DaasApp() {
     input.click();
   }, []);
 
+  const ref = createRef<HTMLDivElement>();
+  const [dragging, setDragging] = useState(false);
+
   return (
-    <div>
+    <div
+      ref={ref}
+      onDragEnterCapture={(e) => {
+        e.stopPropagation();
+        setDragging(true);
+      }}
+      onDragLeaveCapture={(e) => {
+        e.stopPropagation();
+        const x = e.clientX;
+        const y = e.clientY;
+        const rect = ref.current?.getBoundingClientRect();
+
+        if (rect && (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom)) {
+          setDragging(false);
+        }
+      }}
+    >
       <Health daas={daas} local={dynamoLocal.state} />
       {!graph && (
         <>
           <h4>My own graph</h4>
-          <div id="dropzone" style={{ cursor: "pointer" }} onClick={onClickDropZone}>
+          <div
+            id="dropzone"
+            style={{ zIndex: 2, cursor: "pointer", position: "relative" }}
+            onClick={onClickDropZone}
+          >
             <div
               style={{
                 display: "flex",
+                backgroundColor: dragging ? "#0696D730" : "white",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
                 height: "60px",
-                border: "1px dashed var(--border-base)",
+                border: dragging ? "1px dashed #0696D780" : "1px dashed var(--border-base)",
                 borderRadius: "4px",
               }}
               onDragOver={(e) => {
-                console.log("dragover");
                 e.preventDefault();
+              }}
+              onDragEnd={(e) => {
+                e.preventDefault();
+                setDragging(false);
               }}
               onDrop={onDrop}
             >
@@ -118,6 +146,21 @@ export function DaasApp() {
               Files to import (.dyn)
             </div>
           </div>
+          {dragging && (
+            <div
+              onClick={() => setDragging(false)}
+              style={{
+                zIndex: 1,
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                backdropFilter: "blur(1px)",
+              }}
+            />
+          )}
           {dropped && (
             <div
               style={{
