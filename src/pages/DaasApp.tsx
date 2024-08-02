@@ -9,6 +9,8 @@ import Logo from "../assets/Logo.png";
 import { PublicGraphs } from "../components/PublicGraphs/PublicGraphs";
 import { JSONGraph } from "../types/types";
 import { createRef } from "preact";
+import { Delete } from "../icons/Delete";
+import { File } from "../icons/File";
 
 const env = new URLSearchParams(window.location.search).get("ext:daas") || "dev";
 
@@ -18,10 +20,49 @@ const urls: Record<string, string> = {
   PROD: "https://service.dynamo.autodesk.com",
 };
 
+function storeGraphs(graphs: any[]) {
+  localStorage.setItem("dynamo-graphs", JSON.stringify(graphs));
+
+  return graphs;
+}
+
 export function DaasApp() {
   const [graph, setGraph] = useState<JSONGraph | undefined>(undefined);
 
-  const [dropped, setDropped] = useState<any | undefined>(undefined);
+  const graphs = () => {
+    try {
+      return JSON.parse(localStorage.getItem("dynamo-graphs") || "[]");
+    } catch (e) {
+      return [];
+    }
+  };
+
+  const [dropped, setDropped] = useState<any[]>(graphs);
+
+  const addDropped = useCallback(
+    (graph: any) => {
+      setDropped((prev) => {
+        if (!prev) {
+          return storeGraphs([graph]);
+        }
+
+        return storeGraphs([...prev, graph]);
+      });
+    },
+    [setDropped],
+  );
+
+  const removeDropped = useCallback(
+    (index: number) => {
+      setDropped((prev) => {
+        if (!prev) {
+          return storeGraphs(prev);
+        }
+        return storeGraphs(prev.filter((_, i) => i !== index));
+      });
+    },
+    [setDropped],
+  );
 
   const daas = useMemo(() => {
     return new Dynamo(urls[String(env).toUpperCase()] || urls["DEV"], async () => {
@@ -44,7 +85,7 @@ export function DaasApp() {
             if (file) {
               file.text().then((text) => {
                 const graph = JSON.parse(text);
-                setDropped(graph);
+                addDropped(graph);
               });
             }
           }
@@ -54,22 +95,25 @@ export function DaasApp() {
         [...(event.dataTransfer?.files || [])].forEach((file) => {
           file.text().then((text) => {
             const graph = JSON.parse(text);
-            setDropped(graph);
+            addDropped(graph);
           });
         });
       }
     },
-    [setDropped],
+    [addDropped],
   );
 
-  const openDroppedGraph = useCallback(() => {
-    setGraph({
-      id: "2",
-      type: "JSON",
-      name: dropped.Name,
-      graph: dropped,
-    });
-  }, [setGraph, dropped]);
+  const openDroppedGraph = useCallback(
+    (graph: any) => {
+      setGraph({
+        id: "2",
+        type: "JSON",
+        name: graph.Name,
+        graph,
+      });
+    },
+    [setGraph],
+  );
 
   const dynamoLocal = useDynamoConnector();
 
@@ -161,24 +205,50 @@ export function DaasApp() {
               }}
             />
           )}
-          {dropped && (
-            <div
-              style={{
-                margin: "16px 8px 16px 8px",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "colum" }}>
-                <img style={{ marginRight: "4px" }} src={Logo} />
-                <div style={{ height: "24px", alignContent: "center" }}>{dropped.Name}.dyn</div>
+          {!!dropped?.length &&
+            dropped?.map((graph, i) => (
+              <div
+                key={graph.Id}
+                style={{
+                  margin: "8px 4px 8px 4px",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div style={{ display: "flex", flexDirection: "colum" }}>
+                  <div
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      margin: "4px 4px 4px 0",
+                      backgroundColor: "#3C3C3C",
+                      borderRadius: "4px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                    }}
+                  >
+                    <File />
+                  </div>
+                  <div style={{ height: "24px", alignContent: "center" }}>{graph.Name}.dyn</div>
+                </div>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div
+                    style={{
+                      cursor: "pointer",
+                      margin: "3px",
+                    }}
+                    onClick={() => removeDropped(i)}
+                  >
+                    <Delete />
+                  </div>
+                  <weave-button variant="solid" onClick={() => openDroppedGraph(graph)}>
+                    Open
+                  </weave-button>
+                </div>
               </div>
-              <weave-button variant="solid" onClick={openDroppedGraph}>
-                Open
-              </weave-button>
-            </div>
-          )}
+            ))}
           <div
             style={{ borderBottom: "1px solid var(--divider-lightweight)", paddingBottom: "8px" }}
           >
