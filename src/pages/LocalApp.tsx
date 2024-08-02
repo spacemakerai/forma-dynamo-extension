@@ -14,7 +14,13 @@ export function LocalApp() {
       <div style={{ padding: "0 2px", height: "100%" }}>
         {!script && <LocalFileList dynamo={dynamo} setScript={setScript} />}
         {script && (
-          <LocalScript services={{ local: dynamo }} script={script} setScript={setScript} />
+          <LocalScript
+            env={"local"}
+            setEnv={() => {}}
+            services={{ local: dynamo }}
+            script={script}
+            setScript={setScript}
+          />
         )}
       </div>
     );

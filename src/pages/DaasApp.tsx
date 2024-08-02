@@ -9,7 +9,7 @@ import { JSONGraph } from "../types/types";
 import { createRef } from "preact";
 import { MyGraphs } from "../components/Sections/MyGraphs";
 
-const env = new URLSearchParams(window.location.search).get("ext:daas") || "dev";
+const envionment = new URLSearchParams(window.location.search).get("ext:daas") || "dev";
 
 const urls: Record<string, string> = {
   DEV: "https://dev.service.dynamo.autodesk.com",
@@ -18,10 +18,11 @@ const urls: Record<string, string> = {
 };
 
 export function DaasApp() {
+  const [env, setEnv] = useState<"daas" | "local">("daas");
   const [graph, setGraph] = useState<JSONGraph | FolderGraphInfo | undefined>(undefined);
 
   const daas = useMemo(() => {
-    return new Dynamo(urls[String(env).toUpperCase()] || urls["DEV"], async () => {
+    return new Dynamo(urls[String(envionment).toUpperCase()] || urls["DEV"], async () => {
       const { accessToken } = await Forma.auth.acquireTokenOverlay();
       return `Bearer ${accessToken}`;
     });
@@ -80,6 +81,8 @@ export function DaasApp() {
       )}
       {graph && (
         <LocalScript
+          env={env}
+          setEnv={setEnv}
           script={graph}
           setScript={setGraph}
           services={{

@@ -216,15 +216,18 @@ async function getAllPaths() {
 export type Script = FolderGraphInfo | JSONGraph;
 
 export function LocalScript({
+  env,
+  setEnv,
   script,
   setScript,
   services,
 }: {
+  env: "daas" | "local";
+  setEnv: (env: "daas" | "local") => void;
   script: Script;
   setScript: any;
   services: { daas?: DynamoService; local: DynamoService };
 }) {
-  const [env, setEnv] = useState<"daas" | "local">(services.daas ? "daas" : "local");
   const dynamo = services[env]!;
 
   const [scriptInfo, reload] = useScript(script, dynamo);
