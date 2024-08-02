@@ -18,6 +18,7 @@ import {
 } from "../service/dynamo.js";
 import { JSONGraph } from "../types/types.ts";
 import { WarningBanner } from "../components/Warnings/WarningBanner.tsx";
+import { EnvironmentSelector } from "../components/EnvironmentSelector.tsx";
 
 function getDefaultValues(scriptInfo: ScriptResult) {
   if (scriptInfo.type === "loaded") {
@@ -217,13 +218,17 @@ export type Script = FolderGraphInfo | JSONGraph;
 export function LocalScript({
   script,
   setScript,
-  dynamo,
+  services,
 }: {
   script: Script;
   setScript: any;
-  dynamo: DynamoService;
+  services: { daas?: DynamoService; local: DynamoService };
 }) {
+  const [env, setEnv] = useState<"daas" | "local">(services.daas ? "daas" : "local");
+  const dynamo = services[env]!;
+
   const [scriptInfo, reload] = useScript(script, dynamo);
+
   const [activeSelectionNode, setActiveSelectionNode] = useState<Input | undefined>(undefined);
 
   const [state, setState] = useState<Record<string, any>>({});
@@ -457,22 +462,30 @@ export function LocalScript({
           style={{
             height: `${fixedFooterHeight - 1}px`,
             display: "flex",
+            bottom: 0,
+            width: "100%",
+            position: "fixed",
+            marginRight: "4px",
+            paddingTop: "4px",
             justifyContent: "flex-end",
-            alignItems: "center",
             borderTop: "1px solid var(--divider-lightweight)",
           }}
         >
-          <weave-button style={{ marginRight: "6px" }} onClick={reload}>
+          {env === "local" && "Running Locally"}
+          {env === "daas" && "Running on Service"}
+
+          <weave-button style={{ margin: "0 8px", width: "60px" }} onClick={reload}>
             Refresh
           </weave-button>
           <weave-button
-            style={{ width: "80px" }}
+            style={{ width: "40px", margin: "0" }}
             variant="solid"
             disabled={result.type === "running" || scriptInfo.type !== "loaded"}
             onClick={onRun}
           >
             Run
           </weave-button>
+          {services.daas && services.local && <EnvironmentSelector env={env} setEnv={setEnv} />}
         </div>
       </div>
     </>

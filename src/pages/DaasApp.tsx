@@ -155,7 +155,16 @@ export function DaasApp() {
           <PublicGraphs setGraph={setGraph} />
         </>
       )}
-      {graph && <LocalScript script={graph} setScript={setGraph} dynamo={daas} />}
+      {graph && (
+        <LocalScript
+          script={graph}
+          setScript={setGraph}
+          services={{
+            daas,
+            local: dynamoLocal.dynamo,
+          }}
+        />
+      )}
     </div>
   );
 }

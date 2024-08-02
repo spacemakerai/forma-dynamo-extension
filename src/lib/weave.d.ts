@@ -26,6 +26,25 @@ export declare module "preact/src/jsx" {
         shortcutwindows?: string;
         splitshortcutonspace?: boolean;
       };
+      "weave-radio-button-group": {
+        name?: string;
+        key?: number;
+        style?: object;
+        children?: ComponentChildren;
+        onChange?: (e: CustomEvent) => void;
+      };
+      "weave-radio-button": {
+        key?: string;
+        name?: string;
+        value?: string;
+        checked?: boolean;
+        label?: string;
+        children?: ComponentChildren;
+        style?: string | object;
+        id?: string;
+        disabled?: boolean;
+        onChange?: (e: CustomEvent) => void;
+      };
       "weave-slider": Omit<JSXInternal.HTMLAttributes<HTMLInputElement>, "onInput"> & {
         onInput?: (e: CustomEvent<string>) => void;
       };
