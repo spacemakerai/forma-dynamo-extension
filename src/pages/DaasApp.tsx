@@ -5,7 +5,7 @@ import { Forma } from "forma-embedded-view-sdk/auto";
 import { Health } from "../components/Health/Health";
 import { useDynamoConnector } from "../DynamoConnector";
 import { Import } from "../assets/icons/Import";
-import Logo from "../assets/Logo.png";
+// import Logo from "../assets/Logo.png";
 import { PublicGraphs } from "../components/PublicGraphs/PublicGraphs";
 import { JSONGraph } from "../types/types";
 import { createRef } from "preact";
