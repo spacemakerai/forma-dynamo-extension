@@ -4,8 +4,6 @@ import { IndicatorError } from "../../assets/icons/InidcatorError";
 import { IndicatorInactive } from "../../assets/icons/InidcatorInactive";
 import { DynamoService, ServerInfo } from "../../service/dynamo";
 import { DynamoConnectionState, DynamoState } from "../../DynamoConnector";
-import { ErrorIcon } from "../../icons/Error";
-import { Close } from "../../icons/Close";
 import { ErrorBanner } from "../Errors.tsx/ErrorBanner";
 
 type Status = "online" | "offline" | "error";
@@ -81,7 +79,6 @@ export function Health({ daas, local }: { daas: DynamoService; local: DynamoStat
     (async () => {
       try {
         const serverInfo = await daas.serverInfo();
-        serverInfo.apiVersion.startsWith("123");
         setDaasStatus({ status: "online", serverInfo });
       } catch (e) {
         setDaasStatus({ status: "error", error: String(e) });
