@@ -45,11 +45,13 @@ export function useLocalOpenGraph(
 }
 
 export function MyGraphs({
+  setEnv,
   setGraph,
   dragging,
   setDragging,
   dynamoLocal,
 }: {
+  setEnv: (v: "daas" | "local") => void;
   setGraph: (v: FolderGraphInfo | JSONGraph) => void;
   dragging: boolean;
   setDragging: (v: boolean) => void;
@@ -227,6 +229,7 @@ export function MyGraphs({
 
           <weave-button
             onClick={() => {
+              setEnv("local");
               setGraph({
                 type: "FolderGraph",
                 id: localOpenGraph.id,

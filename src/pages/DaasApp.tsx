@@ -55,6 +55,7 @@ export function DaasApp() {
       {!graph && (
         <>
           <MyGraphs
+            setEnv={setEnv}
             setGraph={setGraph}
             dragging={dragging}
             setDragging={setDragging}
