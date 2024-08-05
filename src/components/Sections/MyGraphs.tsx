@@ -164,7 +164,7 @@ export function MyGraphs({
 
   return (
     <>
-      <h4>My own graph</h4>
+      <h4>My graphs</h4>
       <div
         id="dropzone"
         style={{ zIndex: 2, cursor: "pointer", position: "relative" }}
