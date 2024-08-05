@@ -467,6 +467,7 @@ export function LocalScript({
             display: "flex",
             bottom: 0,
             width: "100%",
+            backgroundColor: "white",
             position: "fixed",
             marginRight: "4px",
             paddingTop: "4px",
