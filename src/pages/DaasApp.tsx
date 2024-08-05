@@ -77,7 +77,7 @@ export function DaasApp() {
               <weave-button onClick={() => alert("share")}>Publish graph</weave-button>
             </div>
           </div>
-          <PublicGraphs setGraph={setGraph} />
+          <PublicGraphs setEnv={setEnv} setGraph={setGraph} dynamoLocal={dynamoLocal} />
         </>
       )}
       {graph && (

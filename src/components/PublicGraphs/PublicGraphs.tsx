@@ -5,6 +5,9 @@ import buildingModification from "../../assets/workflows/WorkFlow_02BuildingModi
 import customAnalysisIsovist from "../../assets/workflows/WorkFlow_04CustomAnalysis_Isovist.json";
 import customAnalysisTerrainSlope from "../../assets/workflows/WorkFlow_04CustomAnalysis_TerrainSlope.json";
 import customAnalysisViewToObject from "../../assets/workflows/WorkFlow_04CustomAnalysis_ViewToObject.json";
+import { DynamoState } from "../../DynamoConnector";
+import { Edit } from "../../icons/Edit";
+import { DynamoService } from "../../service/dynamo";
 import { JSONGraph } from "../../types/types";
 
 function download(jsonGraph: JSONGraph) {
@@ -54,7 +57,18 @@ function useSampleGraphs(): JSONGraph[] {
   ];
 }
 
-export function PublicGraphs({ setGraph }: { setGraph: (graph: JSONGraph) => void }) {
+export function PublicGraphs({
+  setEnv,
+  setGraph,
+  dynamoLocal,
+}: {
+  setEnv: (env: "daas" | "local") => void;
+  setGraph: (graph: JSONGraph) => void;
+  dynamoLocal: {
+    state: DynamoState;
+    dynamo: DynamoService;
+  };
+}) {
   const graphs = useSampleGraphs();
 
   return (
@@ -75,6 +89,23 @@ export function PublicGraphs({ setGraph }: { setGraph: (graph: JSONGraph) => voi
           >
             <div style={{ height: "24px", alignContent: "center" }}>{script.name}</div>
             <div style={{ display: "flex", flexDirection: "row" }}>
+              {dynamoLocal.state.connectionState === "CONNECTED" && (
+                <div
+                  style={{
+                    cursor: "pointer",
+                    height: "24px",
+                    width: "24px",
+                    justifyContent: "center",
+                    alignContent: "center",
+                  }}
+                  onClick={() => {
+                    setEnv("local");
+                    setGraph(script);
+                  }}
+                >
+                  <Edit />
+                </div>
+              )}
               <div
                 style={{
                   cursor: "pointer",
