@@ -4,6 +4,9 @@ import { IndicatorError } from "../../assets/icons/InidcatorError";
 import { IndicatorInactive } from "../../assets/icons/InidcatorInactive";
 import { DynamoService, ServerInfo } from "../../service/dynamo";
 import { DynamoConnectionState, DynamoState } from "../../DynamoConnector";
+import { ErrorIcon } from "../../icons/Error";
+import { Close } from "../../icons/Close";
+import { ErrorBanner } from "../Errors.tsx/ErrorBanner";
 
 type Status = "online" | "offline" | "error";
 
@@ -78,6 +81,7 @@ export function Health({ daas, local }: { daas: DynamoService; local: DynamoStat
     (async () => {
       try {
         const serverInfo = await daas.serverInfo();
+        serverInfo.apiVersion.startsWith("123");
         setDaasStatus({ status: "online", serverInfo });
       } catch (e) {
         setDaasStatus({ status: "error", error: String(e) });
@@ -88,27 +92,39 @@ export function Health({ daas, local }: { daas: DynamoService; local: DynamoStat
   const daasDescription = renderDaasDescription(daasStatus);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "row",
-        paddingBottom: "8px",
-        borderBottom: "1px solid var(--divider-lightweight)",
-      }}
-    >
-      <weave-tooltip
-        text={"Dynamo as a Service (DaaS)"}
-        description={daasDescription}
-        link={"https://help.autodeskforma.com/"}
-        nub="up-left"
+    <>
+      {daasStatus.status === "error" && (
+        <ErrorBanner
+          message="Could not connect to service"
+          description="Are you connected to Autodesk VPN?"
+        />
+      )}
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "row",
+          paddingBottom: "8px",
+          borderBottom: "1px solid var(--divider-lightweight)",
+        }}
       >
-        <Indicator status={daasStatus.status} name="Service (DaaS)" isLoading={false} />
-      </weave-tooltip>
-      <Indicator status={mapLocalToState(local.connectionState)} name="Desktop" isLoading={true} />
-      <weave-button style={{ flexBasis: 0, flexGrow: 1 }} onClick={() => alert("Setup")}>
-        Setup Desktop
-      </weave-button>
-    </div>
+        <weave-tooltip
+          text={"Dynamo as a Service (DaaS)"}
+          description={daasDescription}
+          link={"https://help.autodeskforma.com/"}
+          nub="up-left"
+        >
+          <Indicator status={daasStatus.status} name="Service (DaaS)" isLoading={false} />
+        </weave-tooltip>
+        <Indicator
+          status={mapLocalToState(local.connectionState)}
+          name="Desktop"
+          isLoading={true}
+        />
+        <weave-button style={{ flexBasis: 0, flexGrow: 1 }} onClick={() => alert("Setup")}>
+          Setup Desktop
+        </weave-button>
+      </div>
+    </>
   );
 }
