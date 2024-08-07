@@ -186,7 +186,7 @@ export function SharedGraphs({
                   justifyContent: "center",
                   alignContent: "center",
                 }}
-                onClick={() => download(graph.key)}
+                onClick={() => download(graph.graph)}
               >
                 <Download />
               </div>
