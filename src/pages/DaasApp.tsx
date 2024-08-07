@@ -8,6 +8,8 @@ import { PublicGraphs } from "../components/PublicGraphs/PublicGraphs";
 import { JSONGraph } from "../types/types";
 import { createRef } from "preact";
 import { MyGraphs } from "../components/Sections/MyGraphs";
+import { SharedGraphs } from "../components/SharedGraphs/SharedGraphs";
+import { PublishGraph } from "../components/SharedGraphs/PublishGraph";
 
 const envionment = new URLSearchParams(window.location.search).get("ext:daas") || "dev";
 
@@ -20,6 +22,8 @@ const urls: Record<string, string> = {
 export function DaasApp() {
   const [env, setEnv] = useState<"daas" | "local">("daas");
   const [graph, setGraph] = useState<JSONGraph | FolderGraphInfo | undefined>(undefined);
+
+  const [page, setPage] = useState<"default" | "setup" | "publish">("default");
 
   const daas = useMemo(() => {
     return new Dynamo(urls[String(envionment).toUpperCase()] || urls["DEV"], async () => {
@@ -51,46 +55,41 @@ export function DaasApp() {
         }
       }}
     >
-      <Health daas={daas} local={dynamoLocal.state} />
-      {!graph && (
+      {page === "publish" && <PublishGraph setPage={setPage} />}
+      {page === "default" && (
         <>
-          <MyGraphs
-            setEnv={setEnv}
-            setGraph={setGraph}
-            dragging={dragging}
-            setDragging={setDragging}
-            dynamoLocal={dynamoLocal}
-          />
-          <div
-            style={{ borderBottom: "1px solid var(--divider-lightweight)", paddingBottom: "8px" }}
-          >
-            <h4>Organization Graph</h4>
-            <div>
-              No graphs are shared within your organization.{" "}
-              <weave-button variant="flat">Learn more</weave-button>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-              <div style={{ height: "24px", alignContent: "center" }}>
-                Share graph within my organisation
-              </div>
-              <weave-button onClick={() => alert("share")}>Publish graph</weave-button>
-            </div>
-          </div>
-          <PublicGraphs setEnv={setEnv} setGraph={setGraph} dynamoLocal={dynamoLocal} />
+          <Health daas={daas} local={dynamoLocal.state} />
+          {!graph && (
+            <>
+              <MyGraphs
+                setEnv={setEnv}
+                setGraph={setGraph}
+                dragging={dragging}
+                setDragging={setDragging}
+                dynamoLocal={dynamoLocal}
+              />
+              <SharedGraphs
+                setPage={setPage}
+                setEnv={setEnv}
+                setGraph={setGraph}
+                dynamoLocal={dynamoLocal}
+              />
+              <PublicGraphs setEnv={setEnv} setGraph={setGraph} dynamoLocal={dynamoLocal} />
+            </>
+          )}
+          {graph && (
+            <LocalScript
+              env={env}
+              setEnv={setEnv}
+              script={graph}
+              setScript={setGraph}
+              services={{
+                daas,
+                local: dynamoLocal.dynamo,
+              }}
+            />
+          )}
         </>
-      )}
-      {graph && (
-        <LocalScript
-          env={env}
-          setEnv={setEnv}
-          script={graph}
-          setScript={setGraph}
-          services={{
-            daas,
-            local: dynamoLocal.dynamo,
-          }}
-        />
       )}
     </div>
   );

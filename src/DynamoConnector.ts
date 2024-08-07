@@ -68,7 +68,7 @@ export const useDynamoConnector = () => {
       ].includes(state.connectionState)
     ) {
       // @ts-ignore
-      intervalId = setInterval(() => portDiscovery(), 2000);
+      //intervalId = setInterval(() => portDiscovery(), 2000);
     }
     return () => clearInterval(intervalId);
   }, [state.connectionState]);

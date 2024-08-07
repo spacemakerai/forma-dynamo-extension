@@ -238,7 +238,7 @@ export function MyGraphs({
               });
             }}
           >
-            Open current local graph
+            Open
           </weave-button>
         </div>
       )}
