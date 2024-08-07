@@ -6,6 +6,7 @@ import { File } from "../../icons/File";
 import Logo from "../../assets/Logo.png";
 import { DynamoState } from "../../DynamoConnector";
 import { DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo";
+import { filterForSize } from "../../utils/filterGraph";
 
 function storeGraphs(graphs: any[]) {
   localStorage.setItem("dynamo-graphs", JSON.stringify(graphs));
@@ -78,11 +79,13 @@ export function MyGraphs({
   const addDropped = useCallback(
     (graph: any) => {
       setDropped((prev) => {
-        if (!prev) {
-          return storeGraphs([graph]);
-        }
+        const filtered = filterForSize(graph);
 
-        return storeGraphs([...prev, graph]);
+        if (!prev) {
+          return storeGraphs([filtered]);
+        }
+        console.log(prev);
+        return storeGraphs([...prev, filtered]);
       });
     },
     [setDropped],
