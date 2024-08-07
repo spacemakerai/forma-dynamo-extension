@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "preact/hooks";
 import { DropZone } from "../DropZone";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { v4 } from "uuid";
-import { Image } from "../../icons/Image";
 
 type DynamoGraph = {
   Name: string;
@@ -26,7 +25,6 @@ export function PublishGraph({
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const [publisher, setPublisher] = useState<User | undefined>(undefined);
-  const [thumbnail, setThumbnail] = useState("");
 
   useEffect(() => {
     Forma.auth.acquireTokenOverlay().then(({ accessToken }) => {
@@ -53,7 +51,7 @@ export function PublishGraph({
           Name: name,
           Description: description,
           Author: author,
-          Thumbnail: thumbnail,
+          Thumbnail: "",
         }),
         metadata: encodeURIComponent(
           JSON.stringify({
@@ -69,13 +67,12 @@ export function PublishGraph({
     } catch (e) {
       console.error(e);
     }
-  }, [name, description, author, publisher, thumbnail, uploadedGraph, setPage]);
+  }, [name, description, author, publisher, uploadedGraph, setPage]);
 
   useEffect(() => {
     if (uploadedGraph?.Name?.length) setName(uploadedGraph.Name);
     if (uploadedGraph?.Description?.length) setDescription(uploadedGraph.Description);
     if (uploadedGraph?.Author?.length) setAuthor(uploadedGraph.Author);
-    if (uploadedGraph?.Thumbnail?.length) setThumbnail(uploadedGraph.Thumbnail);
   }, [uploadedGraph]);
 
   return (
@@ -140,57 +137,6 @@ export function PublishGraph({
       <div style={{ marginBottom: "16px" }}>
         Publisher
         <weave-input value={publisher?.name} disabled={true} style={{ width: "100%" }} />
-      </div>
-
-      <div>
-        Thumbnail
-        <div style={{ display: "flex", flexDirection: "row", marginTop: "8px" }}>
-          <div>
-            {!thumbnail && (
-              <div
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  backgroundColor: "#EEE",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: "4px",
-                }}
-              >
-                <Image />
-              </div>
-            )}
-            {thumbnail && (
-              <img
-                width="100px"
-                height="100px"
-                style={{ objectFit: "cover", borderRadius: "4px" }}
-                src={`data:image/png;base64,${thumbnail}`}
-                alt="thumbnail"
-              />
-            )}
-          </div>
-          <div style={{ width: "100%", height: "100px", display: "flex", marginLeft: "16px" }}>
-            <DropZone
-              filetypes={[".png"]}
-              onFileDropped={async (file) => {
-                try {
-                  const reader = new FileReader();
-                  reader.readAsDataURL(file);
-                  const result: string = await new Promise((resolve, reject) => {
-                    reader.onload = () => resolve(String(reader.result));
-                    reader.onerror = reject;
-                  });
-
-                  setThumbnail(result.replace("data:image/png;base64,", ""));
-                } catch (e) {
-                  console.error(e);
-                }
-              }}
-            />
-          </div>
-        </div>
       </div>
 
       <div
