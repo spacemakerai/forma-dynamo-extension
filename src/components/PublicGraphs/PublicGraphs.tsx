@@ -81,13 +81,14 @@ export function PublicGraphs({
             style={{
               padding: "4px 8px 4px 8px",
               margin: "1px",
-              backgroundColor: "var(--divider-lightweight)",
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
             }}
           >
-            <div style={{ height: "24px", alignContent: "center" }}>{script.name}</div>
+            <div style={{ height: "24px", alignContent: "center", overflow: "hidden" }}>
+              {script.name}
+            </div>
             <div style={{ display: "flex", flexDirection: "row" }}>
               {dynamoLocal.state.connectionState === "CONNECTED" && (
                 <div

@@ -136,13 +136,14 @@ export function SharedGraphs({
             style={{
               padding: "4px 8px 4px 8px",
               margin: "1px",
-              backgroundColor: "var(--divider-lightweight)",
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
             }}
           >
-            <div style={{ height: "24px", alignContent: "center" }}>{graph.graph.Name}</div>
+            <div style={{ height: "24px", alignContent: "center", overflow: "hidden" }}>
+              {graph.graph.Name}
+            </div>
             <div style={{ display: "flex", flexDirection: "row" }}>
               <div
                 style={{
