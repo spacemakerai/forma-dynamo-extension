@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "preact/hooks";
 import { DropZone } from "../DropZone";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { v4 } from "uuid";
+import { filterForSize } from "../../utils/filterGraph";
 
 type DynamoGraph = {
   Name: string;
@@ -46,13 +47,14 @@ export function PublishGraph({
     try {
       await Forma.extensions.storage.setObject({
         key: v4(),
-        data: JSON.stringify({
-          ...uploadedGraph,
-          Name: name,
-          Description: description,
-          Author: author,
-          Thumbnail: "",
-        }),
+        data: JSON.stringify(
+          filterForSize({
+            ...uploadedGraph,
+            Name: name,
+            Description: description,
+            Author: author,
+          }),
+        ),
         metadata: encodeURIComponent(
           JSON.stringify({
             publisher: {
