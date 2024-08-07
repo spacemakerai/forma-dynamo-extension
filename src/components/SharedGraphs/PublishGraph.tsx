@@ -17,6 +17,12 @@ type User = {
   name: string;
 };
 
+type PageState =
+  | { type: "default" }
+  | { type: "invalid"; message: string }
+  | { type: "publishing" }
+  | { type: "published" };
+
 export function PublishGraph({
   setPage,
 }: {
@@ -26,6 +32,8 @@ export function PublishGraph({
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const [publisher, setPublisher] = useState<User | undefined>(undefined);
+
+  const [state, setState] = useState<PageState>({ type: "default" });
 
   useEffect(() => {
     Forma.auth.acquireTokenOverlay().then(({ accessToken }) => {
@@ -45,6 +53,17 @@ export function PublishGraph({
 
   const publishGraph = useCallback(async () => {
     try {
+      setState({ type: "publishing" });
+      if (!name || !description || !author || !uploadedGraph) {
+        setState({
+          type: "invalid",
+          message: `Please fill out ${
+            !name ? "Name" : !description ? "Description" : !author ? "Author" : "Graph"
+          }`,
+        });
+        return;
+      }
+
       await Forma.extensions.storage.setObject({
         key: v4(),
         data: JSON.stringify(
@@ -64,7 +83,7 @@ export function PublishGraph({
           }),
         ),
       });
-
+      setState({ type: "published" });
       setPage("default");
     } catch (e) {
       console.error(e);
@@ -83,6 +102,7 @@ export function PublishGraph({
 
       <div style={{ marginTop: "16px" }}>
         Graph
+        {!uploadedGraph && <span style={{ color: "red" }}> *</span>}
         <div style={{ marginTop: "8px" }}>
           <DropZone
             filetypes={[".dyn"]}
@@ -99,16 +119,19 @@ export function PublishGraph({
 
       <div style={{ margin: "16px 0" }}>
         Name
+        {name === "" && <span style={{ color: "red" }}> *</span>}
         <weave-input
           value={name}
           style={{ width: "100%" }}
           // @ts-ignore
           onChange={(e) => setName(e.target.value)}
+          className={name === "" ? "required" : ""}
         />
       </div>
 
       <div style={{ marginBottom: "16px" }}>
         Description
+        {description === "" && <span style={{ color: "red" }}> *</span>}
         <textarea
           value={description}
           style={{
@@ -128,6 +151,7 @@ export function PublishGraph({
 
       <div style={{ marginBottom: "16px" }}>
         Author
+        {author === "" && <span style={{ color: "red" }}> *</span>}
         <weave-input
           value={author}
           style={{ width: "100%" }}
@@ -138,8 +162,13 @@ export function PublishGraph({
 
       <div style={{ marginBottom: "16px" }}>
         Publisher
+        {publisher?.name === "" && <span style={{ color: "red" }}> *</span>}
         <weave-input value={publisher?.name} disabled={true} style={{ width: "100%" }} />
       </div>
+
+      {state.type === "invalid" && (
+        <div style={{ color: "red", marginBottom: "16px" }}>{state.message}</div>
+      )}
 
       <div
         style={{
@@ -148,7 +177,12 @@ export function PublishGraph({
           justifyContent: "center",
         }}
       >
-        <weave-button style={{ width: "120px" }} variant="solid" onClick={publishGraph}>
+        <weave-button
+          style={{ width: "120px" }}
+          variant="solid"
+          disabled={state.type === "publishing"}
+          onClick={publishGraph}
+        >
           Publish
         </weave-button>
       </div>
