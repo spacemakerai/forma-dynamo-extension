@@ -139,7 +139,7 @@ export function MyGraphs({
           }}
         >
           <div style={{ display: "flex", flexDirection: "colum", overflow: "hidden" }}>
-            <img style={{ margin: "4px 4px 4px 2px" }} src={Logo} />
+            <img style={{ height: "24px", width: "24px" }} src={Logo} />
             <div style={{ height: "24px", alignContent: "center" }}>
               {localOpenGraph.name || "Untitled"}.dyn
             </div>
@@ -166,7 +166,7 @@ export function MyGraphs({
           <div
             key={graph.Id}
             style={{
-              margin: "8px 8px 8px 4px",
+              margin: "8px 8px 8px 0px",
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
@@ -175,18 +175,27 @@ export function MyGraphs({
             <div style={{ display: "flex", flexDirection: "colum", overflow: "hidden" }}>
               <div
                 style={{
-                  width: "18px",
-                  height: "18px",
-                  minWidth: "18px",
-                  margin: "4px 4px 4px 0",
-                  backgroundColor: "#3C3C3C",
-                  borderRadius: "4px",
+                  width: "24px",
+                  height: "24px",
                   justifyContent: "center",
                   alignItems: "center",
                   display: "flex",
                 }}
               >
-                <File />
+                <div
+                  style={{
+                    width: "18px",
+                    height: "18px",
+                    minWidth: "18px",
+                    backgroundColor: "#3C3C3C",
+                    borderRadius: "4px",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    display: "flex",
+                  }}
+                >
+                  <File />
+                </div>
               </div>
               <div style={{ height: "24px", alignContent: "center" }}>{graph.Name}.dyn</div>
             </div>
@@ -194,7 +203,10 @@ export function MyGraphs({
               <div
                 style={{
                   cursor: "pointer",
-                  margin: "3px",
+                  height: "24px",
+                  width: "24px",
+                  justifyContent: "center",
+                  alignContent: "center",
                 }}
                 onClick={() => removeDropped(i)}
               >
