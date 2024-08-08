@@ -248,7 +248,7 @@ export function SharedGraphs({
 
   return (
     <div style={{ borderBottom: "1px solid var(--divider-lightweight)", paddingBottom: "8px" }}>
-      <h4 style={{ marginLeft: "8px" }}>Graphs shared in Project</h4>
+      <h4 style={{ marginLeft: "8px" }}>Graphs shared in my project</h4>
 
       {error && <ErrorBanner message={error} />}
 
@@ -269,7 +269,7 @@ export function SharedGraphs({
       )}
 
       {state.type === "success" && state.graphs.length === 0 && (
-        <div>No graphs are shared in your Project. </div>
+        <div style={{ marginLeft: "8px" }}>No graphs are shared in your project. </div>
       )}
 
       {state.type === "error" && <div>Failed to fetch shared graphs.</div>}
@@ -294,9 +294,9 @@ export function SharedGraphs({
         }}
       >
         <div style={{ height: "24px", alignContent: "center", overflow: "hidden" }}>
-          Share graph within in this Project
+          Share graph in this project
         </div>
-        <weave-button onClick={() => setPage("publish")}>Publish graph</weave-button>
+        <weave-button onClick={() => setPage("publish")}>Share graph</weave-button>
       </div>
     </div>
   );
