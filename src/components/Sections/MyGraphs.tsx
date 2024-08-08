@@ -138,7 +138,7 @@ export function MyGraphs({
             justifyContent: "space-between",
           }}
         >
-          <div style={{ display: "flex", flexDirection: "colum" }}>
+          <div style={{ display: "flex", flexDirection: "colum", overflow: "hidden" }}>
             <img style={{ margin: "4px 4px 4px 2px" }} src={Logo} />
             <div style={{ height: "24px", alignContent: "center" }}>
               {localOpenGraph.name || "Untitled"}.dyn
@@ -172,11 +172,12 @@ export function MyGraphs({
               justifyContent: "space-between",
             }}
           >
-            <div style={{ display: "flex", flexDirection: "colum" }}>
+            <div style={{ display: "flex", flexDirection: "colum", overflow: "hidden" }}>
               <div
                 style={{
                   width: "18px",
                   height: "18px",
+                  minWidth: "18px",
                   margin: "4px 4px 4px 0",
                   backgroundColor: "#3C3C3C",
                   borderRadius: "4px",

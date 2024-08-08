@@ -72,17 +72,18 @@ function Item({
         onClick={() => setIsExpanded(!isExpanded)}
         style={{
           cursor: "pointer",
-          padding: "4px 8px 8px 0px",
+          padding: "8px 8px 8px 0px",
           margin: "1px",
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
         }}
       >
-        <div style={{ flexDirection: "row", display: "flex" }}>
+        <div style={{ flexDirection: "row", display: "flex", overflow: "hidden" }}>
           <div
             style={{
               display: "flex",
+              minWidth: "24px",
               width: "24px",
               height: "24px",
               justifyContent: "center",
@@ -92,9 +93,7 @@ function Item({
           >
             <Arrow />
           </div>
-          <div style={{ height: "24px", alignContent: "center", overflow: "hidden" }}>
-            {graph.graph.Name}
-          </div>
+          <div style={{ height: "24px", alignContent: "center" }}>{graph.graph.Name}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "row" }}>
           <div
@@ -294,7 +293,7 @@ export function SharedGraphs({
           margin: "8px",
         }}
       >
-        <div style={{ height: "24px", alignContent: "center" }}>
+        <div style={{ height: "24px", alignContent: "center", overflow: "hidden" }}>
           Share graph within in this Project
         </div>
         <weave-button onClick={() => setPage("publish")}>Publish graph</weave-button>

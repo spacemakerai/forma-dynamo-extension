@@ -92,6 +92,7 @@ function Item({
           <div
             style={{
               display: "flex",
+              minWidth: "24px",
               width: "24px",
               height: "24px",
               justifyContent: "center",
