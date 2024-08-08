@@ -8,6 +8,14 @@ import { DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo"
 import { filterForSize } from "../../utils/filterGraph";
 import { DropZone } from "../DropZone";
 
+type DynamoGraph = {
+  Name: string;
+  Description: string;
+  Author: string;
+  Thumbnail: string;
+  [key: string]: any;
+};
+
 function storeGraphs(graphs: any[]) {
   localStorage.setItem("dynamo-graphs", JSON.stringify(graphs));
 
@@ -73,23 +81,15 @@ export function MyGraphs({
   const [dropped, setDropped] = useState<any[]>(graphs);
 
   const addDropped = useCallback(
-    (file: File) => {
-      (async () => {
-        try {
-          const graph = JSON.parse(await file.text());
+    (graph: DynamoGraph) => {
+      const filtered = filterForSize(graph);
 
-          const filtered = filterForSize(graph);
-
-          setDropped((prev) => {
-            if (!prev) {
-              return storeGraphs([filtered]);
-            }
-            return storeGraphs([...prev, filtered]);
-          });
-        } catch (e) {
-          console.log(e);
+      setDropped((prev) => {
+        if (!prev) {
+          return storeGraphs([filtered]);
         }
-      })();
+        return storeGraphs([...prev, filtered]);
+      });
     },
     [setDropped],
   );
@@ -121,7 +121,11 @@ export function MyGraphs({
   return (
     <>
       <h4>My graphs</h4>
-      <DropZone filetypes={[".dyn"]} onFileDropped={addDropped} />
+      <DropZone
+        parse={async (file: File) => JSON.parse(await file.text())}
+        filetypes={[".dyn"]}
+        onFileDropped={addDropped}
+      />
 
       {localOpenGraph && (
         <div

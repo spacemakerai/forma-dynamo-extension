@@ -105,14 +105,9 @@ export function PublishGraph({
         {!uploadedGraph && <span style={{ color: "red" }}> *</span>}
         <div style={{ marginTop: "8px" }}>
           <DropZone
+            parse={async (file: File) => JSON.parse(await file.text())}
             filetypes={[".dyn"]}
-            onFileDropped={async (file) => {
-              try {
-                setUploadedGraph(JSON.parse(await file.text()));
-              } catch (e) {
-                console.error(e);
-              }
-            }}
+            onFileDropped={setUploadedGraph}
           />
         </div>
       </div>
