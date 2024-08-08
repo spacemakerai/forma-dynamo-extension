@@ -228,7 +228,6 @@ export function SharedGraphs({
     async (key: string) => {
       try {
         await Forma.extensions.storage.deleteObject({ key });
-        throw new Error("tet");
         setState((prev) =>
           prev.type === "success"
             ? { type: "success", graphs: prev.graphs.filter((graph) => graph.key !== key) }
