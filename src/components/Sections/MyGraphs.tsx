@@ -121,7 +121,7 @@ export function MyGraphs({
   );
 
   return (
-    <>
+    <div style={{ borderBottom: "1px solid var(--divider-lightweight)", paddingBottom: "8px" }}>
       <h4 style={{ marginLeft: "8px" }}>My graphs</h4>
       <DropZone
         parse={async (file: File) => JSON.parse(await file.text())}
@@ -132,7 +132,7 @@ export function MyGraphs({
       {localOpenGraph && (
         <div
           style={{
-            margin: "8px 8px 8px 0px",
+            padding: "8px 8px 8px 0px",
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
@@ -166,7 +166,7 @@ export function MyGraphs({
           <div
             key={graph.Id}
             style={{
-              margin: "8px 8px 8px 0px",
+              padding: "8px 8px 8px 0px",
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
@@ -218,6 +218,6 @@ export function MyGraphs({
             </div>
           </div>
         ))}
-    </>
+    </div>
   );
 }
