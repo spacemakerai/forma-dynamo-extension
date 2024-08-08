@@ -89,7 +89,7 @@ export function PublishGraph({
       setState({ type: "published" });
       setPage("default");
     } catch (e) {
-      captureException(e, "Error publishing graph");
+      captureException(e, "Error sharing graph");
       setState({ type: "failed" });
     }
   }, [name, description, author, publisher, uploadedGraph, setPage]);
@@ -170,7 +170,7 @@ export function PublishGraph({
       )}
 
       {state.type === "failed" && (
-        <div style={{ color: "red", marginBottom: "16px" }}>Publish failed. Try again.</div>
+        <div style={{ color: "red", marginBottom: "16px" }}>Sharing failed. Try again.</div>
       )}
 
       <div
@@ -186,7 +186,7 @@ export function PublishGraph({
           disabled={state.type === "publishing"}
           onClick={publishGraph}
         >
-          {state.type === "publishing" ? "Publishing" : "Publish"}
+          {state.type === "publishing" ? "Sharing" : "Share"}
         </weave-button>
       </div>
     </>
