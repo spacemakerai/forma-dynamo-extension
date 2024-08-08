@@ -7,7 +7,6 @@ import customAnalysisIsovist from "../../assets/workflows/WorkFlow_04CustomAnaly
 import customAnalysisTerrainSlope from "../../assets/workflows/WorkFlow_04CustomAnalysis_TerrainSlope.json";
 import customAnalysisViewToObject from "../../assets/workflows/WorkFlow_04CustomAnalysis_ViewToObject.json";
 import { DynamoState } from "../../DynamoConnector";
-import { Caret } from "../../icons/Caret";
 import { Edit } from "../../icons/Edit";
 import { DynamoService } from "../../service/dynamo";
 import { JSONGraph } from "../../types/types";
