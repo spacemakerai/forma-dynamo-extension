@@ -6,7 +6,6 @@ import { Health } from "../components/Health/Health";
 import { useDynamoConnector } from "../DynamoConnector";
 import { PublicGraphs } from "../components/PublicGraphs/PublicGraphs";
 import { JSONGraph } from "../types/types";
-import { createRef } from "preact";
 import { MyGraphs } from "../components/Sections/MyGraphs";
 import { SharedGraphs } from "../components/SharedGraphs/SharedGraphs";
 import { PublishGraph } from "../components/SharedGraphs/PublishGraph";
@@ -34,40 +33,15 @@ export function DaasApp() {
 
   const dynamoLocal = useDynamoConnector();
 
-  const ref = createRef<HTMLDivElement>();
-  const [dragging, setDragging] = useState(false);
-
   return (
-    <div
-      ref={ref}
-      onDragEnterCapture={(e) => {
-        e.stopPropagation();
-        setDragging(true);
-      }}
-      onDragLeaveCapture={(e) => {
-        e.stopPropagation();
-        const x = e.clientX;
-        const y = e.clientY;
-        const rect = ref.current?.getBoundingClientRect();
-
-        if (rect && (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom)) {
-          setDragging(false);
-        }
-      }}
-    >
+    <div>
       {page === "publish" && <PublishGraph setPage={setPage} />}
       {page === "default" && (
         <>
           <Health daas={daas} local={dynamoLocal.state} />
           {!graph && (
             <>
-              <MyGraphs
-                setEnv={setEnv}
-                setGraph={setGraph}
-                dragging={dragging}
-                setDragging={setDragging}
-                dynamoLocal={dynamoLocal}
-              />
+              <MyGraphs setEnv={setEnv} setGraph={setGraph} dynamoLocal={dynamoLocal} />
               <SharedGraphs
                 setPage={setPage}
                 setEnv={setEnv}

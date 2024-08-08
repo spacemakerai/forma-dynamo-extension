@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
-import { Import } from "../../assets/icons/Import";
 import { JSONGraph } from "../../types/types";
 import { Delete } from "../../icons/Delete";
 import { File } from "../../icons/File";
@@ -7,6 +6,7 @@ import Logo from "../../assets/Logo.png";
 import { DynamoState } from "../../DynamoConnector";
 import { DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo";
 import { filterForSize } from "../../utils/filterGraph";
+import { DropZone } from "../DropZone";
 
 function storeGraphs(graphs: any[]) {
   localStorage.setItem("dynamo-graphs", JSON.stringify(graphs));
@@ -48,14 +48,10 @@ export function useLocalOpenGraph(
 export function MyGraphs({
   setEnv,
   setGraph,
-  dragging,
-  setDragging,
   dynamoLocal,
 }: {
   setEnv: (v: "daas" | "local") => void;
   setGraph: (v: FolderGraphInfo | JSONGraph) => void;
-  dragging: boolean;
-  setDragging: (v: boolean) => void;
   dynamoLocal: {
     state: DynamoState;
     dynamo: DynamoService;
@@ -77,16 +73,23 @@ export function MyGraphs({
   const [dropped, setDropped] = useState<any[]>(graphs);
 
   const addDropped = useCallback(
-    (graph: any) => {
-      setDropped((prev) => {
-        const filtered = filterForSize(graph);
+    (file: File) => {
+      (async () => {
+        try {
+          const graph = JSON.parse(await file.text());
 
-        if (!prev) {
-          return storeGraphs([filtered]);
+          const filtered = filterForSize(graph);
+
+          setDropped((prev) => {
+            if (!prev) {
+              return storeGraphs([filtered]);
+            }
+            return storeGraphs([...prev, filtered]);
+          });
+        } catch (e) {
+          console.log(e);
         }
-        console.log(prev);
-        return storeGraphs([...prev, filtered]);
-      });
+      })();
     },
     [setDropped],
   );
@@ -103,38 +106,6 @@ export function MyGraphs({
     [setDropped],
   );
 
-  // TODO: we don't need to handle multiple files
-  const onDrop = useCallback<JSX.DragEventHandler<HTMLDivElement>>(
-    (event) => {
-      event.preventDefault();
-      setDragging(false);
-      if (event.dataTransfer?.items) {
-        // Use DataTransferItemList interface to access the file(s)
-        [...(event.dataTransfer?.items || [])].forEach((item) => {
-          // If dropped items aren't files, reject them
-          if (item.kind === "file") {
-            const file = item.getAsFile();
-            if (file) {
-              file.text().then((text) => {
-                const graph = JSON.parse(text);
-                addDropped(graph);
-              });
-            }
-          }
-        });
-      } else {
-        // Use DataTransfer interface to access the file(s)
-        [...(event.dataTransfer?.files || [])].forEach((file) => {
-          file.text().then((text) => {
-            const graph = JSON.parse(text);
-            addDropped(graph);
-          });
-        });
-      }
-    },
-    [addDropped, setDragging],
-  );
-
   const openDroppedGraph = useCallback(
     (graph: any) => {
       setGraph({
@@ -147,72 +118,10 @@ export function MyGraphs({
     [setGraph],
   );
 
-  const onClickDropZone = useCallback(() => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".dyn";
-    input.onchange = async () => {
-      try {
-        if (!input.files) return;
-        const [file] = Array.from(input.files);
-        const graph = JSON.parse(await file.text());
-
-        setDropped(graph);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    input.click();
-  }, []);
-
   return (
     <>
       <h4>My graphs</h4>
-      <div
-        id="dropzone"
-        style={{ zIndex: 2, cursor: "pointer", position: "relative" }}
-        onClick={onClickDropZone}
-      >
-        <div
-          style={{
-            display: "flex",
-            backgroundColor: dragging ? "#0696D730" : "white",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "60px",
-            border: dragging ? "1px dashed #0696D780" : "1px dashed var(--border-base)",
-            borderRadius: "4px",
-          }}
-          onDragOver={(e) => {
-            e.preventDefault();
-          }}
-          onDragEnd={(e) => {
-            e.preventDefault();
-            setDragging(false);
-          }}
-          onDrop={onDrop}
-        >
-          <Import />
-          <b>Drag & Drop</b>
-          Files to import (.dyn)
-        </div>
-      </div>
-      {dragging && (
-        <div
-          onClick={() => setDragging(false)}
-          style={{
-            zIndex: 1,
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backdropFilter: "blur(1px)",
-          }}
-        />
-      )}
+      <DropZone filetypes={[".dyn"]} onFileDropped={addDropped} />
 
       {localOpenGraph && (
         <div
