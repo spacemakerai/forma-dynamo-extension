@@ -5,6 +5,7 @@ import { IndicatorInactive } from "../../assets/icons/InidcatorInactive";
 import { DynamoService, ServerInfo } from "../../service/dynamo";
 import { DynamoConnectionState, DynamoState } from "../../DynamoConnector";
 import { ErrorBanner } from "../Errors.tsx/ErrorBanner";
+import { captureException } from "../../util/sentry";
 
 type Status = "online" | "offline" | "error";
 
@@ -81,6 +82,7 @@ export function Health({ daas, local }: { daas: DynamoService; local: DynamoStat
         const serverInfo = await daas.serverInfo();
         setDaasStatus({ status: "online", serverInfo });
       } catch (e) {
+        captureException(e, "Failed to connect to DaaS");
         setDaasStatus({ status: "error", error: String(e) });
       }
     })();

@@ -7,6 +7,7 @@ import { DynamoState } from "../../DynamoConnector";
 import { DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo";
 import { filterForSize } from "../../utils/filterGraph";
 import { DropZone } from "../DropZone";
+import { captureException } from "../../util/sentry";
 
 type DynamoGraph = {
   Name: string;
@@ -69,6 +70,7 @@ export function MyGraphs({
     try {
       return JSON.parse(localStorage.getItem("dynamo-graphs") || "[]");
     } catch (e) {
+      captureException(e, "Error parsing local graphs");
       return [];
     }
   };
