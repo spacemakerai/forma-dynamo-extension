@@ -7,6 +7,7 @@ import { DynamoState } from "../../DynamoConnector";
 import { DynamoService } from "../../service/dynamo";
 import { Delete } from "../../icons/Delete";
 import { captureException } from "../../util/sentry";
+import { Arrow } from "../../icons/Arrow";
 
 function download(graph: any) {
   const element = document.createElement("a");
@@ -46,6 +47,131 @@ type SharedGraphState =
       type: "success";
       graphs: SharedGraph[];
     };
+
+function Item({
+  graph,
+  deleteGraph,
+  setEnv,
+  setGraph,
+  dynamoLocal,
+}: {
+  graph: SharedGraph;
+  deleteGraph: (key: string) => void;
+  setEnv: (env: "daas" | "local") => void;
+  setGraph: (graph: JSONGraph) => void;
+  dynamoLocal: {
+    state: DynamoState;
+    dynamo: DynamoService;
+  };
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  return (
+    <div>
+      <div
+        onClick={() => setIsExpanded(!isExpanded)}
+        style={{
+          cursor: "pointer",
+          padding: "4px 8px 4px 8px",
+          margin: "1px",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ flexDirection: "row", display: "flex" }}>
+          <div
+            style={{
+              display: "flex",
+              width: "24px",
+              height: "24px",
+              justifyContent: "center",
+              alignItems: "center",
+              rotate: isExpanded ? "90deg" : "0deg",
+            }}
+          >
+            <Arrow />
+          </div>
+          <div style={{ height: "24px", alignContent: "center", overflow: "hidden" }}>
+            {graph.graph.Name}
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <div
+            style={{
+              cursor: "pointer",
+              height: "24px",
+              width: "24px",
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+            onClick={() => deleteGraph(graph.key)}
+          >
+            <Delete />
+          </div>
+          {dynamoLocal.state.connectionState === "CONNECTED" && (
+            <div
+              style={{
+                cursor: "pointer",
+                height: "24px",
+                width: "24px",
+                justifyContent: "center",
+                alignContent: "center",
+              }}
+              onClick={() => {
+                setEnv("local");
+                setGraph({
+                  id: "1",
+                  name: graph.graph.Name,
+                  type: "JSON",
+                  graph: graph.graph,
+                });
+              }}
+            >
+              <Edit />
+            </div>
+          )}
+          <div
+            style={{
+              cursor: "pointer",
+              height: "24px",
+              width: "24px",
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+            onClick={() => download(graph.graph)}
+          >
+            <Download />
+          </div>
+          <div>
+            <weave-button
+              onClick={() =>
+                setGraph({
+                  id: "1",
+                  name: graph.graph.Name,
+                  type: "JSON",
+                  graph: graph.graph,
+                })
+              }
+            >
+              Open
+            </weave-button>
+          </div>
+        </div>
+      </div>
+      {isExpanded && (
+        <div style={{ padding: "0 32px 8px 32px" }}>
+          <div>{graph.graph.Description}</div>
+          <div style={{ padding: "8px 0" }}>
+            <b>Author:</b> {graph.graph.Author}
+          </div>
+          <div>
+            <b>Publisher:</b> {graph.metadata.name}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function SharedGraphs({
   setPage,
@@ -146,82 +272,14 @@ export function SharedGraphs({
       {state.type === "error" && <div>Failed to fetch shared graphs.</div>}
       {state.type === "success" &&
         state.graphs.map((graph: SharedGraph) => (
-          <div
+          <Item
             key={graph.key}
-            style={{
-              padding: "4px 8px 4px 8px",
-              margin: "1px",
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <div style={{ height: "24px", alignContent: "center", overflow: "hidden" }}>
-              {graph.graph.Name}
-            </div>
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <div
-                style={{
-                  cursor: "pointer",
-                  height: "24px",
-                  width: "24px",
-                  justifyContent: "center",
-                  alignContent: "center",
-                }}
-                onClick={() => deleteGraph(graph.key)}
-              >
-                <Delete />
-              </div>
-              {dynamoLocal.state.connectionState === "CONNECTED" && (
-                <div
-                  style={{
-                    cursor: "pointer",
-                    height: "24px",
-                    width: "24px",
-                    justifyContent: "center",
-                    alignContent: "center",
-                  }}
-                  onClick={() => {
-                    setEnv("local");
-                    setGraph({
-                      id: "1",
-                      name: graph.graph.Name,
-                      type: "JSON",
-                      graph: graph.graph,
-                    });
-                  }}
-                >
-                  <Edit />
-                </div>
-              )}
-              <div
-                style={{
-                  cursor: "pointer",
-                  height: "24px",
-                  width: "24px",
-                  justifyContent: "center",
-                  alignContent: "center",
-                }}
-                onClick={() => download(graph.graph)}
-              >
-                <Download />
-              </div>
-              <div>
-                <weave-button
-                  onClick={() =>
-                    setGraph({
-                      id: "1",
-                      name: graph.graph.Name,
-                      type: "JSON",
-                      graph: graph.graph,
-                    })
-                  }
-                >
-                  Open
-                </weave-button>
-              </div>
-            </div>
-          </div>
+            graph={graph}
+            deleteGraph={deleteGraph}
+            setEnv={setEnv}
+            setGraph={setGraph}
+            dynamoLocal={dynamoLocal}
+          />
         ))}
 
       <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
