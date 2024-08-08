@@ -3,6 +3,7 @@ import { DropZone } from "../DropZone";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { v4 } from "uuid";
 import { filterForSize } from "../../utils/filterGraph";
+import { captureException } from "../../util/sentry";
 
 type DynamoGraph = {
   Name: string;
@@ -21,7 +22,8 @@ type PageState =
   | { type: "default" }
   | { type: "invalid"; message: string }
   | { type: "publishing" }
-  | { type: "published" };
+  | { type: "published" }
+  | { type: "failed" };
 
 export function PublishGraph({
   setPage,
@@ -83,10 +85,12 @@ export function PublishGraph({
           }),
         ),
       });
+
       setState({ type: "published" });
       setPage("default");
     } catch (e) {
-      console.error(e);
+      captureException(e, "Error publishing graph");
+      setState({ type: "failed" });
     }
   }, [name, description, author, publisher, uploadedGraph, setPage]);
 
@@ -163,6 +167,10 @@ export function PublishGraph({
 
       {state.type === "invalid" && (
         <div style={{ color: "red", marginBottom: "16px" }}>{state.message}</div>
+      )}
+
+      {state.type === "failed" && (
+        <div style={{ color: "red", marginBottom: "16px" }}>Publish failed. Try again.</div>
       )}
 
       <div
