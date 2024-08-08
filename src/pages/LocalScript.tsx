@@ -458,7 +458,7 @@ export function LocalScript({
             </>
           )}
         </div>
-        {result.type === "success" && result.data.info.issues.length && (
+        {result.type === "success" && result.data.info.issues.length > 0 && (
           <WarningBanner issues={result.data.info.issues} />
         )}
         <div
