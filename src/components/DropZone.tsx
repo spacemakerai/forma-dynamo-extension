@@ -10,9 +10,10 @@ export function DropZone<T>({
   parse: (file: File) => Promise<T>;
   onFileDropped: (file: T) => void;
 }) {
-  const [dragging, setDragging] = useState(false);
+  const [error, setError] = useState<boolean>(false);
 
   const onClickDropZone = useCallback(() => {
+    setError(false);
     const input = document.createElement("input");
     input.type = "file";
     input.accept = filetypes.join(",");
@@ -22,7 +23,7 @@ export function DropZone<T>({
         const [file] = Array.from(input.files);
         onFileDropped(await parse(file));
       } catch (e) {
-        console.error(e);
+        setError(true);
       }
     };
     input.click();
@@ -32,7 +33,7 @@ export function DropZone<T>({
   const onDrop = useCallback<JSX.DragEventHandler<HTMLDivElement>>(
     (event) => {
       event.preventDefault();
-      setDragging(false);
+      setError(false);
       if (event.dataTransfer?.items) {
         // Use DataTransferItemList interface to access the file(s)
         [...(event.dataTransfer?.items || [])].forEach(async (item) => {
@@ -43,9 +44,11 @@ export function DropZone<T>({
               try {
                 onFileDropped(await parse(file));
               } catch (e) {
-                console.error(e);
+                setError(true);
               }
             }
+          } else {
+            setError(true);
           }
         });
       } else {
@@ -54,12 +57,12 @@ export function DropZone<T>({
           try {
             onFileDropped(await parse(file));
           } catch (e) {
-            console.error(e);
+            setError(true);
           }
         });
       }
     },
-    [setDragging, onFileDropped, parse],
+    [onFileDropped, parse],
   );
 
   return (
@@ -72,11 +75,11 @@ export function DropZone<T>({
         style={{
           display: "flex",
           padding: "16px",
-          backgroundColor: dragging ? "#0696D730" : "white",
+          backgroundColor: "white",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          border: dragging ? "1px dashed #0696D780" : "1px dashed var(--border-base)",
+          border: "1px dashed var(--border-base)",
           borderRadius: "4px",
         }}
         onDragOver={(e) => {
@@ -84,13 +87,24 @@ export function DropZone<T>({
         }}
         onDragEnd={(e) => {
           e.preventDefault();
-          setDragging(false);
         }}
         onDrop={onDrop}
       >
         <Import />
         <b>Drag & Drop</b>
-        Files to import ({filetypes.join(", ")})
+        {error && (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setError(false);
+            }}
+          >
+            <span style={{ color: "red" }}>Error: Failed to parse file.</span>
+            <span> x</span>
+          </div>
+        )}
+        {!error && <>Files to import ({filetypes.join(", ")})</>}
       </div>
     </div>
   );
