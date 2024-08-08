@@ -8,6 +8,7 @@ import { DynamoService } from "../../service/dynamo";
 import { Delete } from "../../icons/Delete";
 import { captureException } from "../../util/sentry";
 import { Arrow } from "../../icons/Arrow";
+import { ErrorBanner } from "../Errors.tsx/ErrorBanner";
 
 function download(graph: any) {
   const element = document.createElement("a");
@@ -71,7 +72,7 @@ function Item({
         onClick={() => setIsExpanded(!isExpanded)}
         style={{
           cursor: "pointer",
-          padding: "4px 8px 4px 8px",
+          padding: "4px 8px 8px 0px",
           margin: "1px",
           display: "flex",
           flexDirection: "row",
@@ -104,7 +105,10 @@ function Item({
               justifyContent: "center",
               alignContent: "center",
             }}
-            onClick={() => deleteGraph(graph.key)}
+            onClick={(e) => {
+              e.stopPropagation();
+              deleteGraph(graph.key);
+            }}
           >
             <Delete />
           </div>
@@ -159,7 +163,7 @@ function Item({
         </div>
       </div>
       {isExpanded && (
-        <div style={{ padding: "0 32px 8px 32px" }}>
+        <div style={{ padding: "0 24px 8px 24px" }}>
           <div>{graph.graph.Description}</div>
           <div style={{ padding: "8px 0" }}>
             <b>Author:</b> {graph.graph.Author}
@@ -224,6 +228,7 @@ export function SharedGraphs({
     async (key: string) => {
       try {
         await Forma.extensions.storage.deleteObject({ key });
+        throw new Error("tet");
         setState((prev) =>
           prev.type === "success"
             ? { type: "success", graphs: prev.graphs.filter((graph) => graph.key !== key) }
@@ -247,7 +252,7 @@ export function SharedGraphs({
     <div style={{ borderBottom: "1px solid var(--divider-lightweight)", paddingBottom: "8px" }}>
       <h4>Graphs shared in Project</h4>
 
-      {error && <div style={{ color: "red" }}>{error}</div>}
+      {error && <ErrorBanner message={error} />}
 
       {state.type === "fetching" && (
         <div>
@@ -282,7 +287,14 @@ export function SharedGraphs({
           />
         ))}
 
-      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: "8px",
+        }}
+      >
         <div style={{ height: "24px", alignContent: "center" }}>
           Share graph within in this Project
         </div>

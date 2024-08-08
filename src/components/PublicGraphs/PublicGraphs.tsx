@@ -81,14 +81,14 @@ function Item({
         onClick={() => setIsExpanded(!isExpanded)}
         style={{
           cursor: "pointer",
-          padding: "4px 8px 4px 8px",
+          padding: "8px 8px 8px 0px",
           margin: "1px",
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
         }}
       >
-        <div style={{ flexDirection: "row", display: "flex" }}>
+        <div style={{ flexDirection: "row", display: "flex", overflow: "hidden" }}>
           <div
             style={{
               display: "flex",
@@ -101,9 +101,7 @@ function Item({
           >
             <Arrow />
           </div>
-          <div style={{ height: "24px", alignContent: "center", overflow: "hidden" }}>
-            {script.name}
-          </div>
+          <div style={{ height: "24px", alignContent: "center" }}>{script.name}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "row" }}>
           {dynamoLocal.state.connectionState === "CONNECTED" && (
@@ -141,7 +139,7 @@ function Item({
         </div>
       </div>
       {isExpanded && (
-        <div style={{ padding: "0 32px 8px 32px" }}>
+        <div style={{ padding: "0 24px 8px 24px" }}>
           <div>{script.graph.Description}</div>
           <div style={{ padding: "8px 0" }}>
             <b>Author:</b> {script.graph.Author}

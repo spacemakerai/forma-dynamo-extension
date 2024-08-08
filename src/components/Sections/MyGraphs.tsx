@@ -132,14 +132,14 @@ export function MyGraphs({
       {localOpenGraph && (
         <div
           style={{
-            margin: "8px 4px 8px 4px",
+            margin: "8px 8px 8px 0px",
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
           }}
         >
           <div style={{ display: "flex", flexDirection: "colum" }}>
-            <img style={{ margin: "4px 4px 4px 0" }} src={Logo} />
+            <img style={{ margin: "4px 4px 4px 2px" }} src={Logo} />
             <div style={{ height: "24px", alignContent: "center" }}>
               {localOpenGraph.name || "Untitled"}.dyn
             </div>
