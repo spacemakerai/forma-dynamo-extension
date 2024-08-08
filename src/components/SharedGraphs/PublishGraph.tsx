@@ -183,7 +183,7 @@ export function PublishGraph({
           disabled={state.type === "publishing"}
           onClick={publishGraph}
         >
-          Publish
+          {state.type === "publishing" ? "Publishing" : "Publish"}
         </weave-button>
       </div>
     </>
