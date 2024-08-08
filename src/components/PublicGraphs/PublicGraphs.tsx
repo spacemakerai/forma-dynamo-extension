@@ -1,3 +1,4 @@
+import { useState } from "preact/hooks";
 import { Download } from "../../assets/icons/Download";
 import sphereAreaGraph from "../../assets/spherearea.json";
 import buildingEnvelopeGraph from "../../assets/workflows/WorkFlow_01BuildingEnvelope.json";
@@ -6,9 +7,11 @@ import customAnalysisIsovist from "../../assets/workflows/WorkFlow_04CustomAnaly
 import customAnalysisTerrainSlope from "../../assets/workflows/WorkFlow_04CustomAnalysis_TerrainSlope.json";
 import customAnalysisViewToObject from "../../assets/workflows/WorkFlow_04CustomAnalysis_ViewToObject.json";
 import { DynamoState } from "../../DynamoConnector";
+import { Caret } from "../../icons/Caret";
 import { Edit } from "../../icons/Edit";
 import { DynamoService } from "../../service/dynamo";
 import { JSONGraph } from "../../types/types";
+import { Arrow } from "../../icons/Arrow";
 
 function download(jsonGraph: JSONGraph) {
   const element = document.createElement("a");
@@ -57,6 +60,102 @@ function useSampleGraphs(): JSONGraph[] {
   ];
 }
 
+function Item({
+  script,
+  dynamoLocal,
+  setEnv,
+  setGraph,
+}: {
+  setEnv: (env: "daas" | "local") => void;
+  script: any;
+  setGraph: (graph: JSONGraph) => void;
+  dynamoLocal: {
+    state: DynamoState;
+    dynamo: DynamoService;
+  };
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <div>
+      <div
+        onClick={() => setIsExpanded(!isExpanded)}
+        style={{
+          cursor: "pointer",
+          padding: "4px 8px 4px 8px",
+          margin: "1px",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ flexDirection: "row", display: "flex" }}>
+          <div
+            style={{
+              display: "flex",
+              width: "24px",
+              height: "24px",
+              justifyContent: "center",
+              alignItems: "center",
+              rotate: isExpanded ? "90deg" : "0deg",
+            }}
+          >
+            <Arrow />
+          </div>
+          <div style={{ height: "24px", alignContent: "center", overflow: "hidden" }}>
+            {script.name}
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          {dynamoLocal.state.connectionState === "CONNECTED" && (
+            <div
+              style={{
+                cursor: "pointer",
+                height: "24px",
+                width: "24px",
+                justifyContent: "center",
+                alignContent: "center",
+              }}
+              onClick={() => {
+                setEnv("local");
+                setGraph(script);
+              }}
+            >
+              <Edit />
+            </div>
+          )}
+          <div
+            style={{
+              cursor: "pointer",
+              height: "24px",
+              width: "24px",
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+            onClick={() => download(script)}
+          >
+            <Download />
+          </div>
+          <div>
+            <weave-button onClick={() => setGraph(script)}>Open</weave-button>
+          </div>
+        </div>
+      </div>
+      {isExpanded && (
+        <div style={{ padding: "0 32px 8px 32px" }}>
+          <div>{script.graph.Description}</div>
+          <div style={{ padding: "8px 0" }}>
+            <b>Author:</b> {script.graph.Author}
+          </div>
+          <div>
+            <b>Publisher:</b> Autodesk
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function PublicGraphs({
   setEnv,
   setGraph,
@@ -76,54 +175,13 @@ export function PublicGraphs({
       <h4>Graphs provided by Autodesk</h4>
       {graphs.map((script) => {
         return (
-          <div
+          <Item
             key={script.id}
-            style={{
-              padding: "4px 8px 4px 8px",
-              margin: "1px",
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <div style={{ height: "24px", alignContent: "center", overflow: "hidden" }}>
-              {script.name}
-            </div>
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              {dynamoLocal.state.connectionState === "CONNECTED" && (
-                <div
-                  style={{
-                    cursor: "pointer",
-                    height: "24px",
-                    width: "24px",
-                    justifyContent: "center",
-                    alignContent: "center",
-                  }}
-                  onClick={() => {
-                    setEnv("local");
-                    setGraph(script);
-                  }}
-                >
-                  <Edit />
-                </div>
-              )}
-              <div
-                style={{
-                  cursor: "pointer",
-                  height: "24px",
-                  width: "24px",
-                  justifyContent: "center",
-                  alignContent: "center",
-                }}
-                onClick={() => download(script)}
-              >
-                <Download />
-              </div>
-              <div>
-                <weave-button onClick={() => setGraph(script)}>Open</weave-button>
-              </div>
-            </div>
-          </div>
+            script={script}
+            dynamoLocal={dynamoLocal}
+            setEnv={setEnv}
+            setGraph={setGraph}
+          />
         );
       })}
     </>

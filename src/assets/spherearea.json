@@ -1,7 +1,7 @@
 {
   "Uuid": "a4547257-ef5e-4139-8e41-70f388fcfe1b",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Sample to calculate the area of a sphere",
   "Name": "spherearea",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -366,7 +366,7 @@
       "Data": {}
     }
   ],
-  "Author": "",
+  "Author": "Øyvind Robertsen",
   "Linting": {
     "activeLinter": "None",
     "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",

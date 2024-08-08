@@ -1,7 +1,7 @@
 {
   "Uuid": "3e78c69a-4899-4ca4-ba9e-53ae1ba52205",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Generate building envelopes based on parcels",
   "Name": "WorkFlow_01BuildingEnvelope",
   "ElementResolver": {
     "ResolutionMap": {
