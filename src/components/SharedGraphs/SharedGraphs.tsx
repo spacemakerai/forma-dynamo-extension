@@ -6,6 +6,7 @@ import { JSONGraph } from "../../types/types";
 import { DynamoState } from "../../DynamoConnector";
 import { DynamoService } from "../../service/dynamo";
 import { Delete } from "../../icons/Delete";
+import { captureException } from "../../util/sentry";
 
 function download(graph: any) {
   const element = document.createElement("a");
@@ -62,6 +63,7 @@ export function SharedGraphs({
   setPage: (page: "default" | "setup" | "publish") => void;
 }) {
   const [state, setState] = useState<SharedGraphState>({ type: "fetching" });
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -84,7 +86,7 @@ export function SharedGraphs({
 
         setState({ type: "success", graphs });
       } catch (e) {
-        console.error(e);
+        captureException(e, "Error fetching shared graphs");
 
         // @ts-ignore
         setState({ type: "error", error: e?.message ?? "Unknown error" });
@@ -102,17 +104,30 @@ export function SharedGraphs({
             : prev,
         );
       } catch (e) {
-        console.error(e);
+        captureException(e, "Error deleting graph");
+        setError("Failed to delete graph");
       }
     },
     [setState],
   );
 
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => setError(null), 3000);
+    }
+  }, [error]);
+
   return (
     <div style={{ borderBottom: "1px solid var(--divider-lightweight)", paddingBottom: "8px" }}>
       <h4>Graphs shared in Project</h4>
 
-      {state.type === "fetching" && <div>Loading...</div>}
+      {error && <div style={{ color: "red" }}>{error}</div>}
+
+      {state.type === "fetching" && (
+        <div>
+          <weave-skeleton-item height="28px" width="100vw" />
+        </div>
+      )}
 
       {state.type === "partial" && (
         <div>
