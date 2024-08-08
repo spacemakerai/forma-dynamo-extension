@@ -166,7 +166,7 @@ export function MyGraphs({
           <div
             key={graph.Id}
             style={{
-              margin: "8px 4px 8px 4px",
+              margin: "8px 8px 8px 4px",
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",

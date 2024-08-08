@@ -291,10 +291,10 @@ export function SharedGraphs({
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
-          marginTop: "8px",
+          margin: "8px",
         }}
       >
-        <div style={{ height: "24px", alignContent: "center", marginLeft: "8px" }}>
+        <div style={{ height: "24px", alignContent: "center" }}>
           Share graph within in this Project
         </div>
         <weave-button onClick={() => setPage("publish")}>Publish graph</weave-button>
