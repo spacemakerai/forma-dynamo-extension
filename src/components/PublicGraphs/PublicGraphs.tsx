@@ -169,7 +169,7 @@ export function PublicGraphs({
 
   return (
     <>
-      <h4>Graphs provided by Autodesk</h4>
+      <h4 style={{ marginLeft: "8px" }}>Graphs provided by Autodesk</h4>
       {graphs.map((script) => {
         return (
           <Item

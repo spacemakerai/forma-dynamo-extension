@@ -249,7 +249,7 @@ export function SharedGraphs({
 
   return (
     <div style={{ borderBottom: "1px solid var(--divider-lightweight)", paddingBottom: "8px" }}>
-      <h4>Graphs shared in Project</h4>
+      <h4 style={{ marginLeft: "8px" }}>Graphs shared in Project</h4>
 
       {error && <ErrorBanner message={error} />}
 
@@ -294,7 +294,7 @@ export function SharedGraphs({
           marginTop: "8px",
         }}
       >
-        <div style={{ height: "24px", alignContent: "center" }}>
+        <div style={{ height: "24px", alignContent: "center", marginLeft: "8px" }}>
           Share graph within in this Project
         </div>
         <weave-button onClick={() => setPage("publish")}>Publish graph</weave-button>

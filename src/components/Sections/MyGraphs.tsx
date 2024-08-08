@@ -122,7 +122,7 @@ export function MyGraphs({
 
   return (
     <>
-      <h4>My graphs</h4>
+      <h4 style={{ marginLeft: "8px" }}>My graphs</h4>
       <DropZone
         parse={async (file: File) => JSON.parse(await file.text())}
         filetypes={[".dyn"]}
