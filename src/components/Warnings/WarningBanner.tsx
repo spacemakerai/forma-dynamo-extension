@@ -7,8 +7,8 @@ export function WarningBanner({ issues }: { issues: Issue[] }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div onClick={() => setIsExpanded(!isExpanded)}>
-      {isExpanded && <WarningDetails issues={issues} />}
+    <div>
+      {isExpanded && <WarningDetails issues={issues} close={() => setIsExpanded(false)} />}
       <div
         style={{
           display: "flex",
@@ -18,6 +18,7 @@ export function WarningBanner({ issues }: { issues: Issue[] }) {
           cursor: "pointer",
           lineHeight: "24px",
         }}
+        onClick={() => setIsExpanded(true)}
       >
         <WarningIcon />
         The graph returned with warnings or errors.

@@ -26,6 +26,13 @@ export declare module "preact/src/jsx" {
         shortcutwindows?: string;
         splitshortcutonspace?: boolean;
       };
+      "weave-search-box": JSXInternal.HTMLAttributes<HTMLInputElement> & {
+        placeholder?: string;
+        disabled?: boolean;
+        variant?: "box" | "line";
+        onclear?: (e: CustomEvent) => void;
+        onInput?: (e: CustomEvent<string>) => void;
+      };
       "weave-radio-button-group": {
         name?: string;
         key?: number;
