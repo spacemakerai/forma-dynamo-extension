@@ -213,9 +213,9 @@ export function MyGraphs({
                   justifyContent: "center",
                   alignContent: "center",
                 }}
-                onClick={() => setPage({ name: "publish", initialValue: graph })}
+                onClick={() => removeDropped(i)}
               >
-                <Share />
+                <Delete />
               </div>
               <div
                 style={{
@@ -225,9 +225,9 @@ export function MyGraphs({
                   justifyContent: "center",
                   alignContent: "center",
                 }}
-                onClick={() => removeDropped(i)}
+                onClick={() => setPage({ name: "publish", initialValue: graph })}
               >
-                <Delete />
+                <Share />
               </div>
               <weave-button variant="solid" onClick={() => openDroppedGraph(graph)}>
                 Open
