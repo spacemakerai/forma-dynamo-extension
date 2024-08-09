@@ -10,7 +10,7 @@ import { MyGraphs } from "../components/Sections/MyGraphs";
 import { SharedGraphs } from "../components/SharedGraphs/SharedGraphs";
 import { PublishGraph } from "../components/SharedGraphs/PublishGraph";
 
-const envionment = new URLSearchParams(window.location.search).get("ext:daas") || "dev";
+const envionment = new URLSearchParams(window.location.search).get("ext:daas") || "stg";
 
 const urls: Record<string, string> = {
   DEV: "https://dev.service.dynamo.autodesk.com",
