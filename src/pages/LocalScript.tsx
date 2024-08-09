@@ -19,6 +19,8 @@ import {
 import { JSONGraph } from "../types/types.ts";
 import { WarningBanner } from "../components/Warnings/WarningBanner.tsx";
 import { EnvironmentSelector } from "../components/EnvironmentSelector.tsx";
+import { Desktop } from "../icons/Desktop.tsx";
+import { Service } from "../icons/Service.tsx";
 
 function getDefaultValues(scriptInfo: ScriptResult) {
   if (scriptInfo.type === "loaded") {
@@ -471,25 +473,60 @@ export function LocalScript({
             position: "fixed",
             marginRight: "4px",
             paddingTop: "4px",
-            justifyContent: "flex-end",
+            justifyContent: "space-between",
             borderTop: "1px solid var(--divider-lightweight)",
           }}
         >
-          {env === "local" && "Running Locally"}
-          {env === "daas" && "Running on Service"}
-
-          <weave-button style={{ margin: "0 8px", width: "60px" }} onClick={reload}>
-            Refresh
-          </weave-button>
-          <weave-button
-            style={{ width: "40px", margin: "0" }}
-            variant="solid"
-            disabled={result.type === "running" || scriptInfo.type !== "loaded"}
-            onClick={onRun}
-          >
-            Run
-          </weave-button>
-          {services.daas && services.local && <EnvironmentSelector env={env} setEnv={setEnv} />}
+          <div style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
+            {env === "local" && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    margin: "0 8px",
+                    width: "18px",
+                    height: "18px",
+                  }}
+                >
+                  <Desktop />
+                </div>
+                Desktop
+              </>
+            )}
+            {env === "daas" && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    margin: "-1px 8px",
+                    width: "18px",
+                    height: "18px",
+                  }}
+                >
+                  <Service />
+                </div>
+                Service
+              </>
+            )}
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <weave-button style={{ margin: "0 8px", width: "60px" }} onClick={reload}>
+              Refresh
+            </weave-button>
+            <weave-button
+              style={{ width: "40px", margin: "0" }}
+              variant="solid"
+              disabled={result.type === "running" || scriptInfo.type !== "loaded"}
+              onClick={onRun}
+            >
+              Run
+            </weave-button>
+            {services.daas && services.local && <EnvironmentSelector env={env} setEnv={setEnv} />}
+          </div>
         </div>
       </div>
     </>
