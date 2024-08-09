@@ -106,7 +106,9 @@ function Item({
             }}
             onClick={(e) => {
               e.stopPropagation();
-              deleteGraph(graph.key);
+              if (window.confirm("Are you sure you want to delete this graph?")) {
+                deleteGraph(graph.key);
+              }
             }}
           >
             <Delete />

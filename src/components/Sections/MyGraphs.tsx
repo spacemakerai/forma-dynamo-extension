@@ -213,7 +213,11 @@ export function MyGraphs({
                   justifyContent: "center",
                   alignContent: "center",
                 }}
-                onClick={() => removeDropped(i)}
+                onClick={() => {
+                  if (window.confirm("Are you sure you want to delete this graph?")) {
+                    removeDropped(i);
+                  }
+                }}
               >
                 <Delete />
               </div>
