@@ -4,6 +4,8 @@ import { Forma } from "forma-embedded-view-sdk/auto";
 import { v4 } from "uuid";
 import { filterForSize } from "../../utils/filterGraph";
 import { captureException } from "../../util/sentry";
+import { Delete } from "../../icons/Delete";
+import { File } from "../../icons/File";
 
 type DynamoGraph = {
   Name: string;
@@ -24,6 +26,63 @@ type PageState =
   | { type: "publishing" }
   | { type: "published" }
   | { type: "failed" };
+
+function Item({ graph, onClear }: { graph: DynamoGraph; onClear: () => void }) {
+  return (
+    <div
+      key={graph.Id}
+      style={{
+        padding: "8px 8px 8px 0px",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "colum", overflow: "hidden" }}>
+        <div
+          style={{
+            width: "24px",
+            height: "24px",
+            justifyContent: "center",
+            alignItems: "center",
+            display: "flex",
+          }}
+        >
+          <div
+            style={{
+              width: "18px",
+              height: "18px",
+              minWidth: "18px",
+              backgroundColor: "#3C3C3C",
+              borderRadius: "4px",
+              justifyContent: "center",
+              alignItems: "center",
+              display: "flex",
+            }}
+          >
+            <File />
+          </div>
+        </div>
+        <div style={{ height: "24px", alignContent: "center" }}>{graph.Name}.dyn</div>
+      </div>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <div
+          style={{
+            display: "flex",
+            cursor: "pointer",
+            height: "24px",
+            width: "24px",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onClick={onClear}
+        >
+          <Delete />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function PublishGraph({
   initialValue,
@@ -104,6 +163,13 @@ export function PublishGraph({
     if (uploadedGraph?.Author?.length) setAuthor(uploadedGraph.Author);
   }, [uploadedGraph]);
 
+  const onClear = useCallback(() => {
+    setName("");
+    setDescription("");
+    setAuthor("");
+    setUploadedGraph(undefined);
+  }, []);
+
   return (
     <>
       <weave-button onClick={() => setPage({ name: "default" })}>{"<"} Cancel</weave-button>
@@ -118,6 +184,7 @@ export function PublishGraph({
             onFileDropped={setUploadedGraph}
           />
         </div>
+        {uploadedGraph && <Item graph={uploadedGraph} onClear={onClear} />}
       </div>
 
       <div style={{ margin: "16px 0" }}>
