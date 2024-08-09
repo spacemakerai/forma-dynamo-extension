@@ -21,8 +21,9 @@ const urls: Record<string, string> = {
 export function DaasApp() {
   const [env, setEnv] = useState<"daas" | "local">("daas");
   const [graph, setGraph] = useState<JSONGraph | FolderGraphInfo | undefined>(undefined);
-
-  const [page, setPage] = useState<"default" | "setup" | "publish">("default");
+  const [page, setPage] = useState<
+    { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any }
+  >({ name: "default" });
 
   const daas = useMemo(() => {
     return new Dynamo(urls[String(envionment).toUpperCase()] || urls["DEV"], async () => {
@@ -35,13 +36,20 @@ export function DaasApp() {
 
   return (
     <div>
-      {page === "publish" && <PublishGraph setPage={setPage} />}
-      {page === "default" && (
+      {page.name === "publish" && (
+        <PublishGraph setPage={setPage} initialValue={page.initialValue} />
+      )}
+      {page.name === "default" && (
         <>
           <Health daas={daas} local={dynamoLocal.state} />
           {!graph && (
             <>
-              <MyGraphs setEnv={setEnv} setGraph={setGraph} dynamoLocal={dynamoLocal} />
+              <MyGraphs
+                setEnv={setEnv}
+                setGraph={setGraph}
+                dynamoLocal={dynamoLocal}
+                setPage={setPage}
+              />
               <SharedGraphs
                 setPage={setPage}
                 setEnv={setEnv}

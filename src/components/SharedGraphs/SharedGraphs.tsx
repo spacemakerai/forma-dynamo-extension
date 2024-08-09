@@ -189,7 +189,9 @@ export function SharedGraphs({
     state: DynamoState;
     dynamo: DynamoService;
   };
-  setPage: (page: "default" | "setup" | "publish") => void;
+  setPage: (
+    page: { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any },
+  ) => void;
 }) {
   const [state, setState] = useState<SharedGraphState>({ type: "fetching" });
   const [error, setError] = useState<string | null>(null);
@@ -296,7 +298,7 @@ export function SharedGraphs({
         <div style={{ height: "24px", alignContent: "center", overflow: "hidden" }}>
           Share graph in this project
         </div>
-        <weave-button onClick={() => setPage("publish")}>Share graph</weave-button>
+        <weave-button onClick={() => setPage({ name: "publish" })}>Share graph</weave-button>
       </div>
     </div>
   );

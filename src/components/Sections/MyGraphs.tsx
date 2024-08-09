@@ -8,6 +8,7 @@ import { DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo"
 import { filterForSize } from "../../utils/filterGraph";
 import { DropZone } from "../DropZone";
 import { captureException } from "../../util/sentry";
+import { Share } from "../../icons/Share";
 
 type DynamoGraph = {
   Name: string;
@@ -58,6 +59,7 @@ export function MyGraphs({
   setEnv,
   setGraph,
   dynamoLocal,
+  setPage,
 }: {
   setEnv: (v: "daas" | "local") => void;
   setGraph: (v: FolderGraphInfo | JSONGraph) => void;
@@ -65,6 +67,9 @@ export function MyGraphs({
     state: DynamoState;
     dynamo: DynamoService;
   };
+  setPage: (
+    v: { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any },
+  ) => void;
 }) {
   const graphs = () => {
     try {
@@ -200,6 +205,18 @@ export function MyGraphs({
               <div style={{ height: "24px", alignContent: "center" }}>{graph.Name}.dyn</div>
             </div>
             <div style={{ display: "flex", flexDirection: "row" }}>
+              <div
+                style={{
+                  cursor: "pointer",
+                  height: "24px",
+                  width: "24px",
+                  justifyContent: "center",
+                  alignContent: "center",
+                }}
+                onClick={() => setPage({ name: "publish", initialValue: graph })}
+              >
+                <Share />
+              </div>
               <div
                 style={{
                   cursor: "pointer",

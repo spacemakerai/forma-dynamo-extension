@@ -26,9 +26,13 @@ type PageState =
   | { type: "failed" };
 
 export function PublishGraph({
+  initialValue,
   setPage,
 }: {
-  setPage: (page: "default" | "setup" | "publish") => void;
+  initialValue?: any;
+  setPage: (
+    page: { name: "default" } | { name: "setup" } | { name: "publish"; default?: any },
+  ) => void;
 }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -51,7 +55,7 @@ export function PublishGraph({
     });
   }, []);
 
-  const [uploadedGraph, setUploadedGraph] = useState<DynamoGraph | undefined>(undefined);
+  const [uploadedGraph, setUploadedGraph] = useState<DynamoGraph | undefined>(initialValue);
 
   const publishGraph = useCallback(async () => {
     try {
@@ -87,7 +91,7 @@ export function PublishGraph({
       });
 
       setState({ type: "published" });
-      setPage("default");
+      setPage({ name: "default" });
     } catch (e) {
       captureException(e, "Error sharing graph");
       setState({ type: "failed" });
@@ -102,7 +106,7 @@ export function PublishGraph({
 
   return (
     <>
-      <weave-button onClick={() => setPage("default")}>{"<"} Cancel</weave-button>
+      <weave-button onClick={() => setPage({ name: "default" })}>{"<"} Cancel</weave-button>
 
       <div style={{ marginTop: "16px" }}>
         Graph
