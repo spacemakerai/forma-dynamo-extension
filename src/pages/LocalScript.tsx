@@ -262,8 +262,36 @@ export function LocalScript({
       const inputs = await Promise.all(
         code.inputs.map(async ({ id, type, name }: Input) => {
           const value = state[id];
-
-          if (
+          if (type === "SelectElementsExperimental") {
+            const paths = (value || []) as string[];
+            return {
+              nodeId: id,
+              value: JSON.stringify(
+                await Promise.all(
+                  paths.map(async (path) => ({
+                    urn: (await Forma.elements.getByPath({ path })).element?.urn,
+                    worldTransform: (await Forma.elements.getWorldTransform({ path })).transform,
+                  })),
+                ),
+              ),
+            };
+          } else if (type === "GetAllElementsExperimental") {
+            const paths = await getAllPaths();
+            return {
+              nodeId: id,
+              value: JSON.stringify(
+                await Promise.all(
+                  paths.map(async (path) => ({
+                    urn: (await Forma.elements.getByPath({ path })).element?.urn,
+                    worldTransform:
+                      path === "root"
+                        ? [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                        : (await Forma.elements.getWorldTransform({ path })).transform,
+                  })),
+                ),
+              ),
+            };
+          } else if (
             type === "FormaSelectElements" ||
             type === "FormaSelectElement" ||
             type === "SelectElements"

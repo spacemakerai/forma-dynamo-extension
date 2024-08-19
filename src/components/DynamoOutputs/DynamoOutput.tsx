@@ -7,6 +7,7 @@ import { Run } from "../../service/dynamo.ts";
 import { BasicBuilding } from "./BasicBuilding.tsx";
 import { GroundPolygon } from "./GroundPolygon.tsx";
 import { ExtrudedPolygon } from "./ExtrudedPolygon.tsx";
+import { SendElementToForma } from "./SendElementToForma.tsx";
 
 export type RunResult =
   | { type: "init" }
@@ -44,6 +45,10 @@ function DynamoOutputComponent({ output }: { output: Output }) {
 
   if (output.type === "SendToForma") {
     return <SendToForma output={output} />;
+  }
+
+  if (output.type === "SendElementToForma") {
+    return <SendElementToForma output={output} />;
   }
 
   return (

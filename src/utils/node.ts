@@ -7,6 +7,7 @@ export function isSelect(input: Input) {
     "FormaSelectGeometry",
     "FormaSelectFootprints",
     "FormaSelectElements",
+    "SelectElementsExperimental",
     "FormaSelectElement",
     "SelectElements",
     "SelectMetrics",
