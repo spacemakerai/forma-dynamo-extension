@@ -1,4 +1,4 @@
-import { StateUpdater, useCallback, useEffect, useMemo, useState } from "preact/hooks";
+import { Dispatch, StateUpdater, useCallback, useEffect, useMemo, useState } from "preact/hooks";
 import { addElement, CreateIntegrateElement } from "../../service/element.ts";
 import { Visibility } from "../../icons/Visibility.tsx";
 import { Forma } from "forma-embedded-view-sdk/auto";
@@ -19,7 +19,7 @@ function useTogglePreview(
   id: string,
   elements: CreateIntegrateElement[],
   isPreviewActive: boolean,
-  setIsPreviewActive: StateUpdater<boolean>,
+  setIsPreviewActive: Dispatch<StateUpdater<boolean>>,
 ) {
   console.log(isPreviewActive);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
