@@ -9,6 +9,7 @@ import { SelectMode } from "../components/SelectMode.tsx";
 import { captureException } from "../util/sentry.ts";
 import { Child } from "forma-elements";
 import {
+  DaasState,
   DynamoService,
   FolderGraphInfo,
   GraphInfo,
@@ -21,6 +22,20 @@ import { EnvironmentSelector } from "../components/EnvironmentSelector.tsx";
 import { Desktop } from "../icons/Desktop.tsx";
 import { Service } from "../icons/Service.tsx";
 import { DynamoState } from "../DynamoConnector.ts";
+import { IndicatorActive } from "../assets/icons/IndicatorActive.tsx";
+import { IndicatorInactive } from "../assets/icons/InidcatorInactive.tsx";
+import { IndicatorError } from "../assets/icons/InidcatorError.tsx";
+
+type Status = "online" | "offline" | "error";
+
+function StatusIcon({ status }: { status: Status }) {
+  if (status === "online") {
+    return <IndicatorActive />;
+  } else if (status === "offline") {
+    return <IndicatorInactive />;
+  }
+  return <IndicatorError />;
+}
 
 function getDefaultValues(scriptInfo: ScriptResult) {
   if (scriptInfo.type === "loaded") {
@@ -223,9 +238,12 @@ export function LocalScript({
   setScript: any;
   services: {
     daas?: {
+      connected: boolean;
+      state: DaasState;
       dynamo: DynamoService;
     };
     local: {
+      connected: boolean;
       state: DynamoState;
       dynamo: DynamoService;
     };
@@ -456,6 +474,7 @@ export function LocalScript({
               dynamo={service.dynamo}
             />
           )}
+          {!service.connected && <div>Not connected to Dynamo</div>}
           {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
 
           {scriptInfo.type === "loaded" && (
@@ -522,6 +541,9 @@ export function LocalScript({
                   <Desktop />
                 </div>
                 Desktop
+                <div style={{ marginLeft: "3px", display: "flex" }}>
+                  <StatusIcon status={service.connected ? "online" : "error"} />
+                </div>
               </>
             )}
             {env === "daas" && (
@@ -539,6 +561,9 @@ export function LocalScript({
                   <Service />
                 </div>
                 Service
+                <div style={{ marginLeft: "3px", display: "flex" }}>
+                  <StatusIcon status={service.connected ? "online" : "offline"} />
+                </div>
               </>
             )}
           </div>

@@ -1,14 +1,14 @@
-import { useMemo, useState } from "preact/hooks";
-import Dynamo, { FolderGraphInfo } from "../service/dynamo";
+import { useEffect, useMemo, useState } from "preact/hooks";
+import Dynamo, { DaasState, DynamoService, FolderGraphInfo } from "../service/dynamo";
 import { LocalScript } from "./LocalScript";
 import { Forma } from "forma-embedded-view-sdk/auto";
-import { Health } from "../components/Health/Health";
 import { useDynamoConnector } from "../DynamoConnector";
 import { PublicGraphs } from "../components/PublicGraphs/PublicGraphs";
 import { JSONGraph } from "../types/types";
 import { MyGraphs } from "../components/Sections/MyGraphs";
 import { SharedGraphs } from "../components/SharedGraphs/SharedGraphs";
 import { PublishGraph } from "../components/SharedGraphs/PublishGraph";
+import { captureException } from "../util/sentry";
 
 const envionment = new URLSearchParams(window.location.search).get("ext:daas") || "stg";
 
@@ -17,6 +17,24 @@ const urls: Record<string, string> = {
   STG: "https://stg.service.dynamo.autodesk.com",
   PROD: "https://service.dynamo.autodesk.com",
 };
+
+function useDaasStatus(daas: DynamoService) {
+  const [daasStatus, setDaasStatus] = useState<DaasState>({ status: "offline" });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const serverInfo = await daas.serverInfo();
+        setDaasStatus({ status: "online", serverInfo });
+      } catch (e) {
+        captureException(e, "Failed to connect to DaaS");
+        setDaasStatus({ status: "error", error: String(e) });
+      }
+    })();
+  }, [daas]);
+
+  return daasStatus;
+}
 
 export function DaasApp() {
   const [env, setEnv] = useState<"daas" | "local">("daas");
@@ -32,6 +50,8 @@ export function DaasApp() {
     });
   }, []);
 
+  const daasStatus = useDaasStatus(daas);
+
   const dynamoLocal = useDynamoConnector();
 
   return (
@@ -41,7 +61,6 @@ export function DaasApp() {
       )}
       {page.name === "default" && (
         <>
-          <Health daas={daas} local={dynamoLocal.state} />
           {!graph && (
             <>
               <MyGraphs
@@ -66,8 +85,15 @@ export function DaasApp() {
               script={graph}
               setScript={setGraph}
               services={{
-                daas: { dynamo: daas },
-                local: dynamoLocal,
+                daas: {
+                  connected: daasStatus.status === "online",
+                  state: daasStatus,
+                  dynamo: daas,
+                },
+                local: {
+                  ...dynamoLocal,
+                  connected: dynamoLocal.state.connectionState === "CONNECTED",
+                },
               }}
             />
           )}

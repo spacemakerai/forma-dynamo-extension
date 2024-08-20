@@ -7,6 +7,19 @@ export class FetchError extends Error {
   }
 }
 
+export type DaasState =
+  | {
+      status: "online";
+      serverInfo: ServerInfo;
+    }
+  | {
+      status: "error";
+      error: string;
+    }
+  | {
+      status: "offline";
+    };
+
 export interface DynamoService {
   run: (target: GraphTarget, inputs: RunInputs) => Promise<Run>;
   folder: (path: string) => Promise<FolderGraphInfo[]>;

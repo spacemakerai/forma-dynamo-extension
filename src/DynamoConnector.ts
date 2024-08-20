@@ -129,5 +129,8 @@ export const useDynamoConnector = () => {
     };
   }, [getDynamoUrl]);
 
-  return { state, dynamo: dynamoLocalService };
+  return {
+    state,
+    dynamo: dynamoLocalService,
+  };
 };
