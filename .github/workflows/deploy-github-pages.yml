@@ -17,9 +17,10 @@ jobs:
       # build dynamo
       - uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: "20"
       - name: Build and format checks
         run: |
+          yarn --version
           yarn install --frozen-lockfile
           yarn lint:check
           yarn prettier:check
@@ -45,7 +46,7 @@ jobs:
       # build dynamo
       - uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: "20"
       - name: Build Dynamo
         run: |
           yarn install --frozen-lockfile
