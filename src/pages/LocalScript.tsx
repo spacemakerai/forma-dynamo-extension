@@ -183,8 +183,6 @@ async function readElementsByPaths(paths: string[]) {
     triangles: triangles[index],
     footprints: footprints[index],
     volume25DCollection: volume25DCollections[index],
-    // @ts-ignore
-    graphs: (graphs[index] as any) || undefined,
   }));
 }
 
