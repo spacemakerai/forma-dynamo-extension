@@ -20,6 +20,7 @@ import { WarningBanner } from "../components/Warnings/WarningBanner.tsx";
 import { EnvironmentSelector } from "../components/EnvironmentSelector.tsx";
 import { Desktop } from "../icons/Desktop.tsx";
 import { Service } from "../icons/Service.tsx";
+import { DynamoState } from "../DynamoConnector.ts";
 
 function getDefaultValues(scriptInfo: ScriptResult) {
   if (scriptInfo.type === "loaded") {
@@ -220,11 +221,19 @@ export function LocalScript({
   setEnv: (env: "daas" | "local") => void;
   script: Script;
   setScript: any;
-  services: { daas?: DynamoService; local: DynamoService };
+  services: {
+    daas?: {
+      dynamo: DynamoService;
+    };
+    local: {
+      state: DynamoState;
+      dynamo: DynamoService;
+    };
+  };
 }) {
-  const dynamo = services[env]!;
+  const service = services[env]!;
 
-  const [scriptInfo, reload] = useScript(script, dynamo);
+  const [scriptInfo, reload] = useScript(script, service.dynamo);
 
   const [activeSelectionNode, setActiveSelectionNode] = useState<Input | undefined>(undefined);
 
@@ -369,14 +378,14 @@ export function LocalScript({
           : { type: "JsonGraphTarget", contents: JSON.stringify(script.graph) };
       setResult({
         type: "success",
-        data: await dynamo.run(target, inputs),
+        data: await service.dynamo.run(target, inputs),
       });
     } catch (e) {
       console.error(e);
       captureException(e, "Error running Dynamo graph");
       setResult({ type: "error", data: e });
     }
-  }, [dynamo, scriptInfo, state, script]);
+  }, [service.dynamo, scriptInfo, state, script]);
 
   useEffect(() => {
     setResult({ type: "init" });
@@ -444,7 +453,7 @@ export function LocalScript({
               script={script}
               setScript={setScript}
               reload={reload}
-              dynamo={dynamo}
+              dynamo={service.dynamo}
             />
           )}
           {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}

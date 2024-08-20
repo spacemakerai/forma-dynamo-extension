@@ -66,8 +66,8 @@ export function DaasApp() {
               script={graph}
               setScript={setGraph}
               services={{
-                daas,
-                local: dynamoLocal.dynamo,
+                daas: { dynamo: daas },
+                local: dynamoLocal,
               }}
             />
           )}

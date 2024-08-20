@@ -17,7 +17,7 @@ export function LocalApp() {
           <LocalScript
             env={"local"}
             setEnv={() => {}}
-            services={{ local: dynamo }}
+            services={{ local: { state, dynamo } }}
             script={script}
             setScript={setScript}
           />
