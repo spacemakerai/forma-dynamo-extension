@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "preact/compat";
+import { useState, useCallback, useEffect, useRef, useMemo } from "preact/compat";
 
 import { DynamoOutput, RunResult } from "../components/DynamoOutputs/DynamoOutput.js";
 import { DynamoInput } from "../components/DynamoInputs/DynamoInput.js";
@@ -25,6 +25,7 @@ import { DynamoState } from "../DynamoConnector.ts";
 import { IndicatorActive } from "../assets/icons/IndicatorActive.tsx";
 import { IndicatorInactive } from "../assets/icons/InidcatorInactive.tsx";
 import { IndicatorError } from "../assets/icons/InidcatorError.tsx";
+import { filterUnsupportedPackages, Package } from "../utils/daasSupportedPackages.ts";
 
 type Status = "online" | "offline" | "error";
 
@@ -424,6 +425,18 @@ export function LocalScript({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const unsupportedPackages = useMemo(() => {
+    if (env !== "daas") {
+      return [];
+    }
+
+    if (script.type === "FolderGraph") {
+      return [];
+    }
+
+    return filterUnsupportedPackages(script.graph);
+  }, [env, script]);
+
   return (
     <>
       {activeSelectionNode && (
@@ -507,7 +520,35 @@ export function LocalScript({
           )}
         </div>
         {result.type === "success" && result.data.info.issues.length > 0 && (
-          <WarningBanner issues={result.data.info.issues} />
+          <WarningBanner
+            title={"The graph returned with warnings or errors."}
+            warnings={result.data.info.issues.map((issue) => ({
+              id: issue.nodeId,
+              title: issue.nodeName,
+              description: issue.message,
+            }))}
+          />
+        )}
+        {unsupportedPackages.length !== 0 && (
+          <WarningBanner
+            title="Unsupported packages"
+            description={
+              <div>
+                The graph uses packages which are not installed on the Service.
+                <div>
+                  {unsupportedPackages.map(({ Name, Version }) => (
+                    <div key={Name + Version}>- {Name}</div>
+                  ))}
+                </div>
+                You can run this graph on your Desktop.
+              </div>
+            }
+            warnings={unsupportedPackages.map(({ Name, Version }: Package) => ({
+              description: Name,
+              id: Name + Version,
+              title: "Unsupported package on Service",
+            }))}
+          />
         )}
         <div
           style={{
@@ -572,7 +613,11 @@ export function LocalScript({
             <weave-button
               style={{ width: "40px", margin: "0" }}
               variant="solid"
-              disabled={result.type === "running" || scriptInfo.type !== "loaded"}
+              disabled={
+                result.type === "running" ||
+                scriptInfo.type !== "loaded" ||
+                unsupportedPackages.length > 0
+              }
               onClick={onRun}
             >
               Run

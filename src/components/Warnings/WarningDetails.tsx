@@ -1,22 +1,27 @@
 import { useCallback, useState } from "preact/hooks";
 import { Close } from "../../icons/Close";
 import { WarningIcon } from "../../icons/Warning";
-import { Issue } from "../../service/dynamo";
 
-export function WarningDetails({ issues, close }: { issues: Issue[]; close: () => void }) {
+export type Warning = {
+  id: string;
+  title: string;
+  description: string;
+};
+
+export function WarningDetails({ warnings, close }: { warnings: Warning[]; close: () => void }) {
   const [filter, setFilter] = useState<string>("");
 
   const criteria = useCallback(
-    (issue: Issue) => {
+    (issue: Warning) => {
       if (!filter || filter === "") {
         return true;
       }
 
-      if (issue.message.toLowerCase().includes(filter.toLowerCase())) {
+      if (issue.title.toLowerCase().includes(filter.toLowerCase())) {
         return true;
       }
 
-      if (issue.nodeName.toLowerCase().includes(filter.toLowerCase())) {
+      if (issue.description.toLowerCase().includes(filter.toLowerCase())) {
         return true;
       }
 
@@ -77,7 +82,7 @@ export function WarningDetails({ issues, close }: { issues: Issue[]; close: () =
       />
 
       <div style={{ overflow: "scroll" }}>
-        {issues.filter(criteria).map((issue) => (
+        {warnings.filter(criteria).map((warning) => (
           <div
             style={{
               margin: "8px 8px",
@@ -85,7 +90,7 @@ export function WarningDetails({ issues, close }: { issues: Issue[]; close: () =
               display: "flex",
               borderBottom: "solid 1px #E0E0E0",
             }}
-            key={issue.nodeId}
+            key={warning.id}
           >
             <div
               style={{
@@ -99,8 +104,8 @@ export function WarningDetails({ issues, close }: { issues: Issue[]; close: () =
               <WarningIcon />
             </div>
             <div>
-              <b>{issue.nodeName}</b>
-              <div>{issue.message}</div>
+              <b>{warning.title}</b>
+              <div>{warning.description}</div>
             </div>
           </div>
         ))}
