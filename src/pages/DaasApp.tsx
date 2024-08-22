@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 import Dynamo, { DaasState, DynamoService, FolderGraphInfo } from "../service/dynamo";
 import { LocalScript } from "./LocalScript";
 import { Forma } from "forma-embedded-view-sdk/auto";
@@ -21,7 +21,7 @@ const urls: Record<string, string> = {
 function useDaasStatus(daas: DynamoService) {
   const [daasStatus, setDaasStatus] = useState<DaasState>({ status: "offline" });
 
-  useEffect(() => {
+  const connect = useCallback(() => {
     (async () => {
       try {
         const serverInfo = await daas.serverInfo();
@@ -33,7 +33,11 @@ function useDaasStatus(daas: DynamoService) {
     })();
   }, [daas]);
 
-  return daasStatus;
+  useEffect(() => {
+    connect();
+  }, [connect]);
+
+  return { daasStatus, reconnect: connect };
 }
 
 export function DaasApp() {
@@ -50,7 +54,7 @@ export function DaasApp() {
     });
   }, []);
 
-  const daasStatus = useDaasStatus(daas);
+  const { daasStatus, reconnect } = useDaasStatus(daas);
 
   const dynamoLocal = useDynamoConnector();
 
@@ -88,6 +92,7 @@ export function DaasApp() {
                 daas: {
                   connected: daasStatus.status === "online",
                   state: daasStatus,
+                  reconnect,
                   dynamo: daas,
                 },
                 local: {

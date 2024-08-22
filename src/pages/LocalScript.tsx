@@ -239,11 +239,13 @@ export function LocalScript({
     daas?: {
       connected: boolean;
       state: DaasState;
+      reconnect: () => void;
       dynamo: DynamoService;
     };
     local: {
       connected: boolean;
       state: DynamoState;
+      reconnect: () => void;
       dynamo: DynamoService;
     };
   };
@@ -485,7 +487,48 @@ export function LocalScript({
               dynamo={service.dynamo}
             />
           )}
-          {!service.connected && <div>Not connected to Dynamo</div>}
+          {!service.connected && (
+            <div>
+              Not connected to Dynamo
+              <div>
+                <weave-button
+                  style={{ marginTop: "16px" }}
+                  variant="outlined"
+                  onClick={() => setEnv(env === "local" ? "daas" : "local")}
+                >
+                  Switch to {env === "local" ? "Service" : "Desktop"}
+                </weave-button>
+              </div>
+              {env === "daas" && (
+                <div>
+                  Are you connected to Autodesk VPN? This is required in the current development
+                  phase.
+                </div>
+              )}
+              {env == "local" && (
+                <div>
+                  <weave-button
+                    style={{ marginTop: "16px" }}
+                    variant="solid"
+                    onClick={service.reconnect}
+                  >
+                    Retry
+                  </weave-button>
+                </div>
+              )}
+              {env == "local" && (
+                <div>
+                  <weave-button
+                    style={{ marginTop: "16px" }}
+                    variant="solid"
+                    onClick={() => console.log("setup")}
+                  >
+                    Setup Desktop connection
+                  </weave-button>
+                </div>
+              )}
+            </div>
+          )}
           {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
 
           {scriptInfo.type === "loaded" && (
@@ -614,6 +657,7 @@ export function LocalScript({
               style={{ width: "40px", margin: "0" }}
               variant="solid"
               disabled={
+                service.connected === false ||
                 result.type === "running" ||
                 scriptInfo.type !== "loaded" ||
                 unsupportedPackages.length > 0
@@ -622,6 +666,7 @@ export function LocalScript({
             >
               Run
             </weave-button>
+
             {services.daas && services.local && <EnvironmentSelector env={env} setEnv={setEnv} />}
           </div>
         </div>

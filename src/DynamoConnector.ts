@@ -131,6 +131,7 @@ export const useDynamoConnector = () => {
 
   return {
     state,
+    reconnect: portDiscovery,
     dynamo: dynamoLocalService,
   };
 };

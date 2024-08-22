@@ -6,7 +6,7 @@ import { useState } from "preact/hooks";
 import { FolderGraphInfo } from "../service/dynamo.ts";
 
 export function LocalApp() {
-  const { state, dynamo } = useDynamoConnector();
+  const { state, reconnect, dynamo } = useDynamoConnector();
   const [script, setScript] = useState<FolderGraphInfo | undefined>(undefined);
 
   if (state.connectionState === "CONNECTED") {
@@ -18,7 +18,7 @@ export function LocalApp() {
             env={"local"}
             setEnv={() => {}}
             services={{
-              local: { connected: state.connectionState === "CONNECTED", state, dynamo },
+              local: { connected: state.connectionState === "CONNECTED", reconnect, state, dynamo },
             }}
             script={script}
             setScript={setScript}
