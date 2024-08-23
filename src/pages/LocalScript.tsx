@@ -284,32 +284,63 @@ export function LocalScript({
           const value = state[id];
           if (type === "SelectElementsExperimental") {
             const paths = (value || []) as string[];
+
+            const elements = await Promise.all(
+              paths.map(async (path) => ({
+                urn: (await Forma.elements.getByPath({ path })).element?.urn,
+                worldTransform:
+                  path === "root"
+                    ? [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                    : (await Forma.elements.getWorldTransform({ path })).transform,
+              })),
+            );
+
+            const elementMap: { [urn: string]: number[] } = {};
+            elements.forEach((element) => {
+              elementMap[element.urn] = element.worldTransform;
+            });
+
             return {
               nodeId: id,
-              value: JSON.stringify(
-                await Promise.all(
-                  paths.map(async (path) => ({
-                    urn: (await Forma.elements.getByPath({ path })).element?.urn,
-                    worldTransform: (await Forma.elements.getWorldTransform({ path })).transform,
-                  })),
-                ),
-              ),
+              value: JSON.stringify(elementMap),
             };
           } else if (type === "GetAllElementsExperimental") {
             const paths = await getAllPaths();
+
+            const elements = await Promise.all(
+              paths.map(async (path) => ({
+                urn: (await Forma.elements.getByPath({ path })).element?.urn,
+                worldTransform:
+                  path === "root"
+                    ? [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                    : (await Forma.elements.getWorldTransform({ path })).transform,
+              })),
+            );
+
+            const elementMap: { [urn: string]: number[] } = {};
+            elements.forEach((element) => {
+              elementMap[element.urn] = element.worldTransform;
+            });
+
             return {
               nodeId: id,
-              value: JSON.stringify(
-                await Promise.all(
-                  paths.map(async (path) => ({
-                    urn: (await Forma.elements.getByPath({ path })).element?.urn,
-                    worldTransform:
-                      path === "root"
-                        ? [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-                        : (await Forma.elements.getWorldTransform({ path })).transform,
-                  })),
-                ),
-              ),
+              value: JSON.stringify(elementMap),
+            };
+          } else if (type === "GetProjectExperimental") {
+            return {
+              nodeId: id,
+              value: Forma.getProjectId(),
+            };
+          } else if (type === "GetTerrainExperimental") {
+            const [path] = await Forma.geometry.getPathsByCategory({
+              category: "terrain",
+            });
+            const { element } = await Forma.elements.getByPath({ path });
+            const { transform } = await Forma.elements.getWorldTransform({ path });
+
+            return {
+              nodeId: id,
+              value: JSON.stringify({ [element.urn]: transform }),
             };
           } else if (
             type === "FormaSelectElements" ||

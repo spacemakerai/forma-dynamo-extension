@@ -47,7 +47,7 @@ function DynamoOutputComponent({ output }: { output: Output }) {
     return <SendToForma output={output} />;
   }
 
-  if (output.type === "SendElementToForma") {
+  if (output.type === "SendElementsToForma") {
     return <SendElementToForma output={output} />;
   }
 
