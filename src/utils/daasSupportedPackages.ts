@@ -1,4 +1,4 @@
-const SUPPORTED_PACKAGES = ["DynamoFormaBeta", "DynamoForma.dll"];
+const SUPPORTED_PACKAGES = ["DynamoFormaBeta", "DynamoForma.dll", "MeshToolkit", "MeshToolkit.dll"];
 
 export type Package = {
   Name: string;
