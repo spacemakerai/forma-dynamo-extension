@@ -176,7 +176,7 @@ async function getVolume25DForSubTree(path: string) {
     for (const child of element?.children ?? []) {
       stack.push({ path: `${path}/${child.key}`, element: elements[child.urn] });
     }
-    const volume25DCollectionRep = element.representations?.volumeMesh;
+    const volume25DCollectionRep = element.representations?.volume25DCollection;
     const volume25DCollection = await loadVolume25Collection(volume25DCollectionRep)!;
     if (!volume25DCollection) continue;
 
