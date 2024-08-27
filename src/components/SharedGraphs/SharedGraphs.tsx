@@ -9,6 +9,7 @@ import { Delete } from "../../icons/Delete";
 import { captureException } from "../../util/sentry";
 import { Arrow } from "../../icons/Arrow";
 import { ErrorBanner } from "../Errors.tsx/ErrorBanner";
+import { getCurrentProject } from "../../service/project";
 
 function download(graph: any) {
   const element = document.createElement("a");
@@ -30,14 +31,19 @@ type SharedGraph = {
   key: string;
   graph: any;
   metadata: {
-    sub: string;
-    name: string;
+    publisher: {
+      sub: string;
+      name: string;
+    };
   };
 };
 
 type SharedGraphState =
   | {
       type: "fetching";
+    }
+  | {
+      type: "no-access";
     }
   | { type: "partial"; n: number }
   | {
@@ -55,6 +61,7 @@ function Item({
   setEnv,
   setGraph,
   dynamoLocal,
+  isHubEditor,
 }: {
   graph: SharedGraph;
   deleteGraph: (key: string) => void;
@@ -64,7 +71,9 @@ function Item({
     state: DynamoState;
     dynamo: DynamoService;
   };
+  isHubEditor: boolean;
 }) {
+  console.log(graph.metadata);
   const [isExpanded, setIsExpanded] = useState(false);
   return (
     <div>
@@ -96,23 +105,25 @@ function Item({
           <div style={{ height: "24px", alignContent: "center" }}>{graph.graph.Name}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "row" }}>
-          <div
-            style={{
-              cursor: "pointer",
-              height: "24px",
-              width: "24px",
-              justifyContent: "center",
-              alignContent: "center",
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (window.confirm("Are you sure you want to delete this graph?")) {
-                deleteGraph(graph.key);
-              }
-            }}
-          >
-            <Delete />
-          </div>
+          {isHubEditor && (
+            <div
+              style={{
+                cursor: "pointer",
+                height: "24px",
+                width: "24px",
+                justifyContent: "center",
+                alignContent: "center",
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (window.confirm("Are you sure you want to delete this graph?")) {
+                  deleteGraph(graph.key);
+                }
+              }}
+            >
+              <Delete />
+            </div>
+          )}
           {dynamoLocal.state.connectionState === "CONNECTED" && (
             <div
               style={{
@@ -170,7 +181,7 @@ function Item({
             <b>Author:</b> {graph.graph.Author}
           </div>
           <div>
-            <b>Publisher:</b> {graph.metadata.name}
+            <b>Publisher:</b> {graph.metadata.publisher.name}
           </div>
         </div>
       )}
@@ -180,10 +191,10 @@ function Item({
 
 export function SharedGraphs({
   setPage,
-
   setEnv,
   setGraph,
   dynamoLocal,
+  isHubEditor,
 }: {
   setEnv: (env: "daas" | "local") => void;
   setGraph: (graph: JSONGraph) => void;
@@ -194,21 +205,29 @@ export function SharedGraphs({
   setPage: (
     page: { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any },
   ) => void;
+  isHubEditor: boolean;
 }) {
   const [state, setState] = useState<SharedGraphState>({ type: "fetching" });
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     (async () => {
       try {
         setState({ type: "fetching" });
-        const all = await Forma.extensions.storage.listObjects();
+        const hasHubAccess = await Forma.getCanViewHub();
+        if (!hasHubAccess) {
+          setState({ type: "no-access" });
+          return;
+        }
+        const project = await getCurrentProject();
+        const all = await Forma.extensions.storage.listObjects({ authcontext: project.hubId });
 
         setState({ type: "partial", n: all.results.length });
         const graphs = await Promise.all(
           all.results.map(async (data) => {
-            const object = await Forma.extensions.storage.getTextObject({ key: data.key });
-
+            const object = await Forma.extensions.storage.getTextObject({
+              key: data.key,
+              authcontext: project.hubId,
+            });
             return {
               key: data.key,
               metadata: JSON.parse(decodeURIComponent(object?.metadata || "{}")),
@@ -230,7 +249,8 @@ export function SharedGraphs({
   const deleteGraph = useCallback(
     async (key: string) => {
       try {
-        await Forma.extensions.storage.deleteObject({ key });
+        const project = await getCurrentProject();
+        await Forma.extensions.storage.deleteObject({ key, authcontext: project.hubId });
         setState((prev) =>
           prev.type === "success"
             ? { type: "success", graphs: prev.graphs.filter((graph) => graph.key !== key) }
@@ -250,9 +270,13 @@ export function SharedGraphs({
     }
   }, [error]);
 
+  if (state.type === "no-access") {
+    return null;
+  }
+
   return (
     <div style={{ borderBottom: "1px solid var(--divider-lightweight)", paddingBottom: "8px" }}>
-      <h4 style={{ marginLeft: "8px" }}>Graphs shared in my project</h4>
+      <h4 style={{ marginLeft: "8px" }}>Graphs shared in my hub</h4>
 
       {error && <ErrorBanner message={error} />}
 
@@ -286,6 +310,7 @@ export function SharedGraphs({
             setEnv={setEnv}
             setGraph={setGraph}
             dynamoLocal={dynamoLocal}
+            isHubEditor={isHubEditor}
           />
         ))}
 

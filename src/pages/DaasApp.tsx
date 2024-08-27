@@ -47,6 +47,11 @@ export function DaasApp() {
     { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any }
   >({ name: "default" });
 
+  const [isHubEditor, setIsHubEditor] = useState<boolean>(false);
+  useEffect(() => {
+    Forma.getCanEditHub().then(setIsHubEditor);
+  }, []);
+
   const daas = useMemo(() => {
     return new Dynamo(urls[String(envionment).toUpperCase()] || urls["DEV"], async () => {
       const { accessToken } = await Forma.auth.acquireTokenOverlay();
@@ -60,7 +65,7 @@ export function DaasApp() {
 
   return (
     <div>
-      {page.name === "publish" && (
+      {page.name === "publish" && isHubEditor && (
         <PublishGraph setPage={setPage} initialValue={page.initialValue} />
       )}
       {page.name === "default" && (
@@ -72,12 +77,14 @@ export function DaasApp() {
                 setGraph={setGraph}
                 dynamoLocal={dynamoLocal}
                 setPage={setPage}
+                isHubEditor={isHubEditor}
               />
               <SharedGraphs
                 setPage={setPage}
                 setEnv={setEnv}
                 setGraph={setGraph}
                 dynamoLocal={dynamoLocal}
+                isHubEditor={isHubEditor}
               />
               <PublicGraphs setEnv={setEnv} setGraph={setGraph} dynamoLocal={dynamoLocal} />
             </>

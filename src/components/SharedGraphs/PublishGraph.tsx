@@ -6,6 +6,7 @@ import { filterForSize } from "../../utils/filterGraph";
 import { captureException } from "../../util/sentry";
 import { Delete } from "../../icons/Delete";
 import { File } from "../../icons/File";
+import { getCurrentProject } from "../../service/project";
 
 type DynamoGraph = {
   Name: string;
@@ -97,7 +98,6 @@ export function PublishGraph({
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const [publisher, setPublisher] = useState<User | undefined>(undefined);
-
   const [state, setState] = useState<PageState>({ type: "default" });
 
   useEffect(() => {
@@ -128,9 +128,10 @@ export function PublishGraph({
         });
         return;
       }
-
+      const project = await getCurrentProject();
       await Forma.extensions.storage.setObject({
         key: v4(),
+        authcontext: project.hubId,
         data: JSON.stringify(
           filterForSize({
             ...uploadedGraph,

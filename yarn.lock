@@ -663,6 +663,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@preact/signals-core@npm:^1.7.0":
+  version: 1.8.0
+  resolution: "@preact/signals-core@npm:1.8.0"
+  checksum: 320160118fe54df8b91ab6d8e32b301edbaaa7ebc9d2a35293a8168bd1c899183c0b59fa5f6990b98596bcbb049df5d131d6b4b3c575d36f785dd3b710659b06
+  languageName: node
+  linkType: hard
+
+"@preact/signals@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@preact/signals@npm:1.3.0"
+  dependencies:
+    "@preact/signals-core": ^1.7.0
+  peerDependencies:
+    preact: 10.x
+  checksum: 433adb8765a027909a917a6718bba0701562f3a3765083c9705b762116c5fff084d68c945e62ef5284a91a44d9b07e4f5d364c0612ce95046fa13d3699efe453
+  languageName: node
+  linkType: hard
+
 "@prefresh/babel-plugin@npm:0.5.1":
   version: 0.5.1
   resolution: "@prefresh/babel-plugin@npm:0.5.1"
@@ -1665,6 +1683,7 @@ __metadata:
   resolution: "dynamo-player@workspace:."
   dependencies:
     "@preact/preset-vite": ^2.5.0
+    "@preact/signals": ^1.3.0
     "@sentry/browser": ^7.80.0
     "@types/earcut": ^2.1.4
     "@types/file-saver": ^2.0.2
