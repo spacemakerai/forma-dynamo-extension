@@ -160,7 +160,7 @@ function createSelectionPredicate(selection?: RepresentationSelection) {
     case "equals":
       return (value: string) => value === selection.value;
     case "startsWith":
-      return (value: string) => value.startsWith(value);
+      return (value: string) => value.startsWith(selection.value);
     default:
       throw new Error(`Invalid selection: ${JSON.stringify(selection ?? {})}`);
   }
