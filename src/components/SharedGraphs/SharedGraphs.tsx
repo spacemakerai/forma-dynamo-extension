@@ -295,7 +295,7 @@ export function SharedGraphs({
       )}
 
       {state.type === "success" && state.graphs.length === 0 && (
-        <div style={{ marginLeft: "8px" }}>No graphs are shared in your project. </div>
+        <div style={{ marginLeft: "8px" }}>No graphs are shared in your hub. </div>
       )}
 
       {state.type === "error" && <div>Failed to fetch shared graphs.</div>}
@@ -321,7 +321,7 @@ export function SharedGraphs({
         }}
       >
         <div style={{ height: "24px", alignContent: "center", overflow: "hidden" }}>
-          Share graph in this project
+          Share graph in this hub
         </div>
         <weave-button onClick={() => setPage({ name: "publish" })}>Share graph</weave-button>
       </div>
