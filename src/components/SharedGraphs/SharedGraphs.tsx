@@ -9,7 +9,6 @@ import { Delete } from "../../icons/Delete";
 import { captureException } from "../../util/sentry";
 import { Arrow } from "../../icons/Arrow";
 import { ErrorBanner } from "../Errors.tsx/ErrorBanner";
-import { getCurrentProject } from "../../service/project";
 
 function download(graph: any) {
   const element = document.createElement("a");
@@ -73,7 +72,6 @@ function Item({
   };
   isHubEditor: boolean;
 }) {
-  console.log(graph.metadata);
   const [isExpanded, setIsExpanded] = useState(false);
   return (
     <div>
@@ -218,7 +216,7 @@ export function SharedGraphs({
           setState({ type: "no-access" });
           return;
         }
-        const project = await getCurrentProject();
+        const project = await Forma.project.get();
         const all = await Forma.extensions.storage.listObjects({ authcontext: project.hubId });
 
         setState({ type: "partial", n: all.results.length });
@@ -249,7 +247,7 @@ export function SharedGraphs({
   const deleteGraph = useCallback(
     async (key: string) => {
       try {
-        const project = await getCurrentProject();
+        const project = await Forma.project.get();
         await Forma.extensions.storage.deleteObject({ key, authcontext: project.hubId });
         setState((prev) =>
           prev.type === "success"

@@ -6,7 +6,6 @@ import { filterForSize } from "../../utils/filterGraph";
 import { captureException } from "../../util/sentry";
 import { Delete } from "../../icons/Delete";
 import { File } from "../../icons/File";
-import { getCurrentProject } from "../../service/project";
 
 type DynamoGraph = {
   Name: string;
@@ -128,7 +127,7 @@ export function PublishGraph({
         });
         return;
       }
-      const project = await getCurrentProject();
+      const project = await Forma.project.get();
       await Forma.extensions.storage.setObject({
         key: v4(),
         authcontext: project.hubId,

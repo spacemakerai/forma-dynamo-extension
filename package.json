@@ -13,7 +13,6 @@
     "test": "yarn typecheck && yarn lint:check && yarn prettier:check"
   },
   "dependencies": {
-    "@preact/signals": "^1.3.0",
     "@sentry/browser": "^7.80.0",
     "@types/earcut": "^2.1.4",
     "@types/geojson": "^7946.0.14",
