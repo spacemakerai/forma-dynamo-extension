@@ -1680,8 +1680,8 @@ __metadata:
     eslint-config-prettier: ^9.0.0
     eslint-config-react-hooks: ^1.0.0
     eslint-plugin-prettier: ^5.0.1
-    forma-elements: ^1.2.0
-    forma-embedded-view-sdk: 0.62.0
+    forma-elements: ^2.3.0
+    forma-embedded-view-sdk: 0.78.0
     preact: ^10.18.2
     prettier: 3.0.3
     typescript: ^5.0.2
@@ -2373,20 +2373,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"forma-elements@npm:^1.2.0, forma-elements@npm:^1.5.2":
-  version: 1.5.6
-  resolution: "forma-elements@npm:1.5.6"
-  checksum: 5b21af858f5d0bc67310902ab51a30b0e78ed218696b0b7d778b2663be65aa2835ae014e0cd1f0dddd778bcceacb15a67e8ce806a26cef22ce5def5166c26ec0
+"forma-elements@npm:^2.1.1, forma-elements@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "forma-elements@npm:2.3.0"
+  dependencies:
+    "@types/geojson": ^7946.0.14
+  checksum: b67547e5126f9acb6099be528cf19c496dedc197ec18abd65418fcd07098277368c45946deecc05d37f7ff3f075be2ea7d4b741870d624c84564742d77058d29
   languageName: node
   linkType: hard
 
-"forma-embedded-view-sdk@npm:0.62.0":
-  version: 0.62.0
-  resolution: "forma-embedded-view-sdk@npm:0.62.0"
+"forma-embedded-view-sdk@npm:0.78.0":
+  version: 0.78.0
+  resolution: "forma-embedded-view-sdk@npm:0.78.0"
   dependencies:
     "@types/geojson": ^7946.0.13
-    forma-elements: ^1.5.2
-  checksum: 78fc50681fcbacc32f7cee73430887747a0afc9072e0c367a043f1ef53c08b6c6edbb2aaf23f4326ac7bf4543bb54ef56363c1fd9a44734a193cf7a554ac1cc0
+    forma-elements: ^2.1.1
+  checksum: 78a5de787078c92ec4b5dc1d2c6fe42005165e2c1666d3a987237766ef1303268b3619bd4e2e153ac84b02ff5695714505b62fc65f4a2908594de7049121ec07
   languageName: node
   linkType: hard
 

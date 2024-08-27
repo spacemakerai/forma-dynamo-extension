@@ -19,8 +19,8 @@
     "@types/uuid": "^10.0.0",
     "cross-env": "^7.0.3",
     "earcut": "^2.2.4",
-    "forma-elements": "^1.2.0",
-    "forma-embedded-view-sdk": "0.62.0",
+    "forma-elements": "^2.3.0",
+    "forma-embedded-view-sdk": "0.78.0",
     "preact": "^10.18.2",
     "uuid": "^10.0.0"
   },
