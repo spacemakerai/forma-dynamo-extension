@@ -7,7 +7,13 @@ import { isGet, isSelect } from "../utils/node.js";
 import { NotTrustedGraph } from "../components/NotTrustedGraph.js";
 import { SelectMode } from "../components/SelectMode.tsx";
 import { captureException } from "../util/sentry.ts";
-import { Child } from "forma-elements";
+import {
+  Child,
+  JsonRepresentations,
+  Representation,
+  RepresentationSelection,
+  Volume25D,
+} from "forma-elements";
 import {
   DaasState,
   DynamoService,
@@ -26,6 +32,7 @@ import { IndicatorActive } from "../assets/icons/IndicatorActive.tsx";
 import { IndicatorInactive } from "../assets/icons/InidcatorInactive.tsx";
 import { IndicatorError } from "../assets/icons/InidcatorError.tsx";
 import { filterUnsupportedPackages, Package } from "../utils/daasSupportedPackages.ts";
+import { transformCoordinates } from "../utils/transformCoordinates.ts";
 
 type Status = "online" | "offline" | "error";
 
@@ -129,23 +136,85 @@ export function AnimatedLoading() {
   );
 }
 
+async function loadVolume25Collection(
+  representation?: Representation<JsonRepresentations["volume25DCollection"]>,
+): Promise<JsonRepresentations["volume25DCollection"] | undefined> {
+  if (!representation) return undefined;
+  switch (representation.type) {
+    case "linked": {
+      const data = await Forma.elements.blobs.get({ blobId: representation.blobId });
+      return JSON.parse(
+        new TextDecoder().decode(data.data),
+      ) as JsonRepresentations["volume25DCollection"];
+    }
+    case "embedded-json":
+      return representation.data;
+    default:
+      return;
+  }
+}
+
+function createSelectionPredicate(selection?: RepresentationSelection) {
+  console.log({ selection });
+  switch (selection?.type) {
+    case undefined:
+      return () => true;
+    case "equals":
+      return (value: string) => value === selection.value;
+    case "startsWith":
+      return (value: string) => value.startsWith(selection.value);
+    default:
+      throw new Error(`Invalid selection: ${JSON.stringify(selection ?? {})}`);
+  }
+}
+
 async function getVolume25DForSubTree(path: string) {
   const { element, elements } = await Forma.elements.getByPath({ path, recursive: true });
+
+  console.log(path, elements);
 
   const collections = [];
   const stack = [{ path, element }];
   while (stack.length) {
     const { path, element } = stack.pop()!;
-
     for (const child of element?.children ?? []) {
       stack.push({ path: `${path}/${child.key}`, element: elements[child.urn] });
     }
+    const volume25DCollectionRep = element.representations?.volume25DCollection;
+    const volume25DCollection = await loadVolume25Collection(volume25DCollectionRep)!;
+    if (!volume25DCollection) continue;
 
-    const volume25DCollection = await Forma.experimental.geometry.getVolume25DCollection({ path });
+    const { transform } = await Forma.elements.getWorldTransform({ path });
+    const selectionPredicate = createSelectionPredicate(volume25DCollectionRep?.selection);
+    const filteredVolume25DCollection = volume25DCollection.features.filter((f) =>
+      selectionPredicate(f.id),
+    );
 
-    console.log({ volume25DCollection });
+    const transformedVolume25DCollection = {
+      type: "FeatureCollection" as const,
+      features: filteredVolume25DCollection.map((feature: Volume25D) => {
+        return {
+          ...feature,
+          properties: {
+            ...feature.properties,
+            // Scale height by 3rd diagonal element in transform matrix
+            height: feature.properties.height * transform[10],
+            // Translate and scale elevation -- default untransformed elevation is zero
+            elevation: (feature.properties.elevation ?? 0 * transform[10]) + transform[14],
+          },
+          geometry: {
+            ...feature.geometry,
+            coordinates: feature.geometry.coordinates.map((coordinates) =>
+              transformCoordinates(transform, coordinates),
+            ),
+          },
+        };
+      }),
+    };
 
-    collections.push(volume25DCollection);
+    console.log({ transformedVolume25DCollection });
+
+    collections.push(transformedVolume25DCollection);
   }
 
   const features = collections
