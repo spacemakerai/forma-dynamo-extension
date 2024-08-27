@@ -141,11 +141,12 @@ async function loadVolume25Collection(
 ): Promise<JsonRepresentations["volume25DCollection"] | undefined> {
   if (!representation) return undefined;
   switch (representation.type) {
-    case "linked":
+    case "linked": {
       const data = await Forma.elements.blobs.get({ blobId: representation.blobId });
       return JSON.parse(
         new TextDecoder().decode(data.data),
       ) as JsonRepresentations["volume25DCollection"];
+    }
     case "embedded-json":
       return representation.data;
     default:
@@ -154,6 +155,7 @@ async function loadVolume25Collection(
 }
 
 function createSelectionPredicate(selection?: RepresentationSelection) {
+  console.log({ selection });
   switch (selection?.type) {
     case undefined:
       return () => true;
@@ -168,6 +170,8 @@ function createSelectionPredicate(selection?: RepresentationSelection) {
 
 async function getVolume25DForSubTree(path: string) {
   const { element, elements } = await Forma.elements.getByPath({ path, recursive: true });
+
+  console.log(path, elements);
 
   const collections = [];
   const stack = [{ path, element }];
