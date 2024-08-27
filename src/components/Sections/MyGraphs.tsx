@@ -60,6 +60,7 @@ export function MyGraphs({
   setGraph,
   dynamoLocal,
   setPage,
+  isHubEditor,
 }: {
   setEnv: (v: "daas" | "local") => void;
   setGraph: (v: FolderGraphInfo | JSONGraph) => void;
@@ -70,6 +71,7 @@ export function MyGraphs({
   setPage: (
     v: { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any },
   ) => void;
+  isHubEditor: boolean;
 }) {
   const graphs = () => {
     try {
@@ -221,18 +223,20 @@ export function MyGraphs({
               >
                 <Delete />
               </div>
-              <div
-                style={{
-                  cursor: "pointer",
-                  height: "24px",
-                  width: "24px",
-                  justifyContent: "center",
-                  alignContent: "center",
-                }}
-                onClick={() => setPage({ name: "publish", initialValue: graph })}
-              >
-                <Share />
-              </div>
+              {isHubEditor && (
+                <div
+                  style={{
+                    cursor: "pointer",
+                    height: "24px",
+                    width: "24px",
+                    justifyContent: "center",
+                    alignContent: "center",
+                  }}
+                  onClick={() => setPage({ name: "publish", initialValue: graph })}
+                >
+                  <Share />
+                </div>
+              )}
               <weave-button variant="solid" onClick={() => openDroppedGraph(graph)}>
                 Open
               </weave-button>

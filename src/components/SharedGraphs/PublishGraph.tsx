@@ -97,7 +97,6 @@ export function PublishGraph({
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const [publisher, setPublisher] = useState<User | undefined>(undefined);
-
   const [state, setState] = useState<PageState>({ type: "default" });
 
   useEffect(() => {
@@ -128,9 +127,10 @@ export function PublishGraph({
         });
         return;
       }
-
+      const project = await Forma.project.get();
       await Forma.extensions.storage.setObject({
         key: v4(),
+        authcontext: project.hubId,
         data: JSON.stringify(
           filterForSize({
             ...uploadedGraph,
