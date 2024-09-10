@@ -169,7 +169,7 @@ class Dynamo implements DynamoService {
       }),
     });
 
-    const response = await this._fetch(`${this.url}/v1/graph/job/${jobId}/run`, {
+    const response = await this._fetch(`${this.url}/v1/graph/job/${jobId}/run?passtoken=1`, {
       method: "POST",
     });
 
@@ -198,7 +198,7 @@ class Dynamo implements DynamoService {
       return this.runAsync(target, inputs);
     }
 
-    const response = await this._fetch(`${this.url}/v1/graph/run`, {
+    const response = await this._fetch(`${this.url}/v1/graph/run?passtoken=1`, {
       method: "POST",
       body: JSON.stringify({
         target,
