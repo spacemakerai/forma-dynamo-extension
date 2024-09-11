@@ -374,26 +374,11 @@ export function LocalScript({
               value: JSON.stringify(elementMap),
             };
           } else if (type === "GetAllElementsExperimental") {
-            const paths = await getAllPaths();
-
-            const elements = await Promise.all(
-              paths.map(async (path) => ({
-                urn: (await Forma.elements.getByPath({ path })).element?.urn,
-                worldTransform:
-                  path === "root"
-                    ? [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-                    : (await Forma.elements.getWorldTransform({ path })).transform,
-              })),
-            );
-
-            const elementMap: { [urn: string]: number[] } = {};
-            elements.forEach((element) => {
-              elementMap[element.urn] = element.worldTransform;
-            });
+            const urn = await Forma.proposal.getRootUrn();
 
             return {
               nodeId: id,
-              value: JSON.stringify(elementMap),
+              value: JSON.stringify({ urn }),
             };
           } else if (type === "GetProjectExperimental") {
             return {
