@@ -198,7 +198,7 @@ class Dynamo implements DynamoService {
       return this.runAsync(target, inputs);
     }
 
-    const response = await this._fetch(`${this.url}/v1/graph/run?passtoken=1`, {
+    const response = await this._fetch(`${this.url}/v1/graph/run`, {
       method: "POST",
       body: JSON.stringify({
         target,
