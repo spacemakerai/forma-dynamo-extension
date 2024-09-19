@@ -371,19 +371,19 @@ export function LocalScript({
 
             return {
               nodeId: id,
-              value: JSON.stringify(elementMap),
+              value: JSON.stringify({ elements: elementMap, region: Forma.getRegion() }),
             };
           } else if (type === "GetAllElementsExperimental") {
             const urn = await Forma.proposal.getRootUrn();
 
             return {
               nodeId: id,
-              value: JSON.stringify({ urn }),
+              value: JSON.stringify({ urn, region: Forma.getRegion() }),
             };
           } else if (type === "GetProjectExperimental") {
             return {
               nodeId: id,
-              value: Forma.getProjectId(),
+              value: JSON.stringify({ projectId: Forma.getProjectId(), region: Forma.getRegion() }),
             };
           } else if (type === "GetTerrainExperimental") {
             const [path] = await Forma.geometry.getPathsByCategory({
@@ -394,7 +394,10 @@ export function LocalScript({
 
             return {
               nodeId: id,
-              value: JSON.stringify({ [element.urn]: transform }),
+              value: JSON.stringify({
+                elements: { [element.urn]: transform },
+                region: Forma.getRegion(),
+              }),
             };
           } else if (
             type === "FormaSelectElements" ||
