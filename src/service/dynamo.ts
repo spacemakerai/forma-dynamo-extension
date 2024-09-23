@@ -227,7 +227,7 @@ class Dynamo implements DynamoService {
       method: "POST",
       body: JSON.stringify({
         target,
-        options: {
+        data: {
           metadata: true,
           issues: true,
           status: true,
