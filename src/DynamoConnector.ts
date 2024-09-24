@@ -58,7 +58,7 @@ export const useDynamoConnector = () => {
   }, [state.connectionState]);
 
   useEffect(() => {
-    let intervalId: number | undefined;
+    let intervalId: NodeJS.Timeout | undefined;
     if (
       [
         DynamoConnectionState.NOT_CONNECTED,
@@ -67,8 +67,9 @@ export const useDynamoConnector = () => {
         DynamoConnectionState.LOST_CONNECTION,
       ].includes(state.connectionState)
     ) {
-      // @ts-ignore
-      //intervalId = setInterval(() => portDiscovery(), 2000);
+      intervalId = setInterval(() => {
+        portDiscovery();
+      }, 2000);
     }
     return () => clearInterval(intervalId);
   }, [state.connectionState]);
