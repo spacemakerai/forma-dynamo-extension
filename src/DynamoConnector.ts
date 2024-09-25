@@ -7,6 +7,7 @@ import {
   GraphTarget,
   RunInputs,
 } from "./service/dynamo.ts";
+import PromiseQueue from "./utils/PromiseQueue.ts";
 
 export enum DynamoConnectionState {
   INIT = "INIT",
@@ -130,9 +131,58 @@ export const useDynamoConnector = () => {
     };
   }, [getDynamoUrl]);
 
+  const queuedDynamoLocalService = useMemo(() => {
+    const queue = PromiseQueue();
+
+    return {
+      folder: (path: string) => {
+        return queue.enqueue(() => {
+          console.log("executing: folder");
+          return dynamoLocalService.folder(path);
+        });
+      },
+      current: () => {
+        return queue.enqueue(() => {
+          console.log("executing: current");
+          return dynamoLocalService.info({ type: "CurrentGraphTarget" });
+        });
+      },
+      info: (target: GraphTarget) => {
+        return queue.enqueue(() => {
+          console.log("executing: info");
+          return dynamoLocalService.info(target);
+        });
+      },
+      run: (target: GraphTarget, inputs: RunInputs) => {
+        return queue.enqueue(() => {
+          console.log("executing: run");
+          return dynamoLocalService.run(target, inputs);
+        });
+      },
+      trust: (path: string) => {
+        return queue.enqueue(() => {
+          console.log("executing: trust");
+          return dynamoLocalService.trust(path);
+        });
+      },
+      serverInfo: () => {
+        return queue.enqueue(() => {
+          console.log("executing: serverInfo");
+          return dynamoLocalService.serverInfo();
+        });
+      },
+      health: (port: number) => {
+        return queue.enqueue(() => {
+          console.log("executing: health");
+          return dynamoLocalService.health(port);
+        });
+      },
+    };
+  }, [dynamoLocalService]);
+
   return {
     state,
     reconnect: portDiscovery,
-    dynamo: dynamoLocalService,
+    dynamo: queuedDynamoLocalService,
   };
 };
