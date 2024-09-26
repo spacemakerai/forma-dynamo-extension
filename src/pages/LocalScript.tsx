@@ -36,6 +36,8 @@ import { transformCoordinates } from "../utils/transformCoordinates.ts";
 
 type Status = "online" | "offline" | "error";
 
+const analysisFlag = new URLSearchParams(window.location.search).has("ext:analysis");
+
 function StatusIcon({ status }: { status: Status }) {
   if (status === "online") {
     return <IndicatorActive />;
@@ -357,6 +359,7 @@ export function LocalScript({
             const elements = await Promise.all(
               paths.map(async (path) => ({
                 urn: (await Forma.elements.getByPath({ path })).element?.urn,
+                path,
                 worldTransform:
                   path === "root"
                     ? [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
@@ -364,9 +367,17 @@ export function LocalScript({
               })),
             );
 
-            const elementMap: { [urn: string]: number[] } = {};
+            const elementMap: { [urn: string]: { path: string; worldTransform: number[] } } = {};
             elements.forEach((element) => {
-              elementMap[element.urn] = element.worldTransform;
+              if (analysisFlag) {
+                elementMap[element.urn] = {
+                  path: element.path,
+                  worldTransform: element.worldTransform,
+                };
+              } else {
+                // @ts-ignore
+                elementMap[element.urn] = element.worldTransform;
+              }
             });
 
             return {
@@ -395,7 +406,9 @@ export function LocalScript({
             return {
               nodeId: id,
               value: JSON.stringify({
-                elements: { [element.urn]: transform },
+                elements: analysisFlag
+                  ? { [element.urn]: { path, worldTransform: transform } }
+                  : { [element.urn]: transform },
                 region: Forma.getRegion(),
               }),
             };
