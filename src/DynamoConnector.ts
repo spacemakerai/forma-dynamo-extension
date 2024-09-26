@@ -7,6 +7,7 @@ import {
   GraphTarget,
   RunInputs,
 } from "./service/dynamo.ts";
+import PromiseQueue from "./utils/PromiseQueue.ts";
 
 export enum DynamoConnectionState {
   INIT = "INIT",
@@ -58,7 +59,7 @@ export const useDynamoConnector = () => {
   }, [state.connectionState]);
 
   useEffect(() => {
-    let intervalId: number | undefined;
+    let intervalId: NodeJS.Timeout | undefined;
     if (
       [
         DynamoConnectionState.NOT_CONNECTED,
@@ -67,64 +68,74 @@ export const useDynamoConnector = () => {
         DynamoConnectionState.LOST_CONNECTION,
       ].includes(state.connectionState)
     ) {
-      // @ts-ignore
-      //intervalId = setInterval(() => portDiscovery(), 2000);
+      intervalId = setInterval(() => {
+        portDiscovery();
+      }, 2000);
     }
     return () => clearInterval(intervalId);
   }, [state.connectionState]);
 
   const dynamoLocalService: DynamoService = useMemo(() => {
+    const queue = PromiseQueue();
     const url = getDynamoUrl();
 
     const dynamo = new Dynamo(url);
 
     return {
       folder: (path: string) => {
-        return dynamo.folder(path).catch((e) => {
-          setState((state) => ({
-            ...state,
-            connectionState: DynamoConnectionState.LOST_CONNECTION,
-          }));
-          throw e;
-        });
-      },
-      current: () => {
-        return dynamo.info({ type: "CurrentGraphTarget" });
-      },
-      info: (target: GraphTarget) => {
-        return dynamo.info(target).catch((e) => {
-          if (!(e.status === 500 && e.message === "Graph is not trusted.")) {
+        return queue.enqueue(() =>
+          dynamo.folder(path).catch((e) => {
             setState((state) => ({
               ...state,
               connectionState: DynamoConnectionState.LOST_CONNECTION,
             }));
-          }
-          throw e;
-        });
+            throw e;
+          }),
+        );
+      },
+      current: () => {
+        return queue.enqueue(() => dynamo.info({ type: "CurrentGraphTarget" }));
+      },
+      info: (target: GraphTarget) => {
+        return queue.enqueue(() =>
+          dynamo.info(target).catch((e) => {
+            if (!(e.status === 500 && e.message === "Graph is not trusted.")) {
+              setState((state) => ({
+                ...state,
+                connectionState: DynamoConnectionState.LOST_CONNECTION,
+              }));
+            }
+            throw e;
+          }),
+        );
       },
       run: (target: GraphTarget, inputs: RunInputs) => {
-        return dynamo.run(target, inputs).catch((e) => {
-          setState((state) => ({
-            ...state,
-            connectionState: DynamoConnectionState.LOST_CONNECTION,
-          }));
-          throw e;
-        });
+        return queue.enqueue(() =>
+          dynamo.run(target, inputs).catch((e) => {
+            setState((state) => ({
+              ...state,
+              connectionState: DynamoConnectionState.LOST_CONNECTION,
+            }));
+            throw e;
+          }),
+        );
       },
       trust: (path: string) => {
-        return dynamo.trust(path).catch((e) => {
-          setState((state) => ({
-            ...state,
-            connectionState: DynamoConnectionState.LOST_CONNECTION,
-          }));
-          throw e;
-        });
+        return queue.enqueue(() =>
+          dynamo.trust(path).catch((e) => {
+            setState((state) => ({
+              ...state,
+              connectionState: DynamoConnectionState.LOST_CONNECTION,
+            }));
+            throw e;
+          }),
+        );
       },
       serverInfo: () => {
-        return dynamo.serverInfo();
+        return queue.enqueue(() => dynamo.serverInfo());
       },
       health: (port: number) => {
-        return Dynamo.health(port);
+        return queue.enqueue(() => Dynamo.health(port));
       },
     };
   }, [getDynamoUrl]);
