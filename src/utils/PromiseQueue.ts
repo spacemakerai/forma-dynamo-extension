@@ -1,14 +1,18 @@
 type QueueItem<T> = {
   promise: () => Promise<T>;
   resolve: (value: T) => void;
-  reject: (err: any) => unknown;
+  reject: (err: Error) => void;
 };
 
-export default function PromiseQueue<T>() {
-  const queue: QueueItem<T>[] = [];
+/**
+ * Self emptying promise queue. Used for running multiple promises in sequence.
+ * @returns Service for enqueuing promises
+ */
+export default function PromiseQueue() {
+  const queue: QueueItem<any>[] = [];
   let isBusy = false;
 
-  function enqueue(promise: QueueItem<T>["promise"]) {
+  function enqueue<T>(promise: QueueItem<T>["promise"]): Promise<T> {
     return new Promise((resolve, reject) => {
       queue.push({
         promise,
@@ -20,7 +24,6 @@ export default function PromiseQueue<T>() {
   }
 
   function dequeue(): void {
-    console.log("Items in queue:", queue.length);
     if (isBusy) {
       return;
     }
@@ -28,25 +31,15 @@ export default function PromiseQueue<T>() {
     if (!item) {
       return;
     }
-    try {
-      isBusy = true;
-      item
-        .promise()
-        .then((value) => {
-          isBusy = false;
-          item.resolve(value);
-          dequeue();
-        })
-        .catch((err: Error) => {
-          isBusy = false;
-          item.reject(err);
-          dequeue();
-        });
-    } catch (err) {
-      isBusy = false;
-      item.reject(err);
-      dequeue();
-    }
+    isBusy = true;
+    item
+      .promise()
+      .then((value) => item.resolve(value))
+      .catch((err: Error) => item.reject(err))
+      .finally(() => {
+        isBusy = false;
+        dequeue();
+      });
   }
 
   return {

@@ -76,113 +76,73 @@ export const useDynamoConnector = () => {
   }, [state.connectionState]);
 
   const dynamoLocalService: DynamoService = useMemo(() => {
+    const queue = PromiseQueue();
     const url = getDynamoUrl();
 
     const dynamo = new Dynamo(url);
 
     return {
       folder: (path: string) => {
-        return dynamo.folder(path).catch((e) => {
-          setState((state) => ({
-            ...state,
-            connectionState: DynamoConnectionState.LOST_CONNECTION,
-          }));
-          throw e;
-        });
-      },
-      current: () => {
-        return dynamo.info({ type: "CurrentGraphTarget" });
-      },
-      info: (target: GraphTarget) => {
-        return dynamo.info(target).catch((e) => {
-          if (!(e.status === 500 && e.message === "Graph is not trusted.")) {
+        return queue.enqueue(() =>
+          dynamo.folder(path).catch((e) => {
             setState((state) => ({
               ...state,
               connectionState: DynamoConnectionState.LOST_CONNECTION,
             }));
-          }
-          throw e;
-        });
+            throw e;
+          }),
+        );
+      },
+      current: () => {
+        return queue.enqueue(() => dynamo.info({ type: "CurrentGraphTarget" }));
+      },
+      info: (target: GraphTarget) => {
+        return queue.enqueue(() =>
+          dynamo.info(target).catch((e) => {
+            if (!(e.status === 500 && e.message === "Graph is not trusted.")) {
+              setState((state) => ({
+                ...state,
+                connectionState: DynamoConnectionState.LOST_CONNECTION,
+              }));
+            }
+            throw e;
+          }),
+        );
       },
       run: (target: GraphTarget, inputs: RunInputs) => {
-        return dynamo.run(target, inputs).catch((e) => {
-          setState((state) => ({
-            ...state,
-            connectionState: DynamoConnectionState.LOST_CONNECTION,
-          }));
-          throw e;
-        });
+        return queue.enqueue(() =>
+          dynamo.run(target, inputs).catch((e) => {
+            setState((state) => ({
+              ...state,
+              connectionState: DynamoConnectionState.LOST_CONNECTION,
+            }));
+            throw e;
+          }),
+        );
       },
       trust: (path: string) => {
-        return dynamo.trust(path).catch((e) => {
-          setState((state) => ({
-            ...state,
-            connectionState: DynamoConnectionState.LOST_CONNECTION,
-          }));
-          throw e;
-        });
+        return queue.enqueue(() =>
+          dynamo.trust(path).catch((e) => {
+            setState((state) => ({
+              ...state,
+              connectionState: DynamoConnectionState.LOST_CONNECTION,
+            }));
+            throw e;
+          }),
+        );
       },
       serverInfo: () => {
-        return dynamo.serverInfo();
+        return queue.enqueue(() => dynamo.serverInfo());
       },
       health: (port: number) => {
-        return Dynamo.health(port);
+        return queue.enqueue(() => Dynamo.health(port));
       },
     };
   }, [getDynamoUrl]);
 
-  const queuedDynamoLocalService = useMemo(() => {
-    const queue = PromiseQueue();
-
-    return {
-      folder: (path: string) => {
-        return queue.enqueue(() => {
-          console.log("executing: folder");
-          return dynamoLocalService.folder(path);
-        });
-      },
-      current: () => {
-        return queue.enqueue(() => {
-          console.log("executing: current");
-          return dynamoLocalService.info({ type: "CurrentGraphTarget" });
-        });
-      },
-      info: (target: GraphTarget) => {
-        return queue.enqueue(() => {
-          console.log("executing: info");
-          return dynamoLocalService.info(target);
-        });
-      },
-      run: (target: GraphTarget, inputs: RunInputs) => {
-        return queue.enqueue(() => {
-          console.log("executing: run");
-          return dynamoLocalService.run(target, inputs);
-        });
-      },
-      trust: (path: string) => {
-        return queue.enqueue(() => {
-          console.log("executing: trust");
-          return dynamoLocalService.trust(path);
-        });
-      },
-      serverInfo: () => {
-        return queue.enqueue(() => {
-          console.log("executing: serverInfo");
-          return dynamoLocalService.serverInfo();
-        });
-      },
-      health: (port: number) => {
-        return queue.enqueue(() => {
-          console.log("executing: health");
-          return dynamoLocalService.health(port);
-        });
-      },
-    };
-  }, [dynamoLocalService]);
-
   return {
     state,
     reconnect: portDiscovery,
-    dynamo: queuedDynamoLocalService,
+    dynamo: dynamoLocalService,
   };
 };
