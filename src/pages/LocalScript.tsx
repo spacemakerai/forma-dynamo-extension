@@ -79,6 +79,10 @@ type ScriptResult =
 function useScript(script: Script, dynamo: DynamoService): [ScriptResult, () => void] {
   const [state, setState] = useState<ScriptResult>({ type: "init" });
 
+  useEffect(() => {
+    console.log("Script changed", JSON.stringify(script, null, 2));
+  }, [script]);
+
   const reload = useCallback(() => {
     setState({ type: "loading" });
 
@@ -293,6 +297,12 @@ async function getAllPaths() {
 
 export type Script = FolderGraphInfo | JSONGraph;
 
+function serviceIncludesCurrentFunction(
+  service: DynamoService,
+): service is DynamoService & { current: () => Promise<GraphInfo> } {
+  return (service as DynamoService & { current: () => Promise<GraphInfo> }).current !== undefined;
+}
+
 export function LocalScript({
   env,
   setEnv,
@@ -334,6 +344,43 @@ export function LocalScript({
   }, [scriptInfo]);
 
   const [result, setResult] = useState<RunResult>({ type: "init" });
+
+  useEffect(() => {
+    // Works in the:
+    // - open local file case then switch file or save to different name
+    // - i have a cloud file and i saved it case.
+    //
+    // Does not work in the:
+    // - I have a local file open in dynamo and i opened a cloud file in forma-extension
+    //
+    // 👆🤔 How to know if the thing open in dynamo or the thing in forma is
+    // the newest? Most times, the new one is the correct one, but
+    // other times the new one is just selected by user.
+    // ** There must be some state to track to make sure this hook doesn't
+    // make the wrong choices? **
+
+    if (env !== "local") return;
+
+    async function handleGraphChangedInLocalDynamo() {
+      if (!serviceIncludesCurrentFunction(services.local.dynamo)) {
+        return;
+      }
+      const currentGraph = await services.local.dynamo.current().catch((e) => {
+        console.error("error!", e);
+        return undefined;
+      });
+      console.log("Checking new script", currentGraph?.id === script.id, currentGraph, script);
+      // When you open a cloud model and transfer it to dynamo, the id="" and the tab in dynamo is called "home".
+      // 👆 That's the id === "" check
+      if (currentGraph && currentGraph.id !== "" && currentGraph.id !== script.id) {
+        // console.log("setScript", currentGraph);
+        setScript(currentGraph);
+      }
+    }
+
+    const interval = setInterval(handleGraphChangedInLocalDynamo, 2500);
+    return () => clearInterval(interval);
+  }, [env, script, services.local.dynamo, setScript]);
 
   const setValue = useCallback(
     (id: string, value: any) => setState((state) => ({ ...state, [id]: value })),
