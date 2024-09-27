@@ -79,10 +79,6 @@ type ScriptResult =
 function useScript(script: Script, dynamo: DynamoService): [ScriptResult, () => void] {
   const [state, setState] = useState<ScriptResult>({ type: "init" });
 
-  useEffect(() => {
-    console.log("Script changed", JSON.stringify(script, null, 2));
-  }, [script]);
-
   const reload = useCallback(() => {
     setState({ type: "loading" });
 
@@ -299,7 +295,7 @@ export type Script = FolderGraphInfo | JSONGraph;
 
 function serviceIncludesCurrentFunction(
   service: DynamoService,
-): service is DynamoService & { current: () => Promise<GraphInfo> } {
+): service is DynamoService & { current: () => Promise<GraphInfo | undefined> } {
   return (service as DynamoService & { current: () => Promise<GraphInfo> }).current !== undefined;
 }
 
@@ -346,41 +342,46 @@ export function LocalScript({
   const [result, setResult] = useState<RunResult>({ type: "init" });
 
   useEffect(() => {
-    // Works in the:
-    // - open local file case then switch file or save to different name
-    // - i have a cloud file and i saved it case.
-    //
-    // Does not work in the:
-    // - I have a local file open in dynamo and i opened a cloud file in forma-extension
-    //
-    // 👆🤔 How to know if the thing open in dynamo or the thing in forma is
-    // the newest? Most times, the new one is the correct one, but
-    // other times the new one is just selected by user.
-    // ** There must be some state to track to make sure this hook doesn't
-    // make the wrong choices? **
+    // TODO: There exists some strangeness (maybe a bug somewhere):
+    // - Open in local dynamo a script that is saved from one of the "Graphs provided by Autodesk" e.g. cloud models.
+    // - Open the script here, but from the "Graphs provided by Autodesk" section. e.g. open a new cloud copy.
+    // The local script and the cloud model is now linked, and running the cloud model will run the local script.
+    // The names in dynamo and dynamo extensions are however out of sync.
+    // **May be related to the name variable that is rendered below.**
 
-    if (env !== "local") return;
+    const isUsingLocalDynamo = env === "local";
+    const hasExtensionLoadedItsScript = scriptInfo.type === "loaded";
+    if (!isUsingLocalDynamo || !hasExtensionLoadedItsScript) return;
 
-    async function handleGraphChangedInLocalDynamo() {
-      if (!serviceIncludesCurrentFunction(services.local.dynamo)) {
-        return;
-      }
-      const currentGraph = await services.local.dynamo.current().catch((e) => {
-        console.error("error!", e);
-        return undefined;
-      });
-      console.log("Checking new script", currentGraph?.id === script.id, currentGraph, script);
-      // When you open a cloud model and transfer it to dynamo, the id="" and the tab in dynamo is called "home".
-      // 👆 That's the id === "" check
-      if (currentGraph && currentGraph.id !== "" && currentGraph.id !== script.id) {
-        // console.log("setScript", currentGraph);
-        setScript(currentGraph);
-      }
+    const dynamoService = services.local.dynamo;
+    if (!serviceIncludesCurrentFunction(dynamoService)) {
+      console.error("Service does not include current function");
+      return;
     }
+    /** clearInterval() does not cancel promises. This variable cancels any state changes. */
+    let isCancelled = false;
+    const interval = setInterval(async () => {
+      // May throw exceptions if not connected to local dynamo or if local dynamo is busy. Ignore them.
+      const graphActiveInDynamoLocal = await dynamoService.current().catch(() => undefined);
 
-    const interval = setInterval(handleGraphChangedInLocalDynamo, 2500);
-    return () => clearInterval(interval);
-  }, [env, script, services.local.dynamo, setScript]);
+      const scriptIsLocalUnsavedCopyOfActiveScriptHere = graphActiveInDynamoLocal?.id !== "";
+      const graphActiveInDynamoIsNotTheSameAsTheScriptInExtension =
+        graphActiveInDynamoLocal?.id !== scriptInfo.data.id;
+
+      if (
+        !isCancelled &&
+        graphActiveInDynamoLocal !== undefined &&
+        scriptIsLocalUnsavedCopyOfActiveScriptHere &&
+        graphActiveInDynamoIsNotTheSameAsTheScriptInExtension
+      ) {
+        setScript(graphActiveInDynamoLocal);
+      }
+    }, 3000);
+    return () => {
+      isCancelled = true;
+      clearInterval(interval);
+    };
+  }, [env, scriptInfo, services.local.dynamo, setScript]);
 
   const setValue = useCallback(
     (id: string, value: any) => setState((state) => ({ ...state, [id]: value })),
@@ -605,6 +606,10 @@ export function LocalScript({
           }}
         >
           <h3>{script.name}</h3>
+          {/*
+          // This will reflect the name in local when the bug described in hook above is active
+          <h3>{(scriptInfo.type === "loaded" && scriptInfo.data.name) || script.name}</h3>
+          */}
         </div>
         <div
           style={{
