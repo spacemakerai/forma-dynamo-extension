@@ -360,6 +360,7 @@ export function LocalScript({
       console.error("Service does not include current function");
       return;
     }
+
     /** clearInterval() does not cancel promises. This variable cancels any state changes. */
     let isCancelled = false;
     const interval = setInterval(async () => {
@@ -367,23 +368,35 @@ export function LocalScript({
       const graphActiveInDynamoLocal = await dynamoService.current().catch(() => undefined);
 
       const scriptIsLocalUnsavedCopyOfActiveScriptHere = graphActiveInDynamoLocal?.id !== "";
-      const graphActiveInDynamoIsNotTheSameAsTheScriptInExtension =
-        graphActiveInDynamoLocal?.id !== scriptInfo.data.id;
+      const dynamoAndExtensionHasSameScriptId = graphActiveInDynamoLocal?.id === scriptInfo.data.id;
 
+      // Case: Script has changed in local dynamo, Update the script in the extension.
       if (
         !isCancelled &&
         graphActiveInDynamoLocal !== undefined &&
         scriptIsLocalUnsavedCopyOfActiveScriptHere &&
-        graphActiveInDynamoIsNotTheSameAsTheScriptInExtension
+        !dynamoAndExtensionHasSameScriptId
       ) {
         setScript(graphActiveInDynamoLocal);
+        return;
+      }
+
+      // Case: Same script has changed in local dynamo, (e.g. updated input/output nodes) reload the script in the extension.
+      if (
+        !isCancelled &&
+        graphActiveInDynamoLocal !== undefined &&
+        dynamoAndExtensionHasSameScriptId &&
+        !isSameScripts(scriptInfo.data, graphActiveInDynamoLocal)
+      ) {
+        reload();
+        return;
       }
     }, 3000);
     return () => {
       isCancelled = true;
       clearInterval(interval);
     };
-  }, [env, scriptInfo, services.local.dynamo, setScript]);
+  }, [env, reload, scriptInfo, services.local.dynamo, setScript]);
 
   const setValue = useCallback(
     (id: string, value: any) => setState((state) => ({ ...state, [id]: value })),
@@ -810,5 +823,22 @@ export function LocalScript({
         </div>
       </div>
     </>
+  );
+}
+function isSameScripts(graphA: GraphInfo, graphB: GraphInfo): boolean {
+  return (
+    graphA.id === graphB.id &&
+    graphA.name === graphB.name &&
+    graphA.metadata.description === graphB.metadata.description &&
+    graphA.inputs.length === graphB.inputs.length &&
+    graphA.outputs.length === graphB.outputs.length &&
+    graphA.inputs.every((input) => {
+      const inputInDynamo = graphB.inputs.find((it) => it.id === input.id);
+      return inputInDynamo !== undefined && inputInDynamo.value === input.value;
+    }) &&
+    graphA.outputs.every((input) => {
+      const inputInDynamo = graphB.outputs.find((it) => it.id === input.id);
+      return inputInDynamo !== undefined && inputInDynamo.value === input.value;
+    })
   );
 }
