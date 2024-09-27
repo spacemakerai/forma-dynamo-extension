@@ -36,7 +36,7 @@ import { transformCoordinates } from "../utils/transformCoordinates.ts";
 
 type Status = "online" | "offline" | "error";
 
-const analysisFlag = new URLSearchParams(window.location.search).has("ext:analysis");
+const IdentityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
 function StatusIcon({ status }: { status: Status }) {
   if (status === "online") {
@@ -362,34 +362,24 @@ export function LocalScript({
                 path,
                 worldTransform:
                   path === "root"
-                    ? [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                    ? IdentityMatrix
                     : (await Forma.elements.getWorldTransform({ path })).transform,
               })),
             );
 
-            const elementMap: { [urn: string]: { path: string; worldTransform: number[] } } = {};
-            elements.forEach((element) => {
-              if (analysisFlag) {
-                elementMap[element.urn] = {
-                  path: element.path,
-                  worldTransform: element.worldTransform,
-                };
-              } else {
-                // @ts-ignore
-                elementMap[element.urn] = element.worldTransform;
-              }
-            });
-
             return {
               nodeId: id,
-              value: JSON.stringify({ elements: elementMap, region: Forma.getRegion() }),
+              value: JSON.stringify({ elements, region: Forma.getRegion() }),
             };
           } else if (type === "GetAllElementsExperimental") {
             const urn = await Forma.proposal.getRootUrn();
 
             return {
               nodeId: id,
-              value: JSON.stringify({ urn, region: Forma.getRegion() }),
+              value: JSON.stringify({
+                elements: [{ urn, path: "root", worldTransform: IdentityMatrix }],
+                region: Forma.getRegion(),
+              }),
             };
           } else if (type === "GetProjectExperimental") {
             return {
@@ -406,9 +396,7 @@ export function LocalScript({
             return {
               nodeId: id,
               value: JSON.stringify({
-                elements: analysisFlag
-                  ? { [element.urn]: { path, worldTransform: transform } }
-                  : { [element.urn]: transform },
+                elements: [{ urn: element.urn, path, worldTransform: transform }],
                 region: Forma.getRegion(),
               }),
             };
