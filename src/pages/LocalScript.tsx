@@ -605,11 +605,8 @@ export function LocalScript({
             alignItems: "center",
           }}
         >
-          <h3>{script.name}</h3>
-          {/*
-          // This will reflect the name in local when the bug described in hook above is active
+          {/** Before the scriptInfo === loaded, use the script.name */}
           <h3>{(scriptInfo.type === "loaded" && scriptInfo.data.name) || script.name}</h3>
-          */}
         </div>
         <div
           style={{
