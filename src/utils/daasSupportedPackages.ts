@@ -4,6 +4,8 @@ const SUPPORTED_PACKAGES = [
   "MeshToolkit",
   "MeshToolkit.dll",
   "Refinery Toolkit",
+  "VASA",
+  "VASA.dll",
 ];
 
 export type Package = {
