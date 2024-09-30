@@ -295,11 +295,11 @@ async function getAllPaths() {
 
 export type Script = FolderGraphInfo | JSONGraph;
 
-function serviceIncludesCurrentFunction(
+/*function serviceIncludesCurrentFunction(
   service: DynamoService,
 ): service is DynamoService & { current: () => Promise<GraphInfo | undefined> } {
   return (service as DynamoService & { current: () => Promise<GraphInfo> }).current !== undefined;
-}
+}*/
 
 export function LocalScript({
   env,
@@ -343,7 +343,7 @@ export function LocalScript({
 
   const [result, setResult] = useState<RunResult>({ type: "init" });
 
-  useEffect(() => {
+  /*useEffect(() => {
     // TODO: There exists some strangeness (maybe a bug somewhere):
     // - Open in local dynamo a script that is saved from one of the "Graphs provided by Autodesk" e.g. cloud models.
     // - Open the script here, but from the "Graphs provided by Autodesk" section. e.g. open a new cloud copy.
@@ -361,7 +361,7 @@ export function LocalScript({
       return;
     }
 
-    /** clearInterval() does not cancel promises. This variable cancels any state changes. */
+    // clearInterval() does not cancel promises. This variable cancels any state changes.
     let isCancelled = false;
     const interval = setInterval(async () => {
       // May throw exceptions if not connected to local dynamo or if local dynamo is busy. Ignore them.
@@ -396,7 +396,7 @@ export function LocalScript({
       isCancelled = true;
       clearInterval(interval);
     };
-  }, [env, reload, scriptInfo, services.local.dynamo, setScript]);
+  }, [env, reload, scriptInfo, services.local.dynamo, setScript]);*/
 
   const setValue = useCallback(
     (id: string, value: any) => setState((state) => ({ ...state, [id]: value })),
@@ -825,7 +825,8 @@ export function LocalScript({
     </>
   );
 }
-function isSameScripts(graphA: GraphInfo, graphB: GraphInfo): boolean {
+
+/*function isSameScripts(graphA: GraphInfo, graphB: GraphInfo): boolean {
   return (
     graphA.id === graphB.id &&
     graphA.name === graphB.name &&
@@ -841,4 +842,4 @@ function isSameScripts(graphA: GraphInfo, graphB: GraphInfo): boolean {
       return inputInDynamo !== undefined && inputInDynamo.value === input.value;
     })
   );
-}
+}*/
