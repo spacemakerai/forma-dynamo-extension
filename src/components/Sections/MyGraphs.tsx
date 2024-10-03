@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
 import { JSONGraph } from "../../types/types";
 import { Delete } from "../../icons/Delete";
-import { File } from "../../icons/File";
 import Logo from "../../assets/Logo.png";
 import { DynamoState } from "../../DynamoConnector";
 import { DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo";
@@ -9,6 +8,9 @@ import { filterForSize } from "../../utils/filterGraph";
 import { DropZone } from "../DropZone";
 import { captureException } from "../../util/sentry";
 import { Share } from "../../icons/Share";
+import styles from "./MyGraphs.module.pcss";
+
+const FILE_TYPES = [".dyn"];
 
 type DynamoGraph = {
   Name: string;
@@ -87,6 +89,23 @@ export function MyGraphs({
     dynamoLocal.dynamo as DynamoService & { current: () => Promise<GraphInfo> },
   );
 
+  // const localOpenGraph: GraphInfo = {
+  //   id: "example-graph-id",
+  //   name: "Example Graph",
+  //   metadata: {
+  //     author: "John Doe",
+  //     description: "This is an example graph.",
+  //     thumbnail: "example-thumbnail-url",
+  //     customProperties: {},
+  //     dynamoVersion: "2.0",
+  //   },
+  //   dependencies: [],
+  //   inputs: [],
+  //   issues: [],
+  //   outputs: [],
+  //   status: "",
+  // };
+
   const [dropped, setDropped] = useState<any[]>(graphs);
 
   const addDropped = useCallback(
@@ -115,7 +134,7 @@ export function MyGraphs({
     [setDropped],
   );
 
-  const openDroppedGraph = useCallback(
+  const Graph = useCallback(
     (graph: any) => {
       setGraph({
         id: "2",
@@ -128,121 +147,73 @@ export function MyGraphs({
   );
 
   return (
-    <div style={{ borderBottom: "1px solid var(--divider-lightweight)", paddingBottom: "8px" }}>
-      <h4 style={{ marginLeft: "8px" }}>My graphs</h4>
+    <div className={styles.MyGraphsContainer}>
+      <div className={styles.Header}>Upload graph</div>
       <DropZone
         parse={async (file: File) => JSON.parse(await file.text())}
-        filetypes={[".dyn"]}
+        filetypes={FILE_TYPES}
         onFileDropped={addDropped}
       />
 
-      {localOpenGraph && (
-        <div
-          style={{
-            padding: "8px 8px 8px 0px",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", flexDirection: "colum", overflow: "hidden" }}>
-            <img style={{ height: "24px", width: "24px" }} src={Logo} />
-            <div style={{ height: "24px", alignContent: "center" }}>
-              {localOpenGraph.name || "Untitled"}.dyn
+      <div className={styles.Header}>My graphs</div>
+      <div className={styles.GraphsList}>
+        {localOpenGraph && (
+          <div className={styles.GraphContainer}>
+            <div className={styles.GraphInfo}>
+              <img className={styles.GraphIcon} src={Logo} />
+              <div className={styles.GraphName}>{localOpenGraph.name || "Untitled"}.dyn</div>
             </div>
-          </div>
-
-          <weave-button
-            onClick={() => {
-              setEnv("local");
-              setGraph({
-                type: "FolderGraph",
-                id: localOpenGraph.id,
-                name: localOpenGraph.name || "Untitled",
-                metadata: localOpenGraph.metadata,
-              });
-            }}
-          >
-            Open
-          </weave-button>
-        </div>
-      )}
-
-      {!!dropped?.length &&
-        dropped?.map((graph, i) => (
-          <div
-            key={graph.Id}
-            style={{
-              padding: "8px 8px 8px 0px",
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <div style={{ display: "flex", flexDirection: "colum", overflow: "hidden" }}>
-              <div
-                style={{
-                  width: "24px",
-                  height: "24px",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  display: "flex",
-                }}
-              >
-                <div
-                  style={{
-                    width: "18px",
-                    height: "18px",
-                    minWidth: "18px",
-                    backgroundColor: "#3C3C3C",
-                    borderRadius: "4px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    display: "flex",
-                  }}
-                >
-                  <File />
-                </div>
-              </div>
-              <div style={{ height: "24px", alignContent: "center" }}>{graph.Name}.dyn</div>
-            </div>
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <div
-                style={{
-                  cursor: "pointer",
-                  height: "24px",
-                  width: "24px",
-                  justifyContent: "center",
-                  alignContent: "center",
-                }}
+            <div className={styles.GraphActions}>
+              <weave-button
                 onClick={() => {
-                  if (window.confirm("Are you sure you want to delete this graph?")) {
-                    removeDropped(i);
-                  }
+                  setEnv("local");
+                  setGraph({
+                    type: "FolderGraph",
+                    id: localOpenGraph.id,
+                    name: localOpenGraph.name || "Untitled",
+                    metadata: localOpenGraph.metadata,
+                  });
                 }}
               >
-                <Delete />
-              </div>
-              {isHubEditor && (
-                <div
-                  style={{
-                    cursor: "pointer",
-                    height: "24px",
-                    width: "24px",
-                    justifyContent: "center",
-                    alignContent: "center",
-                  }}
-                  onClick={() => setPage({ name: "publish", initialValue: graph })}
-                >
-                  <Share />
-                </div>
-              )}
-              <weave-button variant="solid" onClick={() => openDroppedGraph(graph)}>
                 Open
               </weave-button>
             </div>
           </div>
-        ))}
+        )}
+
+        {!!dropped?.length &&
+          dropped?.map((graph, i) => (
+            <div key={graph.Id} className={styles.GraphContainer}>
+              <div className={styles.GraphInfo}>
+                <img className={styles.GraphIcon} src={Logo} />
+                <div className={styles.GraphName}>{graph.Name}.dyn</div>
+              </div>
+              <div className={styles.GraphActions}>
+                <div
+                  className={styles.DeleteGraph}
+                  onClick={() => {
+                    if (window.confirm("Are you sure you want to delete this graph?")) {
+                      removeDropped(i);
+                    }
+                  }}
+                >
+                  <Delete />
+                </div>
+                {isHubEditor && (
+                  <div
+                    className={styles.ShareGraph}
+                    onClick={() => setPage({ name: "publish", initialValue: graph })}
+                  >
+                    <Share />
+                  </div>
+                )}
+                <weave-button variant="solid" density="high" onClick={() => Graph(graph)}>
+                  Open
+                </weave-button>
+              </div>
+            </div>
+          ))}
+      </div>
     </div>
   );
 }

@@ -81,7 +81,7 @@ function Item({
         onClick={() => setIsExpanded(!isExpanded)}
         style={{
           cursor: "pointer",
-          padding: "8px 8px 8px 0px",
+          padding: "8px 0",
           margin: "1px",
           display: "flex",
           flexDirection: "row",
@@ -170,7 +170,7 @@ export function PublicGraphs({
 
   return (
     <>
-      <h4 style={{ marginLeft: "8px" }}>Graphs provided by Autodesk</h4>
+      <h4>Graphs provided by Autodesk</h4>
       {graphs.map((script) => {
         return (
           <Item

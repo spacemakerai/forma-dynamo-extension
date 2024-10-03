@@ -9,6 +9,8 @@ import { MyGraphs } from "../components/Sections/MyGraphs";
 import { SharedGraphs } from "../components/SharedGraphs/SharedGraphs";
 import { PublishGraph } from "../components/SharedGraphs/PublishGraph";
 import { captureException } from "../util/sentry";
+import { SetupWizard } from "../components/SetupDesktop/SetupWizard";
+import styles from "./Pages.module.pcss";
 
 const envionment = new URLSearchParams(window.location.search).get("ext:daas") || "stg";
 
@@ -64,53 +66,89 @@ export function DaasApp() {
   const dynamoLocal = useDynamoConnector();
 
   return (
-    <div>
-      {page.name === "publish" && isHubEditor && (
-        <PublishGraph setPage={setPage} initialValue={page.initialValue} />
-      )}
-      {page.name === "default" && (
-        <>
-          {!graph && (
+    <div className={styles.AppContainer}>
+      <forma-tabs selectedtab={0} gap="16">
+        <forma-tab for="dynamoServiceContent" hpadding="0" label="Dynamo as a Service"></forma-tab>
+        <div id="dynamoServiceContent" slot="content" className={styles.TabContent}>
+          {page.name === "publish" && isHubEditor && (
+            <PublishGraph setPage={setPage} initialValue={page.initialValue} />
+          )}
+          {page.name === "default" && (
             <>
-              <MyGraphs
-                setEnv={setEnv}
-                setGraph={setGraph}
-                dynamoLocal={dynamoLocal}
-                setPage={setPage}
-                isHubEditor={isHubEditor}
-              />
-              <SharedGraphs
-                setPage={setPage}
-                setEnv={setEnv}
-                setGraph={setGraph}
-                dynamoLocal={dynamoLocal}
-                isHubEditor={isHubEditor}
-              />
-              <PublicGraphs setEnv={setEnv} setGraph={setGraph} dynamoLocal={dynamoLocal} />
+              {!graph && (
+                <>
+                  <MyGraphs
+                    setEnv={setEnv}
+                    setGraph={setGraph}
+                    dynamoLocal={dynamoLocal}
+                    setPage={setPage}
+                    isHubEditor={isHubEditor}
+                  />
+                  <SharedGraphs
+                    setPage={setPage}
+                    setEnv={setEnv}
+                    setGraph={setGraph}
+                    dynamoLocal={dynamoLocal}
+                    isHubEditor={isHubEditor}
+                  />
+                  <PublicGraphs setEnv={setEnv} setGraph={setGraph} dynamoLocal={dynamoLocal} />
+                </>
+              )}
+              {graph && (
+                <LocalScript
+                  env={env}
+                  setEnv={setEnv}
+                  script={graph}
+                  setScript={setGraph}
+                  services={{
+                    daas: {
+                      connected: daasStatus.status === "online",
+                      state: daasStatus,
+                      reconnect,
+                      dynamo: daas,
+                    },
+                    local: {
+                      ...dynamoLocal,
+                      connected: dynamoLocal.state.connectionState === "CONNECTED",
+                    },
+                  }}
+                />
+              )}
             </>
           )}
-          {graph && (
-            <LocalScript
-              env={env}
-              setEnv={setEnv}
-              script={graph}
-              setScript={setGraph}
-              services={{
-                daas: {
-                  connected: daasStatus.status === "online",
-                  state: daasStatus,
-                  reconnect,
-                  dynamo: daas,
-                },
-                local: {
-                  ...dynamoLocal,
-                  connected: dynamoLocal.state.connectionState === "CONNECTED",
-                },
-              }}
-            />
+        </div>
+        <forma-tab for="localContent" hpadding="0" label="Local Dynamo"></forma-tab>
+        <div id="localContent" slot="content" className={styles.TabContent}>
+          {dynamoLocal.state.connectionState === "CONNECTED" ? (
+            page.name === "default" && (
+              <>
+                {graph && (
+                  <LocalScript
+                    env={env}
+                    setEnv={setEnv}
+                    script={graph}
+                    setScript={setGraph}
+                    services={{
+                      daas: {
+                        connected: daasStatus.status === "online",
+                        state: daasStatus,
+                        reconnect,
+                        dynamo: daas,
+                      },
+                      local: {
+                        ...dynamoLocal,
+                        connected: dynamoLocal.state.connectionState === "CONNECTED",
+                      },
+                    }}
+                  />
+                )}
+              </>
+            )
+          ) : (
+            <SetupWizard />
           )}
-        </>
-      )}
+        </div>
+      </forma-tabs>
     </div>
   );
 }

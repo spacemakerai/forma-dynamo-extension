@@ -74,6 +74,18 @@ export declare module "preact/src/jsx" {
         width?: string;
         radius?: string;
       };
+      "forma-tabs": {
+        selectedtab?: number;
+        gap?: string;
+        children?: ComponentChildren;
+        onChange?: (e: CustomEvent) => void;
+      };
+      "forma-tab": {
+        for?: string;
+        hpadding?: string;
+        label?: string;
+        disabled?: boolean;
+      };
     }
   }
 }

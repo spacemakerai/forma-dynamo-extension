@@ -24,9 +24,7 @@ import {
 } from "../service/dynamo.js";
 import { JSONGraph } from "../types/types.ts";
 import { WarningBanner } from "../components/Warnings/WarningBanner.tsx";
-import { EnvironmentSelector } from "../components/EnvironmentSelector.tsx";
 import { Desktop } from "../icons/Desktop.tsx";
-import { Service } from "../icons/Service.tsx";
 import { DynamoState } from "../DynamoConnector.ts";
 import { IndicatorActive } from "../assets/icons/IndicatorActive.tsx";
 import { IndicatorInactive } from "../assets/icons/InidcatorInactive.tsx";
@@ -542,13 +540,13 @@ export function LocalScript({
           height: "100%",
         }}
       >
-        <weave-button
+        {/* <weave-button
           style={{ marginTop: "16px" }}
           variant="outlined"
           onClick={() => setScript(undefined)}
         >
           {"<"} Back
-        </weave-button>
+        </weave-button> */}
         <div
           ref={headerRef}
           style={{
@@ -685,12 +683,13 @@ export function LocalScript({
           style={{
             height: `${fixedFooterHeight - 1}px`,
             display: "flex",
+            alignItems: "center",
             bottom: 0,
-            width: "100%",
+            left: 0,
+            right: 0,
+            margin: "4px 16px",
             backgroundColor: "white",
             position: "fixed",
-            marginRight: "4px",
-            paddingTop: "4px",
             justifyContent: "space-between",
             borderTop: "1px solid var(--divider-lightweight)",
           }}
@@ -718,7 +717,10 @@ export function LocalScript({
             )}
             {env === "daas" && (
               <>
-                <div
+                <weave-button variant="outlined" onClick={() => setScript(undefined)}>
+                  Back
+                </weave-button>
+                {/* <div
                   style={{
                     display: "flex",
                     justifyContent: "center",
@@ -733,13 +735,13 @@ export function LocalScript({
                 Service
                 <div style={{ marginLeft: "3px", display: "flex" }}>
                   <StatusIcon status={service.connected ? "online" : "offline"} />
-                </div>
+                </div> */}
               </>
             )}
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <weave-button style={{ margin: "0 8px", width: "60px" }} onClick={reload}>
-              Refresh
+              Update
             </weave-button>
             <weave-button
               style={{ width: "40px", margin: "0" }}
@@ -755,7 +757,7 @@ export function LocalScript({
               Run
             </weave-button>
 
-            {services.daas && services.local && <EnvironmentSelector env={env} setEnv={setEnv} />}
+            {/* {services.daas && services.local && <EnvironmentSelector env={env} setEnv={setEnv} />} */}
           </div>
         </div>
       </div>

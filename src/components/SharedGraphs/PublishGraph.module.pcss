@@ -1,0 +1,78 @@
+.PublishGraphForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.GraphContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.GraphInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.GraphIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.GraphName {
+  color: var(--text-default);
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.ShareGraphTitle {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.InputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.Input,
+.TextArea {
+  width: 100%;
+  font: var(--medium-medium);
+  border-color: rgba(128, 128, 128, 0.2);
+  color: var(--text-default);
+  outline: 0;
+}
+
+.TextArea {
+  height: 70px;
+  resize: none;
+}
+
+.Required {
+  color: var(--status-error);
+}
+
+.ErrorMessage {
+  color: var(--status-error);
+}
+
+.ButtonContainer {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  gap: 8px;
+}
+
+.Button {
+  width: 80px;
+}

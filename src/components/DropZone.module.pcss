@@ -1,0 +1,31 @@
+.DropzoneContainer {
+  z-index: 2;
+  cursor: pointer;
+  position: relative;
+  flex-grow: 1;
+}
+
+.DropzoneContent {
+  display: flex;
+  padding: 16px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--border-base);
+  border-radius: 4px;
+}
+
+.DropzoneText {
+  margin-top: 8px;
+  color: var(--text-default);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ErrorText {
+  color: var(--status-error);
+}
+
+.FiletypesText {
+  color: var(--text-default);
+}
