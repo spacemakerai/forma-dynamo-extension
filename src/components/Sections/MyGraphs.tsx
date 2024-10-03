@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
-import { JSONGraph } from "../../types/types";
+import { JSONGraph, UnSavedGraph } from "../../types/types";
 import { Delete } from "../../icons/Delete";
 import Logo from "../../assets/Logo.png";
 import { DynamoState } from "../../DynamoConnector";
@@ -26,6 +26,10 @@ function storeGraphs(graphs: any[]) {
   return graphs;
 }
 
+function isEmpty(value: any) {
+  return value === null || value === undefined || value === "";
+}
+
 export function useLocalOpenGraph(
   state: DynamoState,
   dynamoService: DynamoService & { current: () => Promise<GraphInfo> },
@@ -38,7 +42,7 @@ export function useLocalOpenGraph(
         dynamoService
           .current()
           .then((currentGraph) => {
-            if (currentGraph && currentGraph.id) {
+            if (currentGraph) {
               setSuggestOpenGraph(currentGraph);
             }
           })
@@ -65,7 +69,7 @@ export function MyGraphs({
   isHubEditor,
 }: {
   setEnv: (v: "daas" | "local") => void;
-  setGraph: (v: FolderGraphInfo | JSONGraph) => void;
+  setGraph: (v: FolderGraphInfo | JSONGraph | UnSavedGraph) => void;
   dynamoLocal: {
     state: DynamoState;
     dynamo: DynamoService;

@@ -4,7 +4,7 @@ import { LocalScript } from "./LocalScript";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { useDynamoConnector } from "../DynamoConnector";
 import { PublicGraphs } from "../components/PublicGraphs/PublicGraphs";
-import { JSONGraph } from "../types/types";
+import { JSONGraph, UnSavedGraph } from "../types/types";
 import { MyGraphs } from "../components/Sections/MyGraphs";
 import { SharedGraphs } from "../components/SharedGraphs/SharedGraphs";
 import { PublishGraph } from "../components/SharedGraphs/PublishGraph";
@@ -44,7 +44,9 @@ function useDaasStatus(daas: DynamoService) {
 
 export function DaasApp() {
   const [env, setEnv] = useState<"daas" | "local">("daas");
-  const [graph, setGraph] = useState<JSONGraph | FolderGraphInfo | undefined>(undefined);
+  const [graph, setGraph] = useState<JSONGraph | FolderGraphInfo | UnSavedGraph | undefined>(
+    undefined,
+  );
   const [page, setPage] = useState<
     { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any }
   >({ name: "default" });
