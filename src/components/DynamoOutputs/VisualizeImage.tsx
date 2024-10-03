@@ -5,18 +5,15 @@ import { Forma } from "forma-embedded-view-sdk/auto";
 import { Visibility } from "../../icons/Visibility";
 
 type OutputValue = {
-  point: {
-    x: number;
-    y: number;
-  };
-  resolution: number;
-  width: number;
-  height: number;
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
   dataUrl: string;
 };
 
 async function renderOnTerrain(output: OutputValue, id: string) {
-  const { dataUrl, resolution, point, width, height } = output;
+  const { dataUrl, x0, y0, x1, y1 } = output;
   const img = new Image();
   img.src = dataUrl;
 
@@ -25,25 +22,30 @@ async function renderOnTerrain(output: OutputValue, id: string) {
   });
 
   const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
+  const width = (canvas.width = img.width);
+  const height = (canvas.height = img.height);
   const context = canvas.getContext("2d");
   if (!context) return;
   context.drawImage(img, 0, 0);
 
-  Forma.terrain.groundTexture.add({
+  const scaleX = (x1 - x0) / width;
+  const scaleY = (y1 - y0) / height;
+
+  const data = {
     name: id,
     canvas,
     position: {
-      x: point.x,
-      y: point.y,
+      x: x0 + (width * scaleX) / 2,
+      y: y0 + (height * scaleY) / 2,
       z: 100,
     },
     scale: {
-      x: resolution,
-      y: resolution,
+      x: scaleX,
+      y: scaleY,
     },
-  });
+  };
+
+  Forma.terrain.groundTexture.add(data);
 }
 
 export function VisualizeImage({ output }: { output: Output }) {
@@ -51,24 +53,26 @@ export function VisualizeImage({ output }: { output: Output }) {
   const toggle = useCallback(() => setIsToggled(!isToggled), [isToggled]);
 
   const deserializedOutput = useMemo(() => {
-    if (!output.value) {
-      throw new Error("No output");
-    }
-    try {
-      return JSON.parse(output.value as string) as OutputValue;
-    } catch (e) {
-      console.error("failed to parse output");
-      throw new Error("Failed to parse json image");
+    if (output.value) {
+      try {
+        return JSON.parse(output.value as string) as OutputValue;
+      } catch (e) {
+        console.error("failed to parse output");
+      }
     }
   }, [output.value]);
 
   useEffect(() => {
-    if (isToggled) {
+    if (isToggled && deserializedOutput) {
       renderOnTerrain(deserializedOutput, output.id);
     } else {
       Forma.terrain.groundTexture.remove({ name: output.id });
     }
   }, [deserializedOutput, isToggled, output.id]);
+
+  if (!output.value) {
+    return null;
+  }
 
   return (
     <div>
