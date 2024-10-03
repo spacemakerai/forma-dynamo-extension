@@ -343,8 +343,6 @@ export function LocalScript({
 }) {
   const service = services[env]!;
 
-  console.log(123);
-
   const [scriptInfo, reload] = useScript(script, service.dynamo);
 
   const [activeSelectionNode, setActiveSelectionNode] = useState<Input | undefined>(undefined);

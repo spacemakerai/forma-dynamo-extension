@@ -140,8 +140,6 @@ export function MyGraphs({
         onFileDropped={addDropped}
       />
 
-      {console.log(localOpenGraph)}
-
       {localOpenGraph && (
         <div
           style={{
@@ -161,7 +159,6 @@ export function MyGraphs({
           <weave-button
             onClick={() => {
               setEnv("local");
-              console.log(localOpenGraph);
               if (!isEmpty(localOpenGraph.id)) {
                 setGraph({
                   type: "FolderGraph",
