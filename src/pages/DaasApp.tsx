@@ -68,7 +68,7 @@ export function DaasApp() {
   return (
     <div className={styles.AppContainer}>
       <forma-tabs selectedtab={0} gap="16">
-        <forma-tab for="dynamoServiceContent" hpadding="0" label="Dynamo as a Service"></forma-tab>
+        <forma-tab for="dynamoServiceContent" hpadding="0" label="Dynamo as a Service" />
         <div id="dynamoServiceContent" slot="content" className={styles.TabContent}>
           {page.name === "publish" && isHubEditor && (
             <PublishGraph setPage={setPage} initialValue={page.initialValue} />
@@ -117,7 +117,7 @@ export function DaasApp() {
             </>
           )}
         </div>
-        <forma-tab for="localContent" hpadding="0" label="Local Dynamo"></forma-tab>
+        <forma-tab for="localContent" hpadding="0" label="Local Dynamo" />
         <div id="localContent" slot="content" className={styles.TabContent}>
           {dynamoLocal.state.connectionState === "CONNECTED" ? (
             page.name === "default" && (
