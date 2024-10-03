@@ -842,20 +842,20 @@ export function LocalScript({
   );
 }
 
-function isSameScripts(graphA: GraphInfo, graphB: GraphInfo): boolean {
-  return (
-    graphA.id === graphB.id &&
-    graphA.name === graphB.name &&
-    graphA.metadata.description === graphB.metadata.description &&
-    graphA.inputs.length === graphB.inputs.length &&
-    graphA.outputs.length === graphB.outputs.length &&
-    graphA.inputs.every((input) => {
-      const inputInDynamo = graphB.inputs.find((it) => it.id === input.id);
-      return inputInDynamo !== undefined && inputInDynamo.value === input.value;
-    }) &&
-    graphA.outputs.every((input) => {
-      const inputInDynamo = graphB.outputs.find((it) => it.id === input.id);
-      return inputInDynamo !== undefined && inputInDynamo.value === input.value;
-    })
-  );
-}
+// function isSameScripts(graphA: GraphInfo, graphB: GraphInfo): boolean {
+//   return (
+//     graphA.id === graphB.id &&
+//     graphA.name === graphB.name &&
+//     graphA.metadata.description === graphB.metadata.description &&
+//     graphA.inputs.length === graphB.inputs.length &&
+//     graphA.outputs.length === graphB.outputs.length &&
+//     graphA.inputs.every((input) => {
+//       const inputInDynamo = graphB.inputs.find((it) => it.id === input.id);
+//       return inputInDynamo !== undefined && inputInDynamo.value === input.value;
+//     }) &&
+//     graphA.outputs.every((input) => {
+//       const inputInDynamo = graphB.outputs.find((it) => it.id === input.id);
+//       return inputInDynamo !== undefined && inputInDynamo.value === input.value;
+//     })
+//   );
+// }
