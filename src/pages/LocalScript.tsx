@@ -306,14 +306,14 @@ function createGraphTarget(script: Script, scriptInfo: ScriptResult): GraphTarge
     return { type: "CurrentGraphTarget" };
   }
 
-  throw new Error(`Invalid script type: ${JSON.stringify(script)}`);
+  throw new Error(`Invalid script type: ${JSON.stringify(script.type)}`);
 }
 
-/*function serviceIncludesCurrentFunction(
+function serviceIncludesCurrentFunction(
   service: DynamoService,
 ): service is DynamoService & { current: () => Promise<GraphInfo | undefined> } {
   return (service as DynamoService & { current: () => Promise<GraphInfo> }).current !== undefined;
-}*/
+}
 
 export function LocalScript({
   env,
@@ -357,7 +357,7 @@ export function LocalScript({
 
   const [result, setResult] = useState<RunResult>({ type: "init" });
 
-  /*useEffect(() => {
+  useEffect(() => {
     // TODO: There exists some strangeness (maybe a bug somewhere):
     // - Open in local dynamo a script that is saved from one of the "Graphs provided by Autodesk" e.g. cloud models.
     // - Open the script here, but from the "Graphs provided by Autodesk" section. e.g. open a new cloud copy.
@@ -391,26 +391,32 @@ export function LocalScript({
         scriptIsLocalUnsavedCopyOfActiveScriptHere &&
         !dynamoAndExtensionHasSameScriptId
       ) {
-        setScript(graphActiveInDynamoLocal);
+        setScript({ type: "FolderGraph", ...graphActiveInDynamoLocal });
         return;
       }
 
       // Case: Same script has changed in local dynamo, (e.g. updated input/output nodes) reload the script in the extension.
-      if (
+      /*if (
         !isCancelled &&
         graphActiveInDynamoLocal !== undefined &&
         dynamoAndExtensionHasSameScriptId &&
         !isSameScripts(scriptInfo.data, graphActiveInDynamoLocal)
       ) {
+        console.log(
+          "reload script",
+          graphActiveInDynamoLocal !== undefined,
+          dynamoAndExtensionHasSameScriptId,
+          !isSameScripts(scriptInfo.data, graphActiveInDynamoLocal),
+        );
         reload();
         return;
-      }
-    }, 3000);
+      }*/
+    }, 1000);
     return () => {
       isCancelled = true;
       clearInterval(interval);
     };
-  }, [env, reload, scriptInfo, services.local.dynamo, setScript]);*/
+  }, [env, reload, scriptInfo, services.local.dynamo, setScript]);
 
   const setValue = useCallback(
     (id: string, value: any) => setState((state) => ({ ...state, [id]: value })),
@@ -836,7 +842,7 @@ export function LocalScript({
   );
 }
 
-/*function isSameScripts(graphA: GraphInfo, graphB: GraphInfo): boolean {
+function isSameScripts(graphA: GraphInfo, graphB: GraphInfo): boolean {
   return (
     graphA.id === graphB.id &&
     graphA.name === graphB.name &&
@@ -852,4 +858,4 @@ export function LocalScript({
       return inputInDynamo !== undefined && inputInDynamo.value === input.value;
     })
   );
-}*/
+}
