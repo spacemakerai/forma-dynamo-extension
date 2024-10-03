@@ -165,7 +165,9 @@ export function MyGraphs({
           <div className={styles.GraphContainer}>
             <div className={styles.GraphInfo}>
               <img className={styles.GraphIcon} src={Logo} />
-              <div className={styles.GraphName}>{localOpenGraph.name || "Untitled"}.dyn</div>
+              <div className={styles.GraphName}>
+                {isEmpty(localOpenGraph.id) ? "Home" : `${localOpenGraph.name || "Untitled"}.dyn`}
+              </div>
             </div>
             <div className={styles.GraphActions}>
               <weave-button
