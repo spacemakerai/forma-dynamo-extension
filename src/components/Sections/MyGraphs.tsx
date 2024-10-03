@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
-import { JSONGraph } from "../../types/types";
+import { JSONGraph, UnSavedGraph } from "../../types/types";
 import { Delete } from "../../icons/Delete";
 import { File } from "../../icons/File";
 import Logo from "../../assets/Logo.png";
@@ -24,6 +24,10 @@ function storeGraphs(graphs: any[]) {
   return graphs;
 }
 
+function isEmpty(value: any) {
+  return value === null || value === undefined || value === "";
+}
+
 export function useLocalOpenGraph(
   state: DynamoState,
   dynamoService: DynamoService & { current: () => Promise<GraphInfo> },
@@ -36,7 +40,7 @@ export function useLocalOpenGraph(
         dynamoService
           .current()
           .then((currentGraph) => {
-            if (currentGraph && currentGraph.id) {
+            if (currentGraph) {
               setSuggestOpenGraph(currentGraph);
             }
           })
@@ -63,7 +67,7 @@ export function MyGraphs({
   isHubEditor,
 }: {
   setEnv: (v: "daas" | "local") => void;
-  setGraph: (v: FolderGraphInfo | JSONGraph) => void;
+  setGraph: (v: FolderGraphInfo | JSONGraph | UnSavedGraph) => void;
   dynamoLocal: {
     state: DynamoState;
     dynamo: DynamoService;
@@ -136,6 +140,8 @@ export function MyGraphs({
         onFileDropped={addDropped}
       />
 
+      {console.log(localOpenGraph)}
+
       {localOpenGraph && (
         <div
           style={{
@@ -148,19 +154,29 @@ export function MyGraphs({
           <div style={{ display: "flex", flexDirection: "colum", overflow: "hidden" }}>
             <img style={{ height: "24px", width: "24px" }} src={Logo} />
             <div style={{ height: "24px", alignContent: "center" }}>
-              {localOpenGraph.name || "Untitled"}.dyn
+              {isEmpty(localOpenGraph.id) ? "Home" : `${localOpenGraph.name || "Untitled"}.dyn`}
             </div>
           </div>
 
           <weave-button
             onClick={() => {
               setEnv("local");
-              setGraph({
-                type: "FolderGraph",
-                id: localOpenGraph.id,
-                name: localOpenGraph.name || "Untitled",
-                metadata: localOpenGraph.metadata,
-              });
+              console.log(localOpenGraph);
+              if (!isEmpty(localOpenGraph.id)) {
+                setGraph({
+                  type: "FolderGraph",
+                  id: localOpenGraph.id,
+                  name: localOpenGraph.name || "Untitled",
+                  metadata: localOpenGraph.metadata,
+                });
+              } else {
+                setGraph({
+                  id: "2",
+                  type: "UNSAVED",
+                  name: "Home",
+                  graph: localOpenGraph,
+                });
+              }
             }}
           >
             Open

@@ -22,7 +22,7 @@ import {
   GraphTarget,
   Input,
 } from "../service/dynamo.js";
-import { JSONGraph } from "../types/types.ts";
+import { JSONGraph, UnSavedGraph } from "../types/types.ts";
 import { WarningBanner } from "../components/Warnings/WarningBanner.tsx";
 import { EnvironmentSelector } from "../components/EnvironmentSelector.tsx";
 import { Desktop } from "../icons/Desktop.tsx";
@@ -87,7 +87,9 @@ function useScript(script: Script, dynamo: DynamoService): [ScriptResult, () => 
     const target: GraphTarget =
       script.type === "JSON"
         ? { type: "JsonGraphTarget", graph: script.graph }
-        : { path: script.id, type: "PathGraphTarget" };
+        : script.type === "FolderGraph"
+        ? { path: script.id, type: "PathGraphTarget" }
+        : { type: "CurrentGraphTarget" };
 
     dynamo
       .info(target)
@@ -293,7 +295,19 @@ async function getAllPaths() {
   return findAllPaths("root");
 }
 
-export type Script = FolderGraphInfo | JSONGraph;
+export type Script = FolderGraphInfo | JSONGraph | UnSavedGraph;
+
+function createGraphTarget(script: Script, scriptInfo: ScriptResult): GraphTarget {
+  if (script.type === "FolderGraph" && scriptInfo.type === "loaded") {
+    return { type: "PathGraphTarget", path: scriptInfo.data.id };
+  } else if (script.type === "JSON") {
+    return { type: "JsonGraphTarget", contents: JSON.stringify(script.graph) };
+  } else if (script.type === "UNSAVED") {
+    return { type: "CurrentGraphTarget" };
+  }
+
+  throw new Error(`Invalid script type: ${JSON.stringify(script)}`);
+}
 
 /*function serviceIncludesCurrentFunction(
   service: DynamoService,
@@ -328,6 +342,8 @@ export function LocalScript({
   };
 }) {
   const service = services[env]!;
+
+  console.log(123);
 
   const [scriptInfo, reload] = useScript(script, service.dynamo);
 
@@ -541,13 +557,9 @@ export function LocalScript({
         }),
       );
 
-      const target: GraphTarget =
-        script.type === "FolderGraph"
-          ? { type: "PathGraphTarget", path: scriptInfo.data.id }
-          : { type: "JsonGraphTarget", contents: JSON.stringify(script.graph) };
       setResult({
         type: "success",
-        data: await service.dynamo.run(target, inputs),
+        data: await service.dynamo.run(createGraphTarget(script, scriptInfo), inputs),
       });
     } catch (e) {
       console.error(e);
