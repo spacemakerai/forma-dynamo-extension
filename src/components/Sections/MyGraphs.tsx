@@ -60,13 +60,13 @@ export function useLocalOpenGraph(
 }
 
 export function MyGraphs({
-  setEnv,
+  env,
   setGraph,
   dynamoLocal,
   setPage,
   isHubEditor,
 }: {
-  setEnv: (v: "daas" | "local") => void;
+  env: "daas" | "local";
   setGraph: (v: FolderGraphInfo | JSONGraph | UnSavedGraph) => void;
   dynamoLocal: {
     state: DynamoState;
@@ -86,27 +86,27 @@ export function MyGraphs({
     }
   };
 
-  const localOpenGraph = useLocalOpenGraph(
-    dynamoLocal.state,
-    dynamoLocal.dynamo as DynamoService & { current: () => Promise<GraphInfo> },
-  );
+  // const localOpenGraph = useLocalOpenGraph(
+  //   dynamoLocal.state,
+  //   dynamoLocal.dynamo as DynamoService & { current: () => Promise<GraphInfo> },
+  // );
 
-  // const localOpenGraph: GraphInfo = {
-  //   id: "example-graph-id",
-  //   name: "Example Graph",
-  //   metadata: {
-  //     author: "John Doe",
-  //     description: "This is an example graph.",
-  //     thumbnail: "example-thumbnail-url",
-  //     customProperties: {},
-  //     dynamoVersion: "2.0",
-  //   },
-  //   dependencies: [],
-  //   inputs: [],
-  //   issues: [],
-  //   outputs: [],
-  //   status: "",
-  // };
+  const localOpenGraph: GraphInfo = {
+    id: "example-graph-id",
+    name: "Example Graph",
+    metadata: {
+      author: "John Doe",
+      description: "This is an example graph.",
+      thumbnail: "example-thumbnail-url",
+      customProperties: {},
+      dynamoVersion: "2.0",
+    },
+    dependencies: [],
+    inputs: [],
+    issues: [],
+    outputs: [],
+    status: "",
+  };
 
   const [dropped, setDropped] = useState<any[]>(graphs);
 
@@ -159,12 +159,11 @@ export function MyGraphs({
 
       <div className={styles.Header}>My graphs</div>
       <div className={styles.GraphsList}>
-        {localOpenGraph && (
+        {env === "local" && localOpenGraph && (
           <GraphItem
             name={isEmpty(localOpenGraph.id) ? "Home" : `${localOpenGraph.name || "Untitled"}.dyn`}
             graph={localOpenGraph}
             onOpen={() => {
-              setEnv("local");
               setGraph({
                 type: "FolderGraph",
                 id: localOpenGraph.id,

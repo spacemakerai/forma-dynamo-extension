@@ -1,7 +1,6 @@
 import { useState } from "preact/hooks";
 import { InstallationMethod } from "./SetupWizard";
 import styles from "./SetupInstructions.module.pcss";
-import { useDynamoConnector } from "../../DynamoConnector";
 
 type Props = {
   selectedSoftware: InstallationMethod;
@@ -20,68 +19,68 @@ export const SetupInstructions: React.FC<Props> = ({ selectedSoftware, setSelect
       {
         title: "Launch Revit",
         description: "Make sure you have Revit 2024.1 or higher installed with Dynamo",
-        animation: "src/assets/animations/revit-step-1.mp4",
+        animation: "src/assets/animations/step-1.mp4",
       },
       {
         title: "Open Dynamo from Revit",
         description: "Make sure you have Revit 2024.1 or higher installed with Dynamo",
-        animation: "src/assets/animations/revit-step-2.mp4",
+        animation: "src/assets/animations/step-2.mp4",
       },
       {
         title: "Install FormaDynamo package",
         description:
           "Install the DynamoFormaBeta package from the Package Manager in Dynamo. Package versions 2.0 and higher support Dynamo for Revit 2025",
-        animation: "src/assets/animations/revit-step-3.mp4",
+        animation: "src/assets/animations/step-3.mp4",
       },
       {
         title: "You're all set",
         description: "You've now set up the connection and can use it in Forma",
-        animation: "src/assets/animations/revit-step-4.mp4",
+        animation: "src/assets/animations/step-4.mp4",
       },
     ],
     civil3d: [
       {
         title: "Launch Civil 3D",
         description: "Make sure you have Civil 3D 2024.1 or higher installed with Dynamo",
-        animation: "src/assets/animations/civil3d-step-1.mp4",
+        animation: "src/assets/animations/step-1.mp4",
       },
       {
         title: "Open Dynamo from Civil 3D",
         description: "Make sure you have Civil 3D 2024.1 or higher installed with Dynamo",
-        animation: "src/assets/animations/civil3d-step-2.mp4",
+        animation: "src/assets/animations/step-2.mp4",
       },
       {
         title: "Install FormaDynamo package",
         description:
           "Install the DynamoFormaBeta package from the Package Manager in Dynamo. Package versions 2.0 and higher support Dynamo for Civil 3D 2025",
-        animation: "src/assets/animations/civil3d-step-3.mp4",
+        animation: "src/assets/animations/step-3.mp4",
       },
       {
         title: "You're all set",
         description: "You've now set up the connection and can use it in Forma",
-        animation: "src/assets/animations/civil3d-step-4.mp4",
+        animation: "src/assets/animations/step-4.mp4",
       },
     ],
     dynamo: [
       {
-        title: "Step 1",
-        description: "Description for step 1",
-        animation: "src/assets/animations/dynamo-step-1.mp4",
+        title: "Download Dynamo",
+        description: "Download Dynamo 2.18.0 or higher",
+        animation: "src/assets/animations/step-1.mp4",
       },
       {
-        title: "Step 2",
-        description: "Description for step 2",
-        animation: "src/assets/animations/dynamo-step-2.mp4",
+        title: "Install Dynamo",
+        description: "Follow the steps to install the software",
+        animation: "src/assets/animations/step-2.mp4",
       },
       {
-        title: "Step 3",
-        description: "Description for step 3",
-        animation: "src/assets/animations/dynamo-step-3.mp4",
+        title: "Install the DynamoFormaBeta package",
+        description: "Type DynamoFormaBeta in the search field and install the package",
+        animation: "src/assets/animations/step-3.mp4",
       },
       {
         title: "You're all set",
         description: "You've now set up the connection and can use it in Forma",
-        animation: "src/assets/animations/dynamo-step-4.mp4",
+        animation: "src/assets/animations/step-4.mp4",
       },
     ],
   };
@@ -102,12 +101,6 @@ export const SetupInstructions: React.FC<Props> = ({ selectedSoftware, setSelect
     }
   };
 
-  const dynamoLocal = useDynamoConnector();
-
-  const checkConnection = () => {
-    console.log(dynamoLocal);
-  };
-
   return (
     <div className={styles.SetupInstructionsContainer}>
       <div className={styles.AnimationContainer}>
@@ -123,6 +116,12 @@ export const SetupInstructions: React.FC<Props> = ({ selectedSoftware, setSelect
         {currentStep + 1}. {steps[currentStep].title}
       </div>
       <div className={styles.StepDescription}>{steps[currentStep].description}</div>
+      {currentStep === steps.length - 1 && (
+        <div className={styles.StepDescription}>
+          The app will automatically detect once a connection is established and redirect you to the
+          home page
+        </div>
+      )}
       <div className={styles.ButtonContainer}>
         {currentStep === 0 ? (
           <weave-button onClick={() => setSelectedSoftware(null)}>Back</weave-button>
@@ -132,8 +131,8 @@ export const SetupInstructions: React.FC<Props> = ({ selectedSoftware, setSelect
           </weave-button>
         )}
         {currentStep === steps.length - 1 ? (
-          <weave-button variant="solid" onClick={() => checkConnection()}>
-            Finish
+          <weave-button variant="solid" onClick={() => setSelectedSoftware(null)}>
+            Close
           </weave-button>
         ) : (
           <weave-button

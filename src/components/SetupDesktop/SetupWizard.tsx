@@ -13,7 +13,7 @@ type InstallationMethodProps = {
 const installationMethods: Record<InstallationMethod, InstallationMethodProps> = {
   revit: { title: "Revit", imagePath: "src/assets/images/revit.png" },
   civil3d: { title: "Civil 3D", imagePath: "src/assets/images/civil3d.png" },
-  dynamo: { title: "Dynamo Sandbox Package", imagePath: "src/assets/images/dynamo.png" },
+  dynamo: { title: "Dynamo Sandbox", imagePath: "src/assets/images/dynamo.png" },
 };
 
 export const SetupWizard = () => {
@@ -32,7 +32,9 @@ export const SetupWizard = () => {
         />
       ) : (
         <>
-          <b className={styles.Heading}>Install Dynamo using any of the following methods</b>
+          <div className={styles.Heading}>
+            Set up the DynamoFormaBeta package using one of the following methods:
+          </div>
           {installationMethodArray.map((method) => (
             <div
               key={method}
