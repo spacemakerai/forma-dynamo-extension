@@ -39,7 +39,7 @@ function useDaasStatus(daas: DynamoService) {
 }
 
 export function DaasApp() {
-  const [_env, setEnv] = useState<"daas" | "local">("daas");
+  const [, setEnv] = useState<"daas" | "local">("daas");
   const [graph, setGraph] = useState<JSONGraph | FolderGraphInfo | UnSavedGraph | undefined>(
     undefined,
   );
@@ -82,7 +82,7 @@ export function DaasApp() {
             dynamoLocal={dynamoLocal}
           />
         </div>
-        <forma-tab for="localContent" hpadding="0" label="Desktop"></forma-tab>
+        <forma-tab for="localContent" hpadding="0" label="Desktop" />
         <div id="localContent" slot="content" className={styles.TabContent}>
           {dynamoLocal.state.connectionState !== "CONNECTED" ? (
             <AppContent
