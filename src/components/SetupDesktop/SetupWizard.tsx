@@ -1,6 +1,9 @@
 import { useState } from "preact/hooks";
 import { SetupInstructions } from "./SetupInstructions";
 import styles from "./SetupWizard.module.pcss";
+import revitImage from "../../assets/images/revit.png";
+import civil3dImage from "../../assets/images/civil3d.png";
+import dynamoImage from "../../assets/images/dynamo.png";
 
 export type InstallationMethod = "revit" | "civil3d" | "dynamo";
 
@@ -11,9 +14,9 @@ type InstallationMethodProps = {
 };
 
 const installationMethods: Record<InstallationMethod, InstallationMethodProps> = {
-  revit: { title: "Revit", imagePath: "src/assets/images/revit.png" },
-  civil3d: { title: "Civil 3D", imagePath: "src/assets/images/civil3d.png" },
-  dynamo: { title: "Dynamo Sandbox", imagePath: "src/assets/images/dynamo.png" },
+  revit: { title: "Revit", imagePath: revitImage },
+  civil3d: { title: "Civil 3D", imagePath: civil3dImage },
+  dynamo: { title: "Dynamo Sandbox", imagePath: dynamoImage },
 };
 
 export const SetupWizard = () => {

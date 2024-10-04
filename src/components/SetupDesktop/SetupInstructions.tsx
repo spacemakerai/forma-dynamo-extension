@@ -1,6 +1,10 @@
 import { useState } from "preact/hooks";
 import { InstallationMethod } from "./SetupWizard";
 import styles from "./SetupInstructions.module.pcss";
+import step1Animation from "../../assets/animations/step-1.mp4";
+import step2Animation from "../../assets/animations/step-2.mp4";
+import step3Animation from "../../assets/animations/step-3.mp4";
+import step4Animation from "../../assets/animations/step-4.mp4";
 
 type Props = {
   selectedSoftware: InstallationMethod;
@@ -19,68 +23,68 @@ export const SetupInstructions: React.FC<Props> = ({ selectedSoftware, setSelect
       {
         title: "Launch Revit",
         description: "Make sure you have Revit 2024.1 or higher installed with Dynamo",
-        animation: "src/assets/animations/step-1.mp4",
+        animation: step1Animation,
       },
       {
         title: "Open Dynamo from Revit",
         description: "Make sure you have Revit 2024.1 or higher installed with Dynamo",
-        animation: "src/assets/animations/step-2.mp4",
+        animation: step2Animation,
       },
       {
         title: "Install FormaDynamo package",
         description:
           "Install the DynamoFormaBeta package from the Package Manager in Dynamo. Package versions 2.0 and higher support Dynamo for Revit 2025",
-        animation: "src/assets/animations/step-3.mp4",
+        animation: step3Animation,
       },
       {
         title: "You're all set",
         description: "You've now set up the connection and can use it in Forma",
-        animation: "src/assets/animations/step-4.mp4",
+        animation: step4Animation,
       },
     ],
     civil3d: [
       {
         title: "Launch Civil 3D",
         description: "Make sure you have Civil 3D 2024.1 or higher installed with Dynamo",
-        animation: "src/assets/animations/step-1.mp4",
+        animation: step1Animation,
       },
       {
         title: "Open Dynamo from Civil 3D",
         description: "Make sure you have Civil 3D 2024.1 or higher installed with Dynamo",
-        animation: "src/assets/animations/step-2.mp4",
+        animation: step2Animation,
       },
       {
         title: "Install FormaDynamo package",
         description:
           "Install the DynamoFormaBeta package from the Package Manager in Dynamo. Package versions 2.0 and higher support Dynamo for Civil 3D 2025",
-        animation: "src/assets/animations/step-3.mp4",
+        animation: step3Animation,
       },
       {
         title: "You're all set",
         description: "You've now set up the connection and can use it in Forma",
-        animation: "src/assets/animations/step-4.mp4",
+        animation: step4Animation,
       },
     ],
     dynamo: [
       {
         title: "Download Dynamo",
         description: "Download Dynamo 2.18.0 or higher",
-        animation: "src/assets/animations/step-1.mp4",
+        animation: step1Animation,
       },
       {
         title: "Install Dynamo",
         description: "Follow the steps to install the software",
-        animation: "src/assets/animations/step-2.mp4",
+        animation: step2Animation,
       },
       {
         title: "Install the DynamoFormaBeta package",
         description: "Type DynamoFormaBeta in the search field and install the package",
-        animation: "src/assets/animations/step-3.mp4",
+        animation: step3Animation,
       },
       {
         title: "You're all set",
         description: "You've now set up the connection and can use it in Forma",
-        animation: "src/assets/animations/step-4.mp4",
+        animation: step4Animation,
       },
     ],
   };
