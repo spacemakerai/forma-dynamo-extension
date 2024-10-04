@@ -1,0 +1,99 @@
+.GraphContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.Expandable {
+  cursor: pointer;
+}
+
+.GraphInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ArrowContainer {
+  display: none;
+  min-width: 24px;
+  height: 24px;
+  justify-content: center;
+  align-items: center;
+  transform: rotate(0deg);
+  transition: transform ease-in-out 250ms;
+}
+
+.Expanded {
+  transform: rotate(90deg);
+}
+
+.Expandable:hover .ArrowContainer {
+  display: flex;
+}
+
+.GraphIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.Expandable:hover .GraphIcon {
+  display: none;
+}
+
+.GraphName {
+  color: var(--text-default);
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.GraphActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ActionIcon {
+  height: 16px;
+  width: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.GraphDetailsContainer {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows ease-in-out 500ms;
+}
+
+.GraphDetailsExpanded {
+  grid-template-rows: 1fr;
+}
+
+.GraphDetails {
+  padding: 0 24px 8px 24px;
+  min-height: 0;
+  transition: visibility ease-in-out 500ms;
+  visibility: hidden;
+}
+
+.GraphDetailsExpanded .GraphDetails {
+  visibility: visible;
+}
+
+.GraphDescription {
+  padding: 8px 0;
+}
+.GraphAuthor {
+  font: var(--small-regular);
+  color: var(--text-default);
+}
+.GraphPublisher {
+  font: var(--small-regular);
+  color: var(--text-default);
+}

@@ -4,8 +4,8 @@ import { v4 } from "uuid";
 import { filterForSize } from "../../utils/filterGraph";
 import { captureException } from "../../util/sentry";
 import styles from "./PublishGraph.module.pcss";
-import Logo from "../../assets/Logo.png";
 import { DropZone } from "../DropZone";
+import GraphItem from "../GraphItem/GraphItem";
 
 type DynamoGraph = {
   Name: string;
@@ -26,17 +26,6 @@ type PageState =
   | { type: "publishing" }
   | { type: "published" }
   | { type: "failed" };
-
-function Item({ graph }: { graph: DynamoGraph; onClear: () => void }) {
-  return (
-    <div key={graph.id} className={styles.GraphContainer}>
-      <div className={styles.GraphInfo}>
-        <img className={styles.GraphIcon} src={Logo} />
-        <div className={styles.GraphName}>{graph.Name}.dyn</div>
-      </div>
-    </div>
-  );
-}
 
 export function PublishGraph({
   initialValue,
@@ -117,13 +106,6 @@ export function PublishGraph({
     if (uploadedGraph?.Author?.length) setAuthor(uploadedGraph.Author);
   }, [uploadedGraph]);
 
-  const onClear = useCallback(() => {
-    setName("");
-    setDescription("");
-    setAuthor("");
-    setUploadedGraph(undefined);
-  }, []);
-
   return (
     <>
       <div className={styles.ShareGraphTitle}>Share Graph</div>
@@ -140,7 +122,7 @@ export function PublishGraph({
         </>
       )}
 
-      {uploadedGraph && <Item graph={uploadedGraph} onClear={onClear} />}
+      {uploadedGraph && <GraphItem graph={uploadedGraph} name={uploadedGraph.Name} />}
 
       <div className={styles.PublishGraphForm}>
         <div className={styles.InputContainer}>

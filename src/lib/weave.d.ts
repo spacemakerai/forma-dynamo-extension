@@ -86,6 +86,29 @@ export declare module "preact/src/jsx" {
         label?: string;
         disabled?: boolean;
       };
+      "weave-tripple-dot": JSX.HTMLAttributes<HTMLElement>;
+
+      "forma-context-menu": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > &
+        any;
+      "forma-context-menu-container": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > &
+        any;
+
+      "forma-context-menu": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > &
+        any;
+      "forma-context-menu-item": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > &
+        any;
     }
   }
 }

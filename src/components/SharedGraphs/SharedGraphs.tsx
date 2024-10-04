@@ -1,15 +1,12 @@
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { useCallback, useEffect, useState } from "preact/hooks";
-import { Edit } from "../../icons/Edit";
-import { Download } from "../../assets/icons/Download";
 import { JSONGraph } from "../../types/types";
 import { DynamoState } from "../../DynamoConnector";
 import { DynamoService } from "../../service/dynamo";
-import { Delete } from "../../icons/Delete";
 import { captureException } from "../../util/sentry";
-import { Arrow } from "../../icons/Arrow";
 import { ErrorBanner } from "../Errors.tsx/ErrorBanner";
 import styles from "./SharedGraphs.module.pcss";
+import GraphItem from "../GraphItem/GraphItem";
 
 function download(graph: any) {
   const element = document.createElement("a");
@@ -54,97 +51,6 @@ type SharedGraphState =
       type: "success";
       graphs: SharedGraph[];
     };
-
-function Item({
-  graph,
-  deleteGraph,
-  setEnv,
-  setGraph,
-  dynamoLocal,
-  isHubEditor,
-}: {
-  graph: SharedGraph;
-  deleteGraph: (key: string) => void;
-  setEnv: (env: "daas" | "local") => void;
-  setGraph: (graph: JSONGraph) => void;
-  dynamoLocal: {
-    state: DynamoState;
-    dynamo: DynamoService;
-  };
-  isHubEditor: boolean;
-}) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  return (
-    <>
-      <div className={styles.ItemContainer} onClick={() => setIsExpanded(!isExpanded)}>
-        <div className={styles.ItemHeader}>
-          <div className={styles.ArrowContainer}>
-            <Arrow />
-          </div>
-          <div className={styles.GraphName}>{graph.graph.Name}</div>
-        </div>
-        <div className={styles.ItemActions}>
-          {isHubEditor && (
-            <div
-              className={styles.DeleteIcon}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (window.confirm("Are you sure you want to delete this graph?")) {
-                  deleteGraph(graph.key);
-                }
-              }}
-            >
-              <Delete />
-            </div>
-          )}
-          {dynamoLocal.state.connectionState === "CONNECTED" && (
-            <div
-              className={styles.EditIcon}
-              onClick={() => {
-                setEnv("local");
-                setGraph({
-                  id: "1",
-                  name: graph.graph.Name,
-                  type: "JSON",
-                  graph: graph.graph,
-                });
-              }}
-            >
-              <Edit />
-            </div>
-          )}
-          <div className={styles.DownloadIcon} onClick={() => download(graph.graph)}>
-            <Download />
-          </div>
-          <weave-button
-            onClick={() =>
-              setGraph({
-                id: "1",
-                name: graph.graph.Name,
-                type: "JSON",
-                graph: graph.graph,
-              })
-            }
-          >
-            Open
-          </weave-button>
-        </div>
-      </div>
-      {isExpanded && (
-        <div className={styles.GraphDetails}>
-          <div className={styles.GraphDescription}>{graph.graph.Description}</div>
-          <div className={styles.GraphAuthor}>
-            <b>Author:</b> {graph.graph.Author}
-          </div>
-          <div className={styles.GraphPublisher}>
-            <b>Publisher:</b> {graph.metadata.publisher.name}
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
 
 export function SharedGraphs({
   setPage,
@@ -259,14 +165,36 @@ export function SharedGraphs({
 
       {state.type === "success" &&
         state.graphs.map((graph: SharedGraph) => (
-          <Item
+          <GraphItem
+            name={graph.graph.Name}
             key={graph.key}
             graph={graph}
-            deleteGraph={deleteGraph}
-            setEnv={setEnv}
-            setGraph={setGraph}
-            dynamoLocal={dynamoLocal}
-            isHubEditor={isHubEditor}
+            onRemove={
+              isHubEditor
+                ? () => {
+                    if (window.confirm("Are you sure you want to delete this graph?")) {
+                      deleteGraph(graph.key);
+                    }
+                  }
+                : undefined
+            }
+            onDownload={() => download(graph.graph)}
+            onOpen={() =>
+              setGraph({ id: "1", name: graph.graph.Name, type: "JSON", graph: graph.graph })
+            }
+            onEdit={
+              dynamoLocal.state.connectionState === "CONNECTED"
+                ? () => {
+                    setEnv("local");
+                    setGraph({
+                      id: "1",
+                      name: graph.graph.Name,
+                      type: "JSON",
+                      graph: graph.graph,
+                    });
+                  }
+                : undefined
+            }
           />
         ))}
 

@@ -1,14 +1,12 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
 import { JSONGraph, UnSavedGraph } from "../../types/types";
-import { Delete } from "../../icons/Delete";
-import Logo from "../../assets/Logo.png";
 import { DynamoState } from "../../DynamoConnector";
 import { DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo";
 import { filterForSize } from "../../utils/filterGraph";
 import { DropZone } from "../DropZone";
 import { captureException } from "../../util/sentry";
-import { Share } from "../../icons/Share";
 import styles from "./MyGraphs.module.pcss";
+import GraphItem from "../GraphItem/GraphItem";
 
 const FILE_TYPES = [".dyn"];
 
@@ -162,62 +160,37 @@ export function MyGraphs({
       <div className={styles.Header}>My graphs</div>
       <div className={styles.GraphsList}>
         {localOpenGraph && (
-          <div className={styles.GraphContainer}>
-            <div className={styles.GraphInfo}>
-              <img className={styles.GraphIcon} src={Logo} />
-              <div className={styles.GraphName}>
-                {isEmpty(localOpenGraph.id) ? "Home" : `${localOpenGraph.name || "Untitled"}.dyn`}
-              </div>
-            </div>
-            <div className={styles.GraphActions}>
-              <weave-button
-                onClick={() => {
-                  setEnv("local");
-                  setGraph({
-                    type: "FolderGraph",
-                    id: localOpenGraph.id,
-                    name: localOpenGraph.name || "Untitled",
-                    metadata: localOpenGraph.metadata,
-                  });
-                }}
-              >
-                Open
-              </weave-button>
-            </div>
-          </div>
+          <GraphItem
+            name={isEmpty(localOpenGraph.id) ? "Home" : `${localOpenGraph.name || "Untitled"}.dyn`}
+            graph={localOpenGraph}
+            onOpen={() => {
+              setEnv("local");
+              setGraph({
+                type: "FolderGraph",
+                id: localOpenGraph.id,
+                name: localOpenGraph.name || "Untitled",
+                metadata: localOpenGraph.metadata,
+              });
+            }}
+          />
         )}
 
         {!!dropped?.length &&
           dropped?.map((graph, i) => (
-            <div key={graph.Id} className={styles.GraphContainer}>
-              <div className={styles.GraphInfo}>
-                <img className={styles.GraphIcon} src={Logo} />
-                <div className={styles.GraphName}>{graph.Name}.dyn</div>
-              </div>
-              <div className={styles.GraphActions}>
-                <div
-                  className={styles.DeleteGraph}
-                  onClick={() => {
-                    if (window.confirm("Are you sure you want to delete this graph?")) {
-                      removeDropped(i);
-                    }
-                  }}
-                >
-                  <Delete />
-                </div>
-                {isHubEditor && (
-                  <div
-                    className={styles.ShareGraph}
-                    onClick={() => setPage({ name: "publish", initialValue: graph })}
-                  >
-                    <Share />
-                  </div>
-                )}
-                <weave-button variant="solid" density="high" onClick={() => Graph(graph)}>
-                  Open
-                </weave-button>
-              </div>
-            </div>
+            <GraphItem
+              name={`${graph.Name}.dyn`}
+              key={graph.Id}
+              onShare={
+                isHubEditor ? () => setPage({ name: "publish", initialValue: graph }) : undefined
+              }
+              graph={graph}
+              onRemove={() => {
+                if (window.confirm("Are you sure you want to delete this graph?")) {
+                  removeDropped(i);
+                }
+              }}
+              onOpen={() => Graph(graph)}
+            />
           ))}
       </div>
     </div>

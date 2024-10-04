@@ -96,15 +96,22 @@
   flex-direction: row;
   display: flex;
   overflow: hidden;
+  gap: 8px;
 }
 
 .ArrowContainer {
   display: flex;
-  min-width: 24px;
-  width: 24px;
+  min-width: 16px;
   height: 24px;
   justify-content: center;
   align-items: center;
+  transform: rotate(0deg);
+  transition: transform ease-in-out 250ms;
+}
+
+.Expanded {
+  display: flex;
+  transform: rotate(90deg);
 }
 
 .GraphName {
@@ -134,8 +141,26 @@
   align-content: center;
 }
 
+.GraphDetailsContainer {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows ease-in-out 500ms;
+}
+
+.GraphDetailsExpanded {
+  grid-template-rows: 1fr;
+}
+
 .GraphDetails {
   padding: 0 24px 8px 24px;
+  min-height: 0;
+  transition: visibility ease-in-out 500ms;
+  visibility: hidden;
+}
+
+.GraphDetailsExpanded .GraphDetails {
+  visibility: visible;
 }
 
 .GraphDescription {

@@ -24,26 +24,25 @@ import {
 } from "../service/dynamo.js";
 import { JSONGraph, UnSavedGraph } from "../types/types.ts";
 import { WarningBanner } from "../components/Warnings/WarningBanner.tsx";
-import { Desktop } from "../icons/Desktop.tsx";
 import { DynamoState } from "../DynamoConnector.ts";
-import { IndicatorActive } from "../assets/icons/IndicatorActive.tsx";
-import { IndicatorInactive } from "../assets/icons/InidcatorInactive.tsx";
-import { IndicatorError } from "../assets/icons/InidcatorError.tsx";
+// import { IndicatorActive } from "../assets/icons/IndicatorActive.tsx";
+// import { IndicatorInactive } from "../assets/icons/InidcatorInactive.tsx";
+// import { IndicatorError } from "../assets/icons/InidcatorError.tsx";
 import { filterUnsupportedPackages, Package } from "../utils/daasSupportedPackages.ts";
 import { transformCoordinates } from "../utils/transformCoordinates.ts";
 
-type Status = "online" | "offline" | "error";
+// type Status = "online" | "offline" | "error";
 
 const IdentityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
-function StatusIcon({ status }: { status: Status }) {
-  if (status === "online") {
-    return <IndicatorActive />;
-  } else if (status === "offline") {
-    return <IndicatorInactive />;
-  }
-  return <IndicatorError />;
-}
+// function StatusIcon({ status }: { status: Status }) {
+//   if (status === "online") {
+//     return <IndicatorActive />;
+//   } else if (status === "offline") {
+//     return <IndicatorInactive />;
+//   }
+//   return <IndicatorError />;
+// }
 
 function getDefaultValues(scriptInfo: ScriptResult) {
   if (scriptInfo.type === "loaded") {
@@ -315,7 +314,7 @@ function serviceIncludesCurrentFunction(
 
 export function LocalScript({
   env,
-  setEnv,
+  // setEnv,
   script,
   setScript,
   services,
@@ -655,7 +654,7 @@ export function LocalScript({
           {!service.connected && (
             <div>
               Not connected to Dynamo
-              <div>
+              {/* <div>
                 <weave-button
                   style={{ marginTop: "16px" }}
                   variant="outlined"
@@ -663,7 +662,7 @@ export function LocalScript({
                 >
                   Switch to {env === "local" ? "Service" : "Desktop"}
                 </weave-button>
-              </div>
+              </div> */}
               {env === "daas" && (
                 <div>
                   Are you connected to Autodesk VPN? This is required in the current development
@@ -681,7 +680,7 @@ export function LocalScript({
                   </weave-button>
                 </div>
               )}
-              {env == "local" && (
+              {/* {env == "local" && (
                 <div>
                   <weave-button
                     style={{ marginTop: "16px" }}
@@ -691,7 +690,7 @@ export function LocalScript({
                     Setup Desktop connection
                   </weave-button>
                 </div>
-              )}
+              )} */}
             </div>
           )}
           {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
@@ -776,7 +775,7 @@ export function LocalScript({
           <div style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
             {env === "local" && (
               <>
-                <div
+                {/* <div
                   style={{
                     display: "flex",
                     justifyContent: "center",
@@ -791,7 +790,10 @@ export function LocalScript({
                 Desktop
                 <div style={{ marginLeft: "3px", display: "flex" }}>
                   <StatusIcon status={service.connected ? "online" : "error"} />
-                </div>
+                </div> */}
+                <weave-button variant="outlined" onClick={() => setScript(undefined)}>
+                  Back
+                </weave-button>
               </>
             )}
             {env === "daas" && (
