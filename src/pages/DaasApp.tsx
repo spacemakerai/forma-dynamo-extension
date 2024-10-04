@@ -84,7 +84,7 @@ export function DaasApp() {
         </div>
         <forma-tab for="localContent" hpadding="0" label="Desktop" />
         <div id="localContent" slot="content" className={styles.TabContent}>
-          {dynamoLocal.state.connectionState !== "CONNECTED" ? (
+          {dynamoLocal.state.connectionState === "CONNECTED" ? (
             <AppContent
               page={page}
               setPage={setPage}
