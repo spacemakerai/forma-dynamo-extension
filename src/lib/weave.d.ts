@@ -74,6 +74,41 @@ export declare module "preact/src/jsx" {
         width?: string;
         radius?: string;
       };
+      "forma-tabs": {
+        selectedtab?: number;
+        gap?: string;
+        children?: ComponentChildren;
+        onChange?: (e: CustomEvent) => void;
+      };
+      "forma-tab": {
+        for?: string;
+        hpadding?: string;
+        label?: string;
+        disabled?: boolean;
+      };
+      "weave-tripple-dot": JSX.HTMLAttributes<HTMLElement>;
+
+      "forma-context-menu": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > &
+        any;
+      "forma-context-menu-container": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > &
+        any;
+
+      "forma-context-menu": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > &
+        any;
+      "forma-context-menu-item": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > &
+        any;
     }
   }
 }

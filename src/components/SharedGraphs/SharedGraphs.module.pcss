@@ -1,0 +1,176 @@
+.GraphContainer {
+  border-bottom: 1px solid var(--divider-lightweight);
+  padding-bottom: 8px;
+}
+
+.Header {
+  color: var(--text-default);
+  font-size: 12px;
+  font-weight: 700;
+  margin: 12px 0;
+}
+
+.SkeletonItem {
+  height: 28px;
+  width: 100vw;
+}
+
+.NoGraphs {
+  font: var(--small-regular);
+}
+
+.ErrorMessage {
+  font: var(--small-regular);
+  color: var(--status-error);
+}
+
+.Footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.FooterText {
+  height: 24px;
+  align-content: center;
+  overflow: hidden;
+}
+
+.ItemContainer {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.ItemHeader {
+  flex-direction: row;
+  display: flex;
+  overflow: hidden;
+}
+
+.ArrowIcon {
+  display: flex;
+  min-width: 24px;
+  width: 24px;
+  height: 24px;
+  justify-content: center;
+  align-items: center;
+}
+
+.GraphName {
+  height: 24px;
+  align-content: center;
+}
+
+.ItemActions {
+  display: flex;
+  flex-direction: row;
+}
+
+.ActionIcon {
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+  justify-content: center;
+  align-content: center;
+}
+
+.ExpandedContent {
+  padding: 0 24px 8px 24px;
+}
+
+.GraphDescription {
+  padding: 8px 0;
+}
+
+.ItemContainer {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.ItemHeader {
+  flex-direction: row;
+  display: flex;
+  overflow: hidden;
+  gap: 8px;
+}
+
+.ArrowContainer {
+  display: flex;
+  min-width: 16px;
+  height: 24px;
+  justify-content: center;
+  align-items: center;
+  transform: rotate(0deg);
+  transition: transform ease-in-out 250ms;
+}
+
+.Expanded {
+  display: flex;
+  transform: rotate(90deg);
+}
+
+.GraphName {
+  height: 24px;
+  align-content: center;
+}
+
+.ItemActions {
+  display: flex;
+  flex-direction: row;
+}
+
+.DeleteIcon {
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+  justify-content: center;
+  align-content: center;
+}
+
+.EditIcon,
+.DownloadIcon {
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+  justify-content: center;
+  align-content: center;
+}
+
+.GraphDetailsContainer {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows ease-in-out 500ms;
+}
+
+.GraphDetailsExpanded {
+  grid-template-rows: 1fr;
+}
+
+.GraphDetails {
+  padding: 0 24px 8px 24px;
+  min-height: 0;
+  transition: visibility ease-in-out 500ms;
+  visibility: hidden;
+}
+
+.GraphDetailsExpanded .GraphDetails {
+  visibility: visible;
+}
+
+.GraphDescription {
+  padding: 8px 0;
+}
+.GraphAuthor {
+  font: var(--small-regular);
+  color: var(--text-default);
+}
+.GraphPublisher {
+  font: var(--small-regular);
+  color: var(--text-default);
+}

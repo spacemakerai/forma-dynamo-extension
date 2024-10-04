@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
-import { DropZone } from "../DropZone";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { v4 } from "uuid";
 import { filterForSize } from "../../utils/filterGraph";
 import { captureException } from "../../util/sentry";
-import { Delete } from "../../icons/Delete";
-import { File } from "../../icons/File";
+import styles from "./PublishGraph.module.pcss";
+import { DropZone } from "../DropZone";
+import GraphItem from "../GraphItem/GraphItem";
 
 type DynamoGraph = {
   Name: string;
@@ -26,63 +26,6 @@ type PageState =
   | { type: "publishing" }
   | { type: "published" }
   | { type: "failed" };
-
-function Item({ graph, onClear }: { graph: DynamoGraph; onClear: () => void }) {
-  return (
-    <div
-      key={graph.Id}
-      style={{
-        padding: "8px 8px 8px 0px",
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-      }}
-    >
-      <div style={{ display: "flex", flexDirection: "colum", overflow: "hidden" }}>
-        <div
-          style={{
-            width: "24px",
-            height: "24px",
-            justifyContent: "center",
-            alignItems: "center",
-            display: "flex",
-          }}
-        >
-          <div
-            style={{
-              width: "18px",
-              height: "18px",
-              minWidth: "18px",
-              backgroundColor: "#3C3C3C",
-              borderRadius: "4px",
-              justifyContent: "center",
-              alignItems: "center",
-              display: "flex",
-            }}
-          >
-            <File />
-          </div>
-        </div>
-        <div style={{ height: "24px", alignContent: "center" }}>{graph.Name}.dyn</div>
-      </div>
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <div
-          style={{
-            display: "flex",
-            cursor: "pointer",
-            height: "24px",
-            width: "24px",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          onClick={onClear}
-        >
-          <Delete />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export function PublishGraph({
   initialValue,
@@ -163,102 +106,91 @@ export function PublishGraph({
     if (uploadedGraph?.Author?.length) setAuthor(uploadedGraph.Author);
   }, [uploadedGraph]);
 
-  const onClear = useCallback(() => {
-    setName("");
-    setDescription("");
-    setAuthor("");
-    setUploadedGraph(undefined);
-  }, []);
-
   return (
     <>
-      <weave-button onClick={() => setPage({ name: "default" })}>{"<"} Cancel</weave-button>
-
-      <div style={{ marginTop: "16px" }}>
-        Graph
-        {!uploadedGraph && <span style={{ color: "red" }}> *</span>}
-        <div style={{ marginTop: "8px" }}>
+      <div className={styles.ShareGraphTitle}>Share Graph</div>
+      {!uploadedGraph && (
+        <>
+          <div style={{ margin: "8px 0" }}>
+            Upload graph {!uploadedGraph && <span style={{ color: "red" }}> *</span>}
+          </div>
           <DropZone
             parse={async (file: File) => JSON.parse(await file.text())}
             filetypes={[".dyn"]}
             onFileDropped={setUploadedGraph}
           />
+        </>
+      )}
+
+      {uploadedGraph && <GraphItem graph={uploadedGraph} name={uploadedGraph.Name} />}
+
+      <div className={styles.PublishGraphForm}>
+        <div className={styles.InputContainer}>
+          <div>
+            Name
+            {name === "" && <span className={styles.Required}> *</span>}
+          </div>
+          <weave-input
+            value={name}
+            className={styles.Input}
+            // @ts-ignore
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
-        {uploadedGraph && <Item graph={uploadedGraph} onClear={onClear} />}
-      </div>
 
-      <div style={{ margin: "16px 0" }}>
-        Name
-        {name === "" && <span style={{ color: "red" }}> *</span>}
-        <weave-input
-          value={name}
-          style={{ width: "100%" }}
-          // @ts-ignore
-          onChange={(e) => setName(e.target.value)}
-          className={name === "" ? "required" : ""}
-        />
-      </div>
+        <div className={styles.InputContainer}>
+          <div>
+            Description
+            {description === "" && <span className={styles.Required}> *</span>}
+          </div>
+          <textarea
+            value={description}
+            className={styles.TextArea}
+            // @ts-ignore
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
 
-      <div style={{ marginBottom: "16px" }}>
-        Description
-        {description === "" && <span style={{ color: "red" }}> *</span>}
-        <textarea
-          value={description}
-          style={{
-            width: "calc(100% - 14px)",
-            height: "70px",
-            font: "var(--medium-medium)",
-            padding: "6px 6px",
-            borderColor: "rgba(128, 128, 128, 0.2)",
-            color: "var(--text-default)",
-            outline: 0,
-            resize: "none",
-          }}
-          // @ts-ignore
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
+        <div className={styles.InputContainer}>
+          <div>
+            Author
+            {author === "" && <span className={styles.Required}> *</span>}
+          </div>
+          <weave-input
+            value={author}
+            className={styles.Input}
+            // @ts-ignore
+            onChange={(e) => setAuthor(e.target.value)}
+          />
+        </div>
 
-      <div style={{ marginBottom: "16px" }}>
-        Author
-        {author === "" && <span style={{ color: "red" }}> *</span>}
-        <weave-input
-          value={author}
-          style={{ width: "100%" }}
-          // @ts-ignore
-          onChange={(e) => setAuthor(e.target.value)}
-        />
-      </div>
+        <div className={styles.InputContainer}>
+          <div>
+            Publisher
+            {publisher?.name === "" && <span className={styles.Required}> *</span>}
+          </div>
+          <weave-input value={publisher?.name} disabled={true} className={styles.Input} />
+        </div>
 
-      <div style={{ marginBottom: "16px" }}>
-        Publisher
-        {publisher?.name === "" && <span style={{ color: "red" }}> *</span>}
-        <weave-input value={publisher?.name} disabled={true} style={{ width: "100%" }} />
-      </div>
+        {state.type === "invalid" && <div className={styles.ErrorMessage}>{state.message}</div>}
 
-      {state.type === "invalid" && (
-        <div style={{ color: "red", marginBottom: "16px" }}>{state.message}</div>
-      )}
+        {state.type === "failed" && (
+          <div className={styles.ErrorMessage}>Sharing failed. Try again.</div>
+        )}
 
-      {state.type === "failed" && (
-        <div style={{ color: "red", marginBottom: "16px" }}>Sharing failed. Try again.</div>
-      )}
-
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <weave-button
-          style={{ width: "120px" }}
-          variant="solid"
-          disabled={state.type === "publishing"}
-          onClick={publishGraph}
-        >
-          {state.type === "publishing" ? "Sharing" : "Share"}
-        </weave-button>
+        <div className={styles.ButtonContainer}>
+          <weave-button className={styles.Button} onClick={() => setPage({ name: "default" })}>
+            Cancel
+          </weave-button>
+          <weave-button
+            className={styles.Button}
+            variant="solid"
+            disabled={state.type === "publishing"}
+            onClick={publishGraph}
+          >
+            {state.type === "publishing" ? "Sharing" : "Share"}
+          </weave-button>
+        </div>
       </div>
     </>
   );
