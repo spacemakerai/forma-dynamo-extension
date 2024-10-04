@@ -86,27 +86,27 @@ export function MyGraphs({
     }
   };
 
-  // const localOpenGraph = useLocalOpenGraph(
-  //   dynamoLocal.state,
-  //   dynamoLocal.dynamo as DynamoService & { current: () => Promise<GraphInfo> },
-  // );
+  const localOpenGraph = useLocalOpenGraph(
+    dynamoLocal.state,
+    dynamoLocal.dynamo as DynamoService & { current: () => Promise<GraphInfo> },
+  );
 
-  const localOpenGraph: GraphInfo = {
-    id: "example-graph-id",
-    name: "Example Graph",
-    metadata: {
-      author: "John Doe",
-      description: "This is an example graph.",
-      thumbnail: "example-thumbnail-url",
-      customProperties: {},
-      dynamoVersion: "2.0",
-    },
-    dependencies: [],
-    inputs: [],
-    issues: [],
-    outputs: [],
-    status: "",
-  };
+  // const localOpenGraph: GraphInfo = {
+  //   id: "example-graph-id",
+  //   name: "Example Graph",
+  //   metadata: {
+  //     author: "John Doe",
+  //     description: "This is an example graph.",
+  //     thumbnail: "example-thumbnail-url",
+  //     customProperties: {},
+  //     dynamoVersion: "2.0",
+  //   },
+  //   dependencies: [],
+  //   inputs: [],
+  //   issues: [],
+  //   outputs: [],
+  //   status: "",
+  // };
 
   const [dropped, setDropped] = useState<any[]>(graphs);
 
