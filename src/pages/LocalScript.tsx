@@ -128,10 +128,12 @@ export function AnimatedLoading() {
       <weave-skeleton-item width="70%" style={{ marginBottom: "5px" }} />
       <weave-skeleton-item width="50%" style={{ marginBottom: "5px" }} />
       {slow && (
-        <div style={{ marginTop: "5px" }}>
-          This is taking longer than usual. Please open Dynamo and check if it is blocked with a
-          message dialog.
-        </div>
+        <>
+          <div style={{ marginTop: "5px" }}>This is taking longer than usual.</div>
+          <div style={{ marginTop: "5px" }}>
+            Please open Dynamo and check if it is blocked with a message dialog.
+          </div>
+        </>
       )}
     </div>
   );

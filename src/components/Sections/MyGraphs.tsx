@@ -164,12 +164,16 @@ export function MyGraphs({
             name={isEmpty(localOpenGraph.id) ? "Home" : `${localOpenGraph.name || "Untitled"}.dyn`}
             graph={localOpenGraph}
             onOpen={() => {
-              setGraph({
-                type: "FolderGraph",
-                id: localOpenGraph.id,
-                name: localOpenGraph.name || "Untitled",
-                metadata: localOpenGraph.metadata,
-              });
+              if (isEmpty(localOpenGraph.id)) {
+                setGraph({ type: "UNSAVED", id: "2", name: "Home", graph: localOpenGraph });
+              } else {
+                setGraph({
+                  type: "FolderGraph",
+                  id: localOpenGraph.id,
+                  name: localOpenGraph.name || "Untitled",
+                  metadata: localOpenGraph.metadata,
+                });
+              }
             }}
           />
         )}

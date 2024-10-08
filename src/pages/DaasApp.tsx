@@ -39,7 +39,7 @@ function useDaasStatus(daas: DynamoService) {
 }
 
 export function DaasApp() {
-  const [, setEnv] = useState<"daas" | "local">("daas");
+  const [env, setEnv] = useState<"daas" | "local">("daas");
   const [graph, setGraph] = useState<JSONGraph | FolderGraphInfo | UnSavedGraph | undefined>(
     undefined,
   );
@@ -59,13 +59,21 @@ export function DaasApp() {
     });
   }, []);
 
+  const onTabChange = (e: CustomEvent) => {
+    if (e.detail.tabContentId === "localContent") {
+      setEnv("local");
+    } else {
+      setEnv("daas");
+    }
+  };
+
   const { daasStatus, reconnect } = useDaasStatus(daas);
 
   const dynamoLocal = useDynamoConnector();
 
   return (
     <div className={styles.AppContainer}>
-      <forma-tabs selectedtab={0} gap="16">
+      <forma-tabs selectedtab={0} gap="16" onChange={onTabChange}>
         <forma-tab for="dynamoServiceContent" hpadding="0" label="Service" />
         <div id="dynamoServiceContent" slot="content" className={styles.TabContent}>
           <AppContent
@@ -74,7 +82,7 @@ export function DaasApp() {
             isHubEditor={isHubEditor}
             graph={graph}
             setGraph={setGraph}
-            env={"daas"}
+            env={env}
             setEnv={setEnv}
             daasStatus={daasStatus}
             reconnect={reconnect}
@@ -84,14 +92,14 @@ export function DaasApp() {
         </div>
         <forma-tab for="localContent" hpadding="0" label="Desktop" />
         <div id="localContent" slot="content" className={styles.TabContent}>
-          {dynamoLocal.state.connectionState === "CONNECTED" ? (
+          {dynamoLocal.state.connectionState !== "CONNECTED" ? (
             <AppContent
               page={page}
               setPage={setPage}
               isHubEditor={isHubEditor}
               graph={graph}
               setGraph={setGraph}
-              env={"local"}
+              env={env}
               setEnv={setEnv}
               daasStatus={daasStatus}
               reconnect={reconnect}
