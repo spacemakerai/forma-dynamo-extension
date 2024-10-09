@@ -258,7 +258,7 @@ class Dynamo implements DynamoService {
   }
 
   async serverInfo(): Promise<ServerInfo> {
-    const response = await this._fetch(`${this.url}/v1/ç`);
+    const response = await this._fetch(`${this.url}/v1/server-info`);
     return await response.json();
   }
 
