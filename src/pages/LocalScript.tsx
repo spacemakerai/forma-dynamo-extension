@@ -823,9 +823,11 @@ export function LocalScript({
             )}
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <weave-button style={{ margin: "0 8px", width: "60px" }} onClick={reload}>
-              Update
-            </weave-button>
+            {env === "local" && (
+              <weave-button style={{ margin: "0 8px", width: "60px" }} onClick={reload}>
+                Update
+              </weave-button>
+            )}
             <weave-button
               style={{ width: "40px", margin: "0" }}
               variant="solid"
