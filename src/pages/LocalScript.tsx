@@ -604,6 +604,8 @@ export function LocalScript({
     return filterUnsupportedPackages(script.graph);
   }, [env, script]);
 
+  console.log(result);
+
   return (
     <>
       {activeSelectionNode && (
@@ -616,7 +618,7 @@ export function LocalScript({
       <div
         style={{
           display: activeSelectionNode ? "none" : "block",
-          height: "100%",
+          paddingBottom: `${fixedFooterHeight + 20}px`,
         }}
       >
         {/* <weave-button
@@ -728,7 +730,10 @@ export function LocalScript({
             </>
           )}
         </div>
-        {result.type === "success" && result.data.info.issues.length > 0 && (
+        {result.type === "success" && result.data.title?.includes("Required property") && (
+          <div>Failed</div>
+        )}
+        {result.type === "success" && result.data.info?.issues?.length > 0 && (
           <WarningBanner
             title={"The graph returned with warnings or errors."}
             warnings={result.data.info.issues.map((issue) => ({

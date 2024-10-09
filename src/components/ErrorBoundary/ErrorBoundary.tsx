@@ -1,6 +1,7 @@
-import { captureException, Sentry } from "../util/sentry";
+import { captureException, Sentry } from "../../util/sentry";
 import { ComponentChildren } from "preact";
 import { useCallback, useErrorBoundary } from "preact/hooks";
+import styles from "./ErrorBoundary.module.pcss";
 
 export function useCustomErrorBoundary(): [unknown, () => void] {
   const [error, resetError] = useErrorBoundary((error, errorInfo) => {
@@ -19,7 +20,7 @@ export function ErrorBoundary({ children }: { children: ComponentChildren }) {
   const [error, resetError] = useCustomErrorBoundary();
   if (!error) return <>{children}</>;
   return (
-    <section class="error-view">
+    <section className={styles.AppContainer}>
       <p class="error-title">Unexpected error occurred</p>
       <p>We have been notified of this error and will look into it.</p>
       <p>

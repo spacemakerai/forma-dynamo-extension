@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
 import { JSONGraph, UnSavedGraph } from "../../types/types";
 import { DynamoState } from "../../DynamoConnector";
-import { DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo";
+import { DaasState, DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo";
 import { filterForSize } from "../../utils/filterGraph";
 import { DropZone } from "../DropZone";
 import { captureException } from "../../util/sentry";
@@ -65,6 +65,7 @@ export function MyGraphs({
   dynamoLocal,
   setPage,
   isHubEditor,
+  daasStatus,
 }: {
   env: "daas" | "local";
   setGraph: (v: FolderGraphInfo | JSONGraph | UnSavedGraph) => void;
@@ -76,6 +77,7 @@ export function MyGraphs({
     v: { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any },
   ) => void;
   isHubEditor: boolean;
+  daasStatus: DaasState;
 }) {
   const graphs = () => {
     try {
@@ -148,54 +150,69 @@ export function MyGraphs({
     [setGraph],
   );
 
+  const dynamoVersion = daasStatus.status === "online" && daasStatus.serverInfo?.dynamoVersion;
+
   return (
-    <div className={styles.MyGraphsContainer}>
-      <div className={styles.Header}>Upload graph</div>
-      <DropZone
-        parse={async (file: File) => JSON.parse(await file.text())}
-        filetypes={FILE_TYPES}
-        onFileDropped={addDropped}
-      />
-
-      <div className={styles.Header}>My graphs</div>
-      <div className={styles.GraphsList}>
-        {env === "local" && localOpenGraph && (
-          <GraphItem
-            name={isEmpty(localOpenGraph.id) ? "Home" : `${localOpenGraph.name || "Untitled"}.dyn`}
-            graph={localOpenGraph}
-            onOpen={() => {
-              if (isEmpty(localOpenGraph.id)) {
-                setGraph({ type: "UNSAVED", id: "2", name: "Home", graph: localOpenGraph });
-              } else {
-                setGraph({
-                  type: "FolderGraph",
-                  id: localOpenGraph.id,
-                  name: localOpenGraph.name || "Untitled",
-                  metadata: localOpenGraph.metadata,
-                });
-              }
-            }}
-          />
-        )}
-
-        {!!dropped?.length &&
-          dropped?.map((graph, i) => (
+    <>
+      {env === "local" && localOpenGraph && (
+        <div className={styles.MyGraphsContainer}>
+          <div className={styles.Header}>Connected graph</div>
+          <div className={styles.GraphsList}>
             <GraphItem
-              name={`${graph.Name}.dyn`}
-              key={graph.Id}
-              onShare={
-                isHubEditor ? () => setPage({ name: "publish", initialValue: graph }) : undefined
+              name={
+                isEmpty(localOpenGraph.id) ? "Home" : `${localOpenGraph.name || "Untitled"}.dyn`
               }
-              graph={graph}
-              onRemove={() => {
-                if (window.confirm("Are you sure you want to delete this graph?")) {
-                  removeDropped(i);
+              graph={localOpenGraph}
+              onOpen={() => {
+                if (isEmpty(localOpenGraph.id)) {
+                  setGraph({ type: "UNSAVED", id: "2", name: "Home", graph: localOpenGraph });
+                } else {
+                  setGraph({
+                    type: "FolderGraph",
+                    id: localOpenGraph.id,
+                    name: localOpenGraph.name || "Untitled",
+                    metadata: localOpenGraph.metadata,
+                  });
                 }
               }}
-              onOpen={() => Graph(graph)}
             />
-          ))}
+          </div>
+
+          <div className={styles.DynamoVersion}>Connected Dynamo version: {dynamoVersion}</div>
+        </div>
+      )}
+
+      <div className={styles.MyGraphsContainer}>
+        <div className={styles.Header}>Upload graph</div>
+        <DropZone
+          parse={async (file: File) => JSON.parse(await file.text())}
+          filetypes={FILE_TYPES}
+          onFileDropped={addDropped}
+        />
+        <div className={styles.Header}>Uploaded graphs</div>
+        <div className={styles.GraphsList}>
+          {!!dropped?.length ? (
+            dropped?.map((graph, i) => (
+              <GraphItem
+                name={`${graph.Name}.dyn`}
+                key={graph.Id}
+                onShare={
+                  isHubEditor ? () => setPage({ name: "publish", initialValue: graph }) : undefined
+                }
+                graph={graph}
+                onRemove={() => {
+                  if (window.confirm("Are you sure you want to delete this graph?")) {
+                    removeDropped(i);
+                  }
+                }}
+                onOpen={() => Graph(graph)}
+              />
+            ))
+          ) : (
+            <div className={styles.NoGraphs}>No graphs have been uploaded yet</div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

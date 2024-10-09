@@ -91,6 +91,7 @@ export type Run = {
     outputs: Output[];
     status: string;
   };
+  title?: string;
 };
 
 export type FolderGraphInfo = {
@@ -257,7 +258,7 @@ class Dynamo implements DynamoService {
   }
 
   async serverInfo(): Promise<ServerInfo> {
-    const response = await this._fetch(`${this.url}/v1/server-info`);
+    const response = await this._fetch(`${this.url}/v1/ç`);
     return await response.json();
   }
 
