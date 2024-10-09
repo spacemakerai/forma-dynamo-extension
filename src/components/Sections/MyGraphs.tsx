@@ -191,7 +191,7 @@ export function MyGraphs({
         />
         <div className={styles.Header}>Uploaded graphs</div>
         <div className={styles.GraphsList}>
-          {!!dropped?.length ? (
+          {dropped?.length ? (
             dropped?.map((graph, i) => (
               <GraphItem
                 name={`${graph.Name}.dyn`}
