@@ -105,6 +105,7 @@ export function DaasApp() {
               reconnect={reconnect}
               daas={daas}
               dynamoLocal={dynamoLocal}
+              hideUploadDropZone={true}
             />
           ) : (
             <SetupWizard />

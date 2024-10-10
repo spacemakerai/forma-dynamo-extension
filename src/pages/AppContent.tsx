@@ -25,6 +25,7 @@ type Props = {
   daasStatus: DaasState;
   reconnect: () => void;
   daas: Dynamo;
+  hideUploadDropZone?: boolean;
 };
 
 const AppContent = ({
@@ -39,6 +40,7 @@ const AppContent = ({
   daasStatus,
   reconnect,
   daas,
+  hideUploadDropZone,
 }: Props) => {
   return (
     <>
@@ -56,6 +58,7 @@ const AppContent = ({
                 setPage={setPage}
                 isHubEditor={isHubEditor}
                 daasStatus={daasStatus}
+                hideUploadDropZone={hideUploadDropZone}
               />
               <SharedGraphs
                 setPage={setPage}

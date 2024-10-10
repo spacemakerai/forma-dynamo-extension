@@ -66,6 +66,7 @@ export function MyGraphs({
   setPage,
   isHubEditor,
   daasStatus,
+  hideUploadDropZone,
 }: {
   env: "daas" | "local";
   setGraph: (v: FolderGraphInfo | JSONGraph | UnSavedGraph) => void;
@@ -78,6 +79,7 @@ export function MyGraphs({
   ) => void;
   isHubEditor: boolean;
   daasStatus: DaasState;
+  hideUploadDropZone?: boolean;
 }) {
   const graphs = () => {
     try {
@@ -179,12 +181,16 @@ export function MyGraphs({
       )}
 
       <div className={styles.MyGraphsContainer}>
-        <div className={styles.Header}>Upload graph</div>
-        <DropZone
-          parse={async (file: File) => JSON.parse(await file.text())}
-          filetypes={FILE_TYPES}
-          onFileDropped={addDropped}
-        />
+        {!hideUploadDropZone && (
+          <>
+            <div className={styles.Header}>Upload graph</div>
+            <DropZone
+              parse={async (file: File) => JSON.parse(await file.text())}
+              filetypes={FILE_TYPES}
+              onFileDropped={addDropped}
+            />
+          </>
+        )}
         <div className={styles.Header}>Uploaded graphs</div>
         <div className={styles.GraphsList}>
           {dropped?.length ? (
