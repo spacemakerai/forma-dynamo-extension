@@ -30,11 +30,13 @@ type PageState =
 export function PublishGraph({
   initialValue,
   setPage,
+  env,
 }: {
   initialValue?: any;
   setPage: (
     page: { name: "default" } | { name: "setup" } | { name: "publish"; default?: any },
   ) => void;
+  env: "daas" | "local";
 }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -122,7 +124,7 @@ export function PublishGraph({
         </>
       )}
 
-      {uploadedGraph && <GraphItem graph={uploadedGraph} name={uploadedGraph.Name} />}
+      {uploadedGraph && <GraphItem env={env} graph={uploadedGraph} name={uploadedGraph.Name} />}
 
       <div className={styles.PublishGraphForm}>
         <div className={styles.InputContainer}>
