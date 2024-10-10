@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
 import { JSONGraph, UnSavedGraph } from "../../types/types";
 import { DynamoState } from "../../DynamoConnector";
-import { DaasState, DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo";
+import { DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo";
 import { filterForSize } from "../../utils/filterGraph";
 import { DropZone } from "../DropZone";
 import { captureException } from "../../util/sentry";
@@ -65,8 +65,6 @@ export function MyGraphs({
   dynamoLocal,
   setPage,
   isHubEditor,
-  daasStatus,
-  hideUploadDropZone,
 }: {
   env: "daas" | "local";
   setGraph: (v: FolderGraphInfo | JSONGraph | UnSavedGraph) => void;
@@ -78,8 +76,6 @@ export function MyGraphs({
     v: { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any },
   ) => void;
   isHubEditor: boolean;
-  daasStatus: DaasState;
-  hideUploadDropZone?: boolean;
 }) {
   const graphs = () => {
     try {
@@ -181,16 +177,14 @@ export function MyGraphs({
       )}
 
       <div className={styles.MyGraphsContainer}>
-        {!hideUploadDropZone && (
-          <>
-            <div className={styles.Header}>Upload graph</div>
-            <DropZone
-              parse={async (file: File) => JSON.parse(await file.text())}
-              filetypes={FILE_TYPES}
-              onFileDropped={addDropped}
-            />
-          </>
-        )}
+        <>
+          <div className={styles.Header}>Upload graph</div>
+          <DropZone
+            parse={async (file: File) => JSON.parse(await file.text())}
+            filetypes={FILE_TYPES}
+            onFileDropped={addDropped}
+          />
+        </>
         <div className={styles.Header}>Uploaded graphs</div>
         <div className={styles.GraphsList}>
           {dropped?.length ? (
