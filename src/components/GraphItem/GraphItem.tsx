@@ -1,8 +1,8 @@
-import styles from "./GraphItem.module.pcss";
+import { useCallback, useRef, useState } from "preact/hooks";
 import Logo from "../../assets/Logo.png";
 import { Arrow } from "../../icons/Arrow";
-import { useCallback, useRef, useState } from "preact/hooks";
 import { useClickOutside } from "./ClickOutside";
+import styles from "./GraphItem.module.pcss";
 
 type Props = {
   name: string;
@@ -29,6 +29,8 @@ const GraphItem = ({ name, graph, onOpen, onRemove, onShare, onEdit, onDownload 
   const isExpandable =
     graph?.graph?.Description || graph?.graph?.Author || graph?.metadata?.publisher?.name;
 
+  const isOnlyDownloadable = !onRemove && !onShare && !onEdit && onDownload;
+
   return (
     <div style={{ width: "100%" }} key={graph.Id}>
       <div
@@ -48,7 +50,7 @@ const GraphItem = ({ name, graph, onOpen, onRemove, onShare, onEdit, onDownload 
           <div className={styles.GraphName}>{name}</div>
         </div>
         <div className={styles.GraphActions}>
-          {onOpen && (
+          {onOpen && !isOnlyDownloadable && (
             <weave-button
               style={{ "--button-height": "20px", width: "50px" }}
               onClick={(e) => {
@@ -59,7 +61,12 @@ const GraphItem = ({ name, graph, onOpen, onRemove, onShare, onEdit, onDownload 
               Open
             </weave-button>
           )}
-          {hasActionItems && (
+          {isOnlyDownloadable && (
+            <weave-button style={{ "--button-height": "20px" }} onClick={onDownload}>
+              Download
+            </weave-button>
+          )}
+          {hasActionItems && !isOnlyDownloadable && (
             <div
               style={{
                 height: "16px",
