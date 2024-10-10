@@ -55,7 +55,6 @@ const AppContent = ({
                 dynamoLocal={dynamoLocal}
                 setPage={setPage}
                 isHubEditor={isHubEditor}
-                daasStatus={daasStatus}
               />
               <SharedGraphs
                 setPage={setPage}

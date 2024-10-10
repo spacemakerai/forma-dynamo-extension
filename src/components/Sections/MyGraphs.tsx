@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
 import { JSONGraph, UnSavedGraph } from "../../types/types";
 import { DynamoState } from "../../DynamoConnector";
-import { DaasState, DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo";
+import { DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo";
 import { filterForSize } from "../../utils/filterGraph";
 import { DropZone } from "../DropZone";
 import { captureException } from "../../util/sentry";
@@ -65,7 +65,6 @@ export function MyGraphs({
   dynamoLocal,
   setPage,
   isHubEditor,
-  daasStatus,
 }: {
   env: "daas" | "local";
   setGraph: (v: FolderGraphInfo | JSONGraph | UnSavedGraph) => void;
@@ -77,7 +76,6 @@ export function MyGraphs({
     v: { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any },
   ) => void;
   isHubEditor: boolean;
-  daasStatus: DaasState;
 }) {
   const graphs = () => {
     try {
@@ -150,8 +148,6 @@ export function MyGraphs({
     [setGraph],
   );
 
-  const dynamoVersion = daasStatus.status === "online" && daasStatus.serverInfo?.dynamoVersion;
-
   return (
     <>
       {env === "local" && localOpenGraph && (
@@ -177,8 +173,6 @@ export function MyGraphs({
               }}
             />
           </div>
-
-          <div className={styles.DynamoVersion}>Connected Dynamo version: {dynamoVersion}</div>
         </div>
       )}
 
