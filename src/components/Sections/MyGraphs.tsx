@@ -150,8 +150,6 @@ export function MyGraphs({
     [setGraph],
   );
 
-  const dynamoVersion = daasStatus.status === "online" && daasStatus.serverInfo?.dynamoVersion;
-
   return (
     <>
       {env === "local" && localOpenGraph && (
@@ -177,8 +175,6 @@ export function MyGraphs({
               }}
             />
           </div>
-
-          <div className={styles.DynamoVersion}>Connected Dynamo version: {dynamoVersion}</div>
         </div>
       )}
 
