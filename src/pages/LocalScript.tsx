@@ -604,8 +604,6 @@ export function LocalScript({
     return filterUnsupportedPackages(script.graph);
   }, [env, script]);
 
-  console.log(result);
-
   return (
     <>
       {activeSelectionNode && (
