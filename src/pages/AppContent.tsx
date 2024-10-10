@@ -43,7 +43,7 @@ const AppContent = ({
   return (
     <>
       {page.name === "publish" && isHubEditor && (
-        <PublishGraph setPage={setPage} initialValue={page.initialValue} />
+        <PublishGraph env={env} setPage={setPage} initialValue={page.initialValue} />
       )}
       {page.name === "default" && (
         <>
