@@ -177,14 +177,12 @@ export function MyGraphs({
       )}
 
       <div className={styles.MyGraphsContainer}>
-        <>
-          <div className={styles.Header}>Upload graph</div>
-          <DropZone
-            parse={async (file: File) => JSON.parse(await file.text())}
-            filetypes={FILE_TYPES}
-            onFileDropped={addDropped}
-          />
-        </>
+        <div className={styles.Header}>Upload graph</div>
+        <DropZone
+          parse={async (file: File) => JSON.parse(await file.text())}
+          filetypes={FILE_TYPES}
+          onFileDropped={addDropped}
+        />
         <div className={styles.Header}>Uploaded graphs</div>
         <div className={styles.GraphsList}>
           {dropped?.length ? (
