@@ -65,6 +65,7 @@ export function DaasApp() {
     } else {
       setEnv("daas");
     }
+    setGraph(undefined);
   };
 
   const { daasStatus, reconnect } = useDaasStatus(daas);

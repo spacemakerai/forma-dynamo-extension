@@ -7,6 +7,7 @@ import { DropZone } from "../DropZone";
 import { captureException } from "../../util/sentry";
 import styles from "./MyGraphs.module.pcss";
 import GraphItem from "../GraphItem/GraphItem";
+import { download } from "../SharedGraphs/SharedGraphs";
 
 const FILE_TYPES = [".dyn"];
 
@@ -159,6 +160,7 @@ export function MyGraphs({
                 isEmpty(localOpenGraph.id) ? "Home" : `${localOpenGraph.name || "Untitled"}.dyn`
               }
               graph={localOpenGraph}
+              env={env}
               onOpen={() => {
                 if (isEmpty(localOpenGraph.id)) {
                   setGraph({ type: "UNSAVED", id: "2", name: "Home", graph: localOpenGraph });
@@ -190,6 +192,7 @@ export function MyGraphs({
               <GraphItem
                 name={`${graph.Name}.dyn`}
                 key={graph.Id}
+                env={env}
                 onShare={
                   isHubEditor ? () => setPage({ name: "publish", initialValue: graph }) : undefined
                 }
@@ -199,7 +202,8 @@ export function MyGraphs({
                     removeDropped(i);
                   }
                 }}
-                onOpen={() => Graph(graph)}
+                onOpen={env === "daas" ? () => Graph(graph) : undefined}
+                onDownload={() => download(graph)}
               />
             ))
           ) : (

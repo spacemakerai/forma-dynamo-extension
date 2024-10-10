@@ -7,6 +7,7 @@ import styles from "./GraphItem.module.pcss";
 type Props = {
   name: string;
   graph: any;
+  env: "daas" | "local";
   onOpen?: () => void;
   onRemove?: () => void;
   onShare?: () => void;
@@ -14,7 +15,7 @@ type Props = {
   onDownload?: () => void;
 };
 
-const GraphItem = ({ name, graph, onOpen, onRemove, onShare, onEdit, onDownload }: Props) => {
+const GraphItem = ({ name, graph, env, onOpen, onRemove, onShare, onEdit, onDownload }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [menuPosition, setMenuPosition] = useState<{
     left: number;
@@ -25,11 +26,9 @@ const GraphItem = ({ name, graph, onOpen, onRemove, onShare, onEdit, onDownload 
   }, []);
   const ref = useRef<HTMLElement | null>(null);
   useClickOutside(ref, onClose);
-  const hasActionItems = onRemove || onShare || onEdit || onDownload;
+  const hasActionItems = onRemove || onShare || onEdit || (onDownload && env === "daas");
   const isExpandable =
     graph?.graph?.Description || graph?.graph?.Author || graph?.metadata?.publisher?.name;
-
-  const isOnlyDownloadable = !onRemove && !onShare && !onEdit && onDownload;
 
   return (
     <div style={{ width: "100%" }} key={graph.Id}>
@@ -50,7 +49,7 @@ const GraphItem = ({ name, graph, onOpen, onRemove, onShare, onEdit, onDownload 
           <div className={styles.GraphName}>{name}</div>
         </div>
         <div className={styles.GraphActions}>
-          {onOpen && !isOnlyDownloadable && (
+          {onOpen && (
             <weave-button
               style={{ "--button-height": "20px", width: "50px" }}
               onClick={(e) => {
@@ -61,12 +60,18 @@ const GraphItem = ({ name, graph, onOpen, onRemove, onShare, onEdit, onDownload 
               Open
             </weave-button>
           )}
-          {isOnlyDownloadable && (
-            <weave-button style={{ "--button-height": "20px" }} onClick={onDownload}>
+          {onDownload && env === "local" && (
+            <weave-button
+              style={{ "--button-height": "20px" }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDownload();
+              }}
+            >
               Download
             </weave-button>
           )}
-          {hasActionItems && !isOnlyDownloadable && (
+          {hasActionItems && (
             <div
               style={{
                 height: "16px",
@@ -95,12 +100,16 @@ const GraphItem = ({ name, graph, onOpen, onRemove, onShare, onEdit, onDownload 
       >
         <div className={styles.GraphDetails}>
           <div className={styles.GraphDescription}>{graph?.graph?.Description}</div>
-          <div className={styles.GraphAuthor}>
-            <b>Author:</b> {graph?.graph?.Author}
-          </div>
-          <div className={styles.GraphPublisher}>
-            <b>Publisher:</b> {graph?.metadata?.publisher?.name}
-          </div>
+          {graph?.graph?.Author && (
+            <div className={styles.GraphAuthor}>
+              <b>Author:</b> {graph?.graph?.Author}
+            </div>
+          )}
+          {graph?.metadata?.publisher?.name && (
+            <div className={styles.GraphPublisher}>
+              <b>Publisher:</b> {graph?.metadata?.publisher?.name}
+            </div>
+          )}
         </div>
       </div>
       {menuPosition && hasActionItems && (
@@ -114,7 +123,7 @@ const GraphItem = ({ name, graph, onOpen, onRemove, onShare, onEdit, onDownload 
                 }}
               />
             )}
-            {onDownload && (
+            {onDownload && env === "daas" && (
               <forma-context-menu-item
                 text="Download"
                 onClick={() => {

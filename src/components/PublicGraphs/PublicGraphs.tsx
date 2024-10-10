@@ -57,10 +57,12 @@ function useSampleGraphs(): JSONGraph[] {
 }
 
 export function PublicGraphs({
+  env,
   setEnv,
   setGraph,
   dynamoLocal,
 }: {
+  env: "daas" | "local";
   setEnv: (env: "daas" | "local") => void;
   setGraph: (graph: JSONGraph) => void;
   dynamoLocal: {
@@ -79,6 +81,7 @@ export function PublicGraphs({
             name={script.name}
             key={script.id}
             graph={script}
+            env={env}
             onEdit={
               dynamoLocal.state.connectionState === "CONNECTED"
                 ? () => {
@@ -88,7 +91,7 @@ export function PublicGraphs({
                 : undefined
             }
             onDownload={() => download(script)}
-            onOpen={() => setGraph(script)}
+            onOpen={env === "daas" ? () => setGraph(script) : undefined}
           />
         );
       })}

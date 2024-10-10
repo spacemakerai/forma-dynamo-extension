@@ -57,13 +57,19 @@ const AppContent = ({
                 isHubEditor={isHubEditor}
               />
               <SharedGraphs
+                env={env}
                 setPage={setPage}
                 setEnv={setEnv}
                 setGraph={setGraph}
                 dynamoLocal={dynamoLocal}
                 isHubEditor={isHubEditor}
               />
-              <PublicGraphs setEnv={setEnv} setGraph={setGraph} dynamoLocal={dynamoLocal} />
+              <PublicGraphs
+                env={env}
+                setEnv={setEnv}
+                setGraph={setGraph}
+                dynamoLocal={dynamoLocal}
+              />
             </>
           )}
           {graph && (

@@ -35,8 +35,15 @@ export const SetupWizard = () => {
         />
       ) : (
         <>
-          <div className={styles.Heading}>
-            Set up the DynamoFormaBeta package using one of the following methods:
+          <div>
+            <div className={styles.Heading}>
+              Searching for a Dynamo instance with the DynamoFormaBeta package installed on your
+              machine. You will be redirected automatically once a connection is established.
+            </div>
+            <div className={styles.Heading}>
+              If Dynamo with the DynamoFormaBeta package is not installed, you can set it up using
+              one of the following methods:
+            </div>
           </div>
           {installationMethodArray.map((method) => (
             <div

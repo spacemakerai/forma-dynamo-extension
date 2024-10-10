@@ -8,7 +8,7 @@ import { ErrorBanner } from "../Errors.tsx/ErrorBanner";
 import styles from "./SharedGraphs.module.pcss";
 import GraphItem from "../GraphItem/GraphItem";
 
-function download(graph: any) {
+export function download(graph: any) {
   const element = document.createElement("a");
   element.setAttribute(
     "href",
@@ -53,12 +53,14 @@ type SharedGraphState =
     };
 
 export function SharedGraphs({
+  env,
   setPage,
   setEnv,
   setGraph,
   dynamoLocal,
   isHubEditor,
 }: {
+  env: "daas" | "local";
   setEnv: (env: "daas" | "local") => void;
   setGraph: (graph: JSONGraph) => void;
   dynamoLocal: {
@@ -169,6 +171,7 @@ export function SharedGraphs({
             name={graph.graph.Name}
             key={graph.key}
             graph={graph}
+            env={env}
             onRemove={
               isHubEditor
                 ? () => {
@@ -179,8 +182,11 @@ export function SharedGraphs({
                 : undefined
             }
             onDownload={() => download(graph.graph)}
-            onOpen={() =>
-              setGraph({ id: "1", name: graph.graph.Name, type: "JSON", graph: graph.graph })
+            onOpen={
+              env === "daas"
+                ? () =>
+                    setGraph({ id: "1", name: graph.graph.Name, type: "JSON", graph: graph.graph })
+                : undefined
             }
             onEdit={
               dynamoLocal.state.connectionState === "CONNECTED"
