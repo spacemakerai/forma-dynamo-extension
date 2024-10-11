@@ -40,9 +40,7 @@ function useDaasStatus(daas: DynamoService) {
 
 export function DaasApp() {
   const [env, setEnv] = useState<"daas" | "local">("daas");
-  const [graph, setGraph] = useState<JSONGraph | FolderGraphInfo | UnSavedGraph | undefined>(
-    undefined,
-  );
+
   const [page, setPage] = useState<
     { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any }
   >({ name: "default" });
@@ -60,12 +58,12 @@ export function DaasApp() {
   }, []);
 
   const onTabChange = (e: CustomEvent) => {
-    if (e.detail.tabContentId === "localContent") {
+    if (e.detail.tabContentId === "localContent" && env === "daas") {
       setEnv("local");
-    } else {
+    }
+    if (e.detail.tabContentId === "dynamoServiceContent" && env === "local") {
       setEnv("daas");
     }
-    setGraph(undefined);
   };
 
   const { daasStatus, reconnect } = useDaasStatus(daas);
@@ -81,8 +79,6 @@ export function DaasApp() {
             page={page}
             setPage={setPage}
             isHubEditor={isHubEditor}
-            graph={graph}
-            setGraph={setGraph}
             env={env}
             setEnv={setEnv}
             daasStatus={daasStatus}
@@ -98,8 +94,6 @@ export function DaasApp() {
               page={page}
               setPage={setPage}
               isHubEditor={isHubEditor}
-              graph={graph}
-              setGraph={setGraph}
               env={env}
               setEnv={setEnv}
               daasStatus={daasStatus}

@@ -6,6 +6,7 @@ import { LocalScript } from "./LocalScript";
 import Dynamo, { DaasState, DynamoService, FolderGraphInfo } from "../service/dynamo";
 import { JSONGraph, UnSavedGraph } from "../types/types";
 import { DynamoState } from "../DynamoConnector";
+import { useState } from "preact/hooks";
 
 type Props = {
   page: { name: string; initialValue?: any };
@@ -13,8 +14,6 @@ type Props = {
     page: { name: "default" } | { name: "setup" } | { name: "publish"; default?: any },
   ) => void;
   isHubEditor: boolean;
-  graph: FolderGraphInfo | JSONGraph | UnSavedGraph | undefined;
-  setGraph: (graph: FolderGraphInfo | JSONGraph | UnSavedGraph) => void;
   setEnv: (env: "daas" | "local") => void;
   dynamoLocal: {
     state: DynamoState;
@@ -31,8 +30,6 @@ const AppContent = ({
   page,
   setPage,
   isHubEditor,
-  graph,
-  setGraph,
   setEnv,
   dynamoLocal,
   env,
@@ -40,6 +37,10 @@ const AppContent = ({
   reconnect,
   daas,
 }: Props) => {
+  const [graph, setGraph] = useState<JSONGraph | FolderGraphInfo | UnSavedGraph | undefined>(
+    undefined,
+  );
+
   return (
     <>
       {page.name === "publish" && isHubEditor && (
