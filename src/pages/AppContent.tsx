@@ -58,7 +58,6 @@ const AppContent = ({
               />
               <SharedGraphs
                 env={env}
-                setPage={setPage}
                 setEnv={setEnv}
                 setGraph={setGraph}
                 dynamoLocal={dynamoLocal}
@@ -67,7 +66,6 @@ const AppContent = ({
               />
               <SharedGraphs
                 env={env}
-                setPage={setPage}
                 setEnv={setEnv}
                 setGraph={setGraph}
                 dynamoLocal={dynamoLocal}

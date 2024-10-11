@@ -54,7 +54,6 @@ type SharedGraphState =
 
 export function SharedGraphs({
   env,
-  setPage,
   setEnv,
   setGraph,
   dynamoLocal,
@@ -68,9 +67,6 @@ export function SharedGraphs({
     state: DynamoState;
     dynamo: DynamoService;
   };
-  setPage: (
-    page: { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any },
-  ) => void;
   isHubEditor: boolean;
   shareDestination: "project" | "hub";
 }) {
