@@ -433,7 +433,6 @@ export function LocalScript({
       const inputs = await Promise.all(
         code.inputs.map(async ({ id, type, name }: Input) => {
           const value = state[id];
-          console.log(type);
           if (type === "SelectElementsHttp" || type === "SelectElementsExperimental") {
             const paths = (value || []) as string[];
 
