@@ -1,4 +1,4 @@
-import { Dispatch, StateUpdater, useCallback, useEffect, useMemo, useState } from "preact/hooks";
+import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { captureException } from "../../util/sentry.ts";
 import { Output } from "./types.tsx";
@@ -12,14 +12,12 @@ type SendElementDTO = {
 };
 
 function useTogglePreview(elements: SendElementDTO[], isPreviewActive: boolean) {
-  console.log(isPreviewActive);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const [renderId] = useState(UUID.v4());
 
   useEffect(() => {
     if (!isPreviewLoading && isPreviewVisible !== isPreviewActive) {
-      console.log("når blir denne kalt?");
       setIsPreviewLoading(true);
       if (!isPreviewVisible) {
         Forma.experimental.render.element
@@ -31,23 +29,28 @@ function useTogglePreview(elements: SendElementDTO[], isPreviewActive: boolean) 
           })
           .then(() => {
             setIsPreviewVisible(true);
+          })
+          .catch((e) => {
+            captureException(e, "Failed to render preview");
+          })
+          .finally(() => {
             setIsPreviewLoading(false);
           });
       } else {
-        Forma.experimental.render.element.remove({ id: renderId }).then(() => {
-          setIsPreviewVisible(false);
-          setIsPreviewLoading(false);
-        });
+        Forma.experimental.render.element
+          .remove({ id: renderId })
+          .then(() => {
+            setIsPreviewVisible(false);
+          })
+          .catch((e) => {
+            captureException(e, "Failed to remove preview");
+          })
+          .finally(() => {
+            setIsPreviewLoading(false);
+          });
       }
     }
-  }, [
-    isPreviewLoading,
-    isPreviewActive,
-    setIsPreviewLoading,
-    elements,
-    renderId,
-    isPreviewVisible,
-  ]);
+  }, [isPreviewLoading, isPreviewActive, elements, renderId, isPreviewVisible]);
 }
 
 function useAddElement(
@@ -60,7 +63,9 @@ function useAddElement(
     setIsAdding(true);
     try {
       await Promise.all(
-        elements.map(({ urn, transform }) => Forma.proposal.addElement({ urn, transform })),
+        elements
+          .filter((element) => !!element)
+          .map(({ urn, transform }) => Forma.proposal.addElement({ urn, transform })),
       );
       togglePreview(false);
       setIsAdded(true);
