@@ -433,7 +433,7 @@ export function LocalScript({
       const inputs = await Promise.all(
         code.inputs.map(async ({ id, type, name }: Input) => {
           const value = state[id];
-          if (type === "SelectElementsExperimental") {
+          if (type === "SelectElementsHttp" || type === "SelectElementsExperimental") {
             const paths = (value || []) as string[];
 
             const elements = await Promise.all(
@@ -451,7 +451,7 @@ export function LocalScript({
               nodeId: id,
               value: JSON.stringify({ elements, region: Forma.getRegion() }),
             };
-          } else if (type === "GetAllElementsExperimental") {
+          } else if (type === "GetAllElementsHttp" || type === "GetAllElementsExperimental") {
             const urn = await Forma.proposal.getRootUrn();
 
             return {
@@ -461,12 +461,12 @@ export function LocalScript({
                 region: Forma.getRegion(),
               }),
             };
-          } else if (type === "GetProjectExperimental") {
+          } else if (type === "GetProjectHttp" || type === "GetProjectExperimental") {
             return {
               nodeId: id,
               value: JSON.stringify({ projectId: Forma.getProjectId(), region: Forma.getRegion() }),
             };
-          } else if (type === "GetTerrainExperimental") {
+          } else if (type === "GetTerrainHttp" || type === "GetTerrainExperimental") {
             const [path] = await Forma.geometry.getPathsByCategory({
               category: "terrain",
             });
