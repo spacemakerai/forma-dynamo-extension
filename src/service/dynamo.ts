@@ -180,65 +180,13 @@ class Dynamo implements DynamoService {
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      // const jobResponse = await this._fetch(`${this.url}/v1/graph/results/${jobId}`, {
-      //   method: "GET",
-      // });
-      const job = {
-        status: "COMPLETE",
-        result: {
-          info: {
-            issues: [
-              {
-                nodeId: "3071764a-815e-4e04-8b4d-2ce9e8ae81d1",
-                nodeName: "Integrate.ByRepresentations",
-                type: "WARNING",
-                message:
-                  "Integrate.ByRepresentations operation failed. \r\nObject reference not set to an instance of an object.",
-              },
-              {
-                nodeId: "d9e5d783-b951-42e8-9bac-9d6c12aed9d1",
-                nodeName: "TerrainShape.ByCurve",
-                type: "WARNING",
-                message:
-                  "TerrainShape.ByCurve operation failed. \r\nUnable to cast object of type 'System.String' to type 'System.Byte[]'.",
-              },
-            ],
-            status: "WARNINGS",
-            outputs: [
-              {
-                id: "eecab10a-c774-4ee3-ae63-3ee6121e7fc4",
-                name: "SendElementsToForma",
-                value: [
-                  '[{"urn":"urn:adsk-forma-elements:integrate:pro_brv2lm8dmg:0a8429ef-2a63-41f8-bb52-89d9f46d6505:1728643644867","transform":[1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0]}]',
-                  null,
-                ],
-                valueString: {
-                  count: 0,
-                  value: "List",
-                  items: {
-                    0: {
-                      path: ["0"],
-                      count: 0,
-                      value:
-                        '[{"urn":"urn:adsk-forma-elements:integrate:pro_brv2lm8dmg:0a8429ef-2a63-41f8-bb52-89d9f46d6505:1728643644867","transform":[1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0]}]',
-                    },
-                    "1": {
-                      path: ["1"],
-                      count: 0,
-                    },
-                  },
-                },
-                type: "SendElementsToForma",
-              },
-            ],
-            id: "",
-            name: "",
-          },
-        },
-      };
+      const jobResponse = await this._fetch(`${this.url}/v1/graph/results/${jobId}`, {
+        method: "GET",
+      });
+      const job = await jobResponse.json();
 
       if (job.status === "SUCCESS" || job.status === "COMPLETE") {
-        return job.result as any;
+        return job.result;
       } else if (job.status === "FAILED") {
         throw new FetchError("Job failed", 500);
       }
@@ -315,13 +263,12 @@ class Dynamo implements DynamoService {
   }
 
   static async health(port: number): Promise<Health> {
-    // const response = await fetch(`http://localhost:${port}/v1/health`);
-    // if (response.status === 200) {
-    //   return { status: 200, port };
-    // }
+    const response = await fetch(`http://localhost:${port}/v1/health`);
+    if (response.status === 200) {
+      return { status: 200, port };
+    }
 
-    // throw new FetchError(response.statusText, response.status);
-    throw new Error("Kjeks");
+    throw new FetchError(response.statusText, response.status);
   }
 }
 
