@@ -54,11 +54,11 @@ type SharedGraphState =
 
 export function SharedGraphs({
   env,
-  setPage,
   setEnv,
   setGraph,
   dynamoLocal,
   isHubEditor,
+  shareDestination,
 }: {
   env: "daas" | "local";
   setEnv: (env: "daas" | "local") => void;
@@ -67,13 +67,12 @@ export function SharedGraphs({
     state: DynamoState;
     dynamo: DynamoService;
   };
-  setPage: (
-    page: { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any },
-  ) => void;
   isHubEditor: boolean;
+  shareDestination: "project" | "hub";
 }) {
   const [state, setState] = useState<SharedGraphState>({ type: "fetching" });
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     (async () => {
       try {
@@ -84,14 +83,16 @@ export function SharedGraphs({
           return;
         }
         const project = await Forma.project.get();
-        const all = await Forma.extensions.storage.listObjects({ authcontext: project.hubId });
+        const all = await Forma.extensions.storage.listObjects({
+          authcontext: shareDestination === "project" ? Forma.getProjectId() : project.hubId,
+        });
 
         setState({ type: "partial", n: all.results.length });
         const graphs = await Promise.all(
           all.results.map(async (data) => {
             const object = await Forma.extensions.storage.getTextObject({
               key: data.key,
-              authcontext: project.hubId,
+              authcontext: shareDestination === "project" ? Forma.getProjectId() : project.hubId,
             });
             return {
               key: data.key,
@@ -115,7 +116,10 @@ export function SharedGraphs({
     async (key: string) => {
       try {
         const project = await Forma.project.get();
-        await Forma.extensions.storage.deleteObject({ key, authcontext: project.hubId });
+        await Forma.extensions.storage.deleteObject({
+          key,
+          authcontext: shareDestination === "project" ? Forma.getProjectId() : project.hubId,
+        });
         setState((prev) =>
           prev.type === "success"
             ? { type: "success", graphs: prev.graphs.filter((graph) => graph.key !== key) }
@@ -141,7 +145,7 @@ export function SharedGraphs({
 
   return (
     <div className={styles.GraphContainer}>
-      <h4 className={styles.Header}>Graphs shared in my hub</h4>
+      <h4 className={styles.Header}>Graphs shared in my {shareDestination}</h4>
 
       {error && <ErrorBanner message={error} />}
 
@@ -158,7 +162,7 @@ export function SharedGraphs({
       )}
 
       {state.type === "success" && state.graphs.length === 0 && (
-        <div className={styles.NoGraphs}>No graphs are shared in your hub</div>
+        <div className={styles.NoGraphs}>No graphs are shared in your {shareDestination}</div>
       )}
 
       {state.type === "error" && (
@@ -203,11 +207,6 @@ export function SharedGraphs({
             }
           />
         ))}
-
-      <div className={styles.Footer}>
-        <div className={styles.FooterText}>Share graph in this hub</div>
-        <weave-button onClick={() => setPage({ name: "publish" })}>Share graph</weave-button>
-      </div>
     </div>
   );
 }
