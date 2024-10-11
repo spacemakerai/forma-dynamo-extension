@@ -44,7 +44,9 @@ export function DaasApp() {
     undefined,
   );
   const [page, setPage] = useState<
-    { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any }
+    | { name: "default" }
+    | { name: "setup" }
+    | { name: "publish"; initialValue?: any; initialShareDestination?: "project" | "hub" }
   >({ name: "default" });
 
   const [isHubEditor, setIsHubEditor] = useState<boolean>(false);
