@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
-import Dynamo, { DaasState, DynamoService, FolderGraphInfo } from "../service/dynamo";
+import Dynamo, { DaasState, DynamoService } from "../service/dynamo";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { useDynamoConnector } from "../DynamoConnector";
-import { JSONGraph, UnSavedGraph } from "../types/types";
 import { captureException } from "../util/sentry";
 import { SetupWizard } from "../components/SetupDesktop/SetupWizard";
 import styles from "./Pages.module.pcss";
