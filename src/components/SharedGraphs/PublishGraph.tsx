@@ -42,6 +42,7 @@ export function PublishGraph({
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const [publisher, setPublisher] = useState<User | undefined>(undefined);
+  const [shareDestination, setShareDestination] = useState<"project" | "hub">("project");
   const [state, setState] = useState<PageState>({ type: "default" });
 
   useEffect(() => {
@@ -75,7 +76,7 @@ export function PublishGraph({
       const project = await Forma.project.get();
       await Forma.extensions.storage.setObject({
         key: v4(),
-        authcontext: project.hubId,
+        authcontext: shareDestination === "project" ? Forma.getProjectId() : project.hubId,
         data: JSON.stringify(
           filterForSize({
             ...uploadedGraph,
@@ -100,7 +101,7 @@ export function PublishGraph({
       captureException(e, "Error sharing graph");
       setState({ type: "failed" });
     }
-  }, [name, description, author, publisher, uploadedGraph, setPage]);
+  }, [name, description, author, publisher, shareDestination, uploadedGraph, setPage]);
 
   useEffect(() => {
     if (uploadedGraph?.Name?.length) setName(uploadedGraph.Name);
@@ -179,6 +180,30 @@ export function PublishGraph({
         {state.type === "failed" && (
           <div className={styles.ErrorMessage}>Sharing failed. Try again.</div>
         )}
+
+        <div className={styles.InputContainer}>
+          <div>Choose where to share your graph:</div>
+          <weave-radio-button-group
+            onChange={(e) =>
+              setShareDestination((e.target as HTMLInputElement).value as "project" | "hub")
+            }
+          >
+            <weave-radio-button
+              style={{ margin: "2px 0", cursor: "pointer" }}
+              name="environment"
+              value="project"
+              label="Project"
+              checked={shareDestination === "project"}
+            />
+            <weave-radio-button
+              style={{ margin: "2px 0", cursor: "pointer" }}
+              name="environment"
+              value="hub"
+              label="Hub"
+              checked={shareDestination === "hub"}
+            />
+          </weave-radio-button-group>
+        </div>
 
         <div className={styles.ButtonContainer}>
           <weave-button className={styles.Button} onClick={() => setPage({ name: "default" })}>
