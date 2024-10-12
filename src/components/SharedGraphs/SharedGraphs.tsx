@@ -59,6 +59,7 @@ export function SharedGraphs({
   dynamoLocal,
   isHubEditor,
   shareDestination,
+  setPage,
 }: {
   env: "daas" | "local";
   setEnv: (env: "daas" | "local") => void;
@@ -69,6 +70,12 @@ export function SharedGraphs({
   };
   isHubEditor: boolean;
   shareDestination: "project" | "hub";
+  setPage: (
+    page:
+      | { name: "default" }
+      | { name: "setup" }
+      | { name: "publish"; initialValue?: any; initialShareDestination?: "project" | "hub" },
+  ) => void;
 }) {
   const [state, setState] = useState<SharedGraphState>({ type: "fetching" });
   const [error, setError] = useState<string | null>(null);
@@ -110,7 +117,7 @@ export function SharedGraphs({
         setState({ type: "error", error: e?.message ?? "Unknown error" });
       }
     })();
-  }, []);
+  }, [shareDestination]);
 
   const deleteGraph = useCallback(
     async (key: string) => {
@@ -130,7 +137,7 @@ export function SharedGraphs({
         setError("Failed to delete graph");
       }
     },
-    [setState],
+    [setState, shareDestination],
   );
 
   useEffect(() => {
@@ -207,6 +214,15 @@ export function SharedGraphs({
             }
           />
         ))}
+
+      <div className={styles.Footer}>
+        <div className={styles.FooterText}>Share graph in this {shareDestination}</div>
+        <weave-button
+          onClick={() => setPage({ name: "publish", initialShareDestination: shareDestination })}
+        >
+          Share graph
+        </weave-button>
+      </div>
     </div>
   );
 }

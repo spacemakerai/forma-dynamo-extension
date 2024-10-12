@@ -9,9 +9,12 @@ import { DynamoState } from "../DynamoConnector";
 import { useState } from "preact/hooks";
 
 type Props = {
-  page: { name: string; initialValue?: any };
+  page: { name: string; initialValue?: any; initialShareDestination?: "project" | "hub" };
   setPage: (
-    page: { name: "default" } | { name: "setup" } | { name: "publish"; default?: any },
+    page:
+      | { name: "default" }
+      | { name: "setup" }
+      | { name: "publish"; initialValue?: any; initialShareDestination?: "project" | "hub" },
   ) => void;
   isHubEditor: boolean;
   setEnv: (env: "daas" | "local") => void;
@@ -44,7 +47,12 @@ const AppContent = ({
   return (
     <>
       {page.name === "publish" && isHubEditor && (
-        <PublishGraph env={env} setPage={setPage} initialValue={page.initialValue} />
+        <PublishGraph
+          env={env}
+          setPage={setPage}
+          initialValue={page.initialValue}
+          initialShareDestination={page.initialShareDestination}
+        />
       )}
       {page.name === "default" && (
         <>
@@ -64,6 +72,7 @@ const AppContent = ({
                 dynamoLocal={dynamoLocal}
                 isHubEditor={isHubEditor}
                 shareDestination="project"
+                setPage={setPage}
               />
               <SharedGraphs
                 env={env}
@@ -72,6 +81,7 @@ const AppContent = ({
                 dynamoLocal={dynamoLocal}
                 isHubEditor={isHubEditor}
                 shareDestination="hub"
+                setPage={setPage}
               />
               <PublicGraphs
                 env={env}

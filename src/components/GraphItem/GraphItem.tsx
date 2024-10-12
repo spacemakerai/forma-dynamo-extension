@@ -49,6 +49,25 @@ const GraphItem = ({ name, graph, env, onOpen, onRemove, onShare, onEdit, onDown
           <div className={styles.GraphName}>{name}</div>
         </div>
         <div className={styles.GraphActions}>
+          {hasActionItems && (
+            <div
+              style={{
+                height: "16px",
+                width: "16px",
+                transform: "rotate(90deg)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                const rect = (e.target as HTMLElement).getBoundingClientRect();
+                setMenuPosition({ left: rect.right - 85, top: rect.bottom + 5 });
+              }}
+            >
+              <weave-tripple-dot />
+            </div>
+          )}
           {onOpen && (
             <weave-button
               style={{ "--button-height": "20px", width: "50px" }}
@@ -70,25 +89,6 @@ const GraphItem = ({ name, graph, env, onOpen, onRemove, onShare, onEdit, onDown
             >
               Download
             </weave-button>
-          )}
-          {hasActionItems && (
-            <div
-              style={{
-                height: "16px",
-                width: "16px",
-                transform: "rotate(90deg)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                const rect = (e.target as HTMLElement).getBoundingClientRect();
-                setMenuPosition({ left: rect.right - 85, top: rect.bottom + 5 });
-              }}
-            >
-              <weave-tripple-dot />
-            </div>
           )}
         </div>
       </div>

@@ -29,12 +29,17 @@ type PageState =
 
 export function PublishGraph({
   initialValue,
+  initialShareDestination = "project",
   setPage,
   env,
 }: {
   initialValue?: any;
+  initialShareDestination?: "project" | "hub";
   setPage: (
-    page: { name: "default" } | { name: "setup" } | { name: "publish"; default?: any },
+    page:
+      | { name: "default" }
+      | { name: "setup" }
+      | { name: "publish"; initialValue?: any; initialShareDestination?: "project" | "hub" },
   ) => void;
   env: "daas" | "local";
 }) {
@@ -42,7 +47,9 @@ export function PublishGraph({
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const [publisher, setPublisher] = useState<User | undefined>(undefined);
-  const [shareDestination, setShareDestination] = useState<"project" | "hub">("project");
+  const [shareDestination, setShareDestination] = useState<"project" | "hub">(
+    initialShareDestination,
+  );
   const [state, setState] = useState<PageState>({ type: "default" });
 
   useEffect(() => {
