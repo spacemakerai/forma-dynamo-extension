@@ -11,10 +11,9 @@ type SendElementDTO = {
   transform: Transform;
 };
 
-function useTogglePreview(elements: SendElementDTO[], isPreviewActive: boolean) {
+function useTogglePreview(renderId: string, elements: SendElementDTO[], isPreviewActive: boolean) {
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
-  const [renderId] = useState(UUID.v4());
 
   useEffect(() => {
     if (!isPreviewLoading && isPreviewVisible !== isPreviewActive) {
@@ -81,13 +80,22 @@ function useAddElement(
 
 function PreviewAndAdd({ value }: { value: string[] }) {
   const [isPreviewActive, setIsPreviewActive] = useState(true);
+  const [renderId] = useState(UUID.v4());
 
   const elements: SendElementDTO[] = useMemo(
     () => value.map((value) => JSON.parse(value)).flat(1),
     [value],
   );
 
-  useTogglePreview(elements, isPreviewActive);
+  useTogglePreview(renderId, elements, isPreviewActive);
+
+  useEffect(() => {
+    return () => {
+      Forma.experimental.render.element.remove({ id: renderId }).catch((e) => {
+        captureException(e, "Failed to remove preview");
+      });
+    };
+  }, []);
 
   const { add, isAdding, isAdded } = useAddElement(elements, setIsPreviewActive);
 
