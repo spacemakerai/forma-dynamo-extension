@@ -1,9 +1,11 @@
-import sphereAreaGraph from "../../assets/spherearea.json";
-import buildingEnvelopeGraph from "../../assets/workflows/WorkFlow_01BuildingEnvelope.json";
-import buildingModification from "../../assets/workflows/WorkFlow_02BuildingModification.json";
-import customAnalysisIsovist from "../../assets/workflows/WorkFlow_04CustomAnalysis_Isovist.json";
-import customAnalysisTerrainSlope from "../../assets/workflows/WorkFlow_04CustomAnalysis_TerrainSlope.json";
-import customAnalysisViewToObject from "../../assets/workflows/WorkFlow_04CustomAnalysis_ViewToObject.json";
+import buildingEnvelopeGraph from "../../assets/workflows/BuildingEnvelope.json";
+import buildingModificationGraph from "../../assets/workflows/BuildingModification.json";
+import butterflyDiagram from "../../assets/workflows/ButterflyDiagram.json";
+import customAnalysisIsovist from "../../assets/workflows/IsovistAnalysis.json";
+import customAnalysisTerrainSlope from "../../assets/workflows/TerrainSlopeAnalysis.json";
+import customAnalysisViewToObject from "../../assets/workflows/ViewToObjectAnalysis.json";
+import elementCreation from "../../assets/tools/ElementCreation.json";
+import elementProperties from "../../assets/tools/ElementProperties.json";
 import { DynamoState } from "../../DynamoConnector";
 import { DynamoService } from "../../service/dynamo";
 import { JSONGraph } from "../../types/types";
@@ -27,30 +29,32 @@ function download(jsonGraph: JSONGraph) {
 
 function useSampleGraphs(): JSONGraph[] {
   return [
-    { id: "1", type: "JSON", name: "Sphere Area", graph: sphereAreaGraph },
-    { id: "2", type: "JSON", name: "Workflow_01BuildingEnvelope", graph: buildingEnvelopeGraph },
+    { id: "create", type: "JSON", name: "Element Creation", graph: elementCreation },
+    { id: "props", type: "JSON", name: "Element Properties", graph: elementProperties },
+    { id: "1", type: "JSON", name: "Building Envelope", graph: buildingEnvelopeGraph },
+    { id: "2", type: "JSON", name: "Building Modification", graph: buildingModificationGraph },
     {
       id: "3",
       type: "JSON",
-      name: "Workflow_02BuildingModification",
-      graph: buildingModification,
+      name: "Butterfly Diagram",
+      graph: butterflyDiagram,
     },
     {
       id: "4",
       type: "JSON",
-      name: "Workflow_04CustomAnalysis_Isovist",
+      name: "Isovist Analysis",
       graph: customAnalysisIsovist,
     },
     {
       id: "5",
       type: "JSON",
-      name: "Workflow_04CustomAnalysis_TerrainSlope",
+      name: "Terrain Slope Analysis",
       graph: customAnalysisTerrainSlope,
     },
     {
       id: "6",
       type: "JSON",
-      name: "Workflow_04CustomAnalysis_ViewToObject",
+      name: "View To Object Analysis",
       graph: customAnalysisViewToObject,
     },
   ];
