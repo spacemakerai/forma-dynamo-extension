@@ -117,7 +117,7 @@ export function SharedGraphs({
         setState({ type: "error", error: e?.message ?? "Unknown error" });
       }
     })();
-  }, []);
+  }, [shareDestination]);
 
   const deleteGraph = useCallback(
     async (key: string) => {
@@ -137,7 +137,7 @@ export function SharedGraphs({
         setError("Failed to delete graph");
       }
     },
-    [setState],
+    [setState, shareDestination],
   );
 
   useEffect(() => {
