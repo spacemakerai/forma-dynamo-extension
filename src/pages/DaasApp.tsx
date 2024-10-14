@@ -7,7 +7,7 @@ import { SetupWizard } from "../components/SetupDesktop/SetupWizard";
 import styles from "./Pages.module.pcss";
 import AppContent from "./AppContent";
 
-const envionment = new URLSearchParams(window.location.search).get("ext:daas") || "stg";
+const envionment = new URLSearchParams(window.location.search).get("ext:daas") || "prod";
 
 const urls: Record<string, string> = {
   DEV: "https://dev.service.dynamo.autodesk.com",
