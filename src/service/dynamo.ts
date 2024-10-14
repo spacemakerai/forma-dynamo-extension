@@ -149,9 +149,10 @@ class Dynamo implements DynamoService {
       try {
         response = await fetch(input, init);
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        ii++;
       } catch {
         console.warn("Failed to fetch, retrying...");
+      } finally {
+        ii++;
       }
     }
     return response;
@@ -263,9 +264,14 @@ class Dynamo implements DynamoService {
     const maxRetries = 3;
     let ii = 0;
     while (response.status === 500 && ii <= maxRetries) {
-      response = await this._fetch(`${this.url}/v1/graph/info`, reqData);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      ii++;
+      try {
+        response = await this._fetch(`${this.url}/v1/graph/info`, reqData);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      } catch {
+        console.warn("Failed to fetch, retrying...");
+      } finally {
+        ii++;
+      }
     }
 
     if (response.status === 200) {
