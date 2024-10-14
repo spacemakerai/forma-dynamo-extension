@@ -136,7 +136,9 @@ class Dynamo implements DynamoService {
     this.authProvider = authProvider;
 
     // Workaround to get a jump start on the API key creation (which can take ~30 seconds)
-    this._fetch(`${this.url}/v1/graph/job/create`, { method: "GET" });
+    if (!this.url.startsWith("http://localhost")) {
+      this._fetch(`${this.url}/v1/graph/job/create`, { method: "GET" });
+    }
   }
 
   async retryFetch(input: RequestInfo, init?: RequestInit | undefined): Promise<Response> {
@@ -147,11 +149,13 @@ class Dynamo implements DynamoService {
       try {
         response = await fetch(input, init);
         await new Promise((resolve) => setTimeout(resolve, 1000));
+        ii++;
+      } catch {
+        console.warn("Failed to fetch, retrying...");
       }
-      catch {}
     }
     return response;
-  } 
+  }
 
   async _fetch(input: RequestInfo, init?: RequestInit | undefined): Promise<Response> {
     if (this.authProvider && init) {
