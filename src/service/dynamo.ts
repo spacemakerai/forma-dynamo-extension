@@ -141,17 +141,12 @@ class Dynamo implements DynamoService {
 
   async retryFetch(input: RequestInfo, init?: RequestInit | undefined): Promise<Response> {
     let response = await fetch(input, init);
-    if (response.status === 403) {
-      const numRetries = 35;
+    const numRetries = 35;
+    let ii = 0;
+    while (response.status === 403 && ii < numRetries) {
       try {
-        for (let ii = 0; ii < numRetries; ii++) {
-              response = await fetch(input, init);
-              if (response.status === 403) {
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-                continue;
-              }
-              break;
-          }
+        response = await fetch(input, init);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
       catch {}
     }
@@ -245,7 +240,7 @@ class Dynamo implements DynamoService {
   }
 
   async info(target: GraphTarget): Promise<GraphInfo> {
-    const response = await this._fetch(`${this.url}/v1/graph/info`, {
+    const reqData = {
       method: "POST",
       body: JSON.stringify({
         target,
@@ -258,13 +253,22 @@ class Dynamo implements DynamoService {
           dependencies: true,
         },
       }),
-    });
+    };
+
+    let response = await this._fetch(`${this.url}/v1/graph/info`, reqData);
+    const maxRetries = 3;
+    let ii = 0;
+    while (response.status === 500 && ii <= maxRetries) {
+      response = await this._fetch(`${this.url}/v1/graph/info`, reqData);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      ii++;
+    }
 
     if (response.status === 200) {
       return await response.json();
     }
-    const body = await response.json();
 
+    const body = await response.json();
     throw new FetchError(body?.title || response.statusText, response.status);
   }
 
