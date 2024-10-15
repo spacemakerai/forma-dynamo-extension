@@ -7,6 +7,7 @@ import { captureException } from "../../util/sentry";
 import { ErrorBanner } from "../Errors.tsx/ErrorBanner";
 import styles from "./SharedGraphs.module.pcss";
 import GraphItem from "../GraphItem/GraphItem";
+import { AppPageState, ShareDestination } from "../../pages/DaasApp";
 
 export function download(graph: any) {
   const element = document.createElement("a");
@@ -57,7 +58,7 @@ export function SharedGraphs({
   setEnv,
   setGraph,
   dynamoLocal,
-  isHubEditor,
+  isEditor,
   shareDestination,
   setPage,
 }: {
@@ -68,14 +69,9 @@ export function SharedGraphs({
     state: DynamoState;
     dynamo: DynamoService;
   };
-  isHubEditor: boolean;
-  shareDestination: "project" | "hub";
-  setPage: (
-    page:
-      | { name: "default" }
-      | { name: "setup" }
-      | { name: "publish"; initialValue?: any; initialShareDestination?: "project" | "hub" },
-  ) => void;
+  isEditor: boolean;
+  shareDestination: ShareDestination;
+  setPage: (page: AppPageState) => void;
 }) {
   const [state, setState] = useState<SharedGraphState>({ type: "fetching" });
   const [error, setError] = useState<string | null>(null);
@@ -84,8 +80,8 @@ export function SharedGraphs({
     (async () => {
       try {
         setState({ type: "fetching" });
-        const hasHubAccess = await Forma.getCanViewHub();
-        if (!hasHubAccess) {
+        const hasViewAccess = shareDestination === "project" ? true : await Forma.getCanViewHub();
+        if (!hasViewAccess) {
           setState({ type: "no-access" });
           return;
         }
@@ -184,7 +180,7 @@ export function SharedGraphs({
             graph={graph}
             env={env}
             onRemove={
-              isHubEditor
+              isEditor
                 ? () => {
                     if (window.confirm("Are you sure you want to delete this graph?")) {
                       deleteGraph(graph.key);
@@ -214,15 +210,16 @@ export function SharedGraphs({
             }
           />
         ))}
-
-      <div className={styles.Footer}>
-        <div className={styles.FooterText}>Share graph in this {shareDestination}</div>
-        <weave-button
-          onClick={() => setPage({ name: "publish", initialShareDestination: shareDestination })}
-        >
-          Share graph
-        </weave-button>
-      </div>
+      {isEditor && (
+        <div className={styles.Footer}>
+          <div className={styles.FooterText}>Share graph in this {shareDestination}</div>
+          <weave-button
+            onClick={() => setPage({ name: "publish", initialShareDestination: shareDestination })}
+          >
+            Share graph
+          </weave-button>
+        </div>
+      )}
     </div>
   );
 }

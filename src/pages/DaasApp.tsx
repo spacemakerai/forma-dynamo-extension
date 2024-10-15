@@ -37,18 +37,34 @@ function useDaasStatus(daas: DynamoService) {
   return { daasStatus, reconnect: connect };
 }
 
+export enum ShareDestination {
+  Project = "project",
+  Hub = "hub",
+}
+
+export type AppPageState =
+  | {
+      name: "default";
+    }
+  | {
+      name: "setup";
+    }
+  | {
+      name: "publish";
+      initialValue?: any;
+      initialShareDestination: ShareDestination;
+    };
+
 export function DaasApp() {
   const [env, setEnv] = useState<"daas" | "local">("daas");
 
-  const [page, setPage] = useState<
-    | { name: "default" }
-    | { name: "setup" }
-    | { name: "publish"; initialValue?: any; initialShareDestination?: "project" | "hub" }
-  >({ name: "default" });
+  const [page, setPage] = useState<AppPageState>({ name: "default" });
 
   const [isHubEditor, setIsHubEditor] = useState<boolean>(false);
+  const [isProjectEditor, setIsProjectEditor] = useState<boolean>(false);
   useEffect(() => {
     Forma.getCanEditHub().then(setIsHubEditor);
+    Forma.getCanEdit().then(setIsProjectEditor);
   }, []);
 
   const daas = useMemo(() => {
@@ -80,6 +96,7 @@ export function DaasApp() {
             page={page}
             setPage={setPage}
             isHubEditor={isHubEditor}
+            isProjectEditor={isProjectEditor}
             env={env}
             setEnv={setEnv}
             daasStatus={daasStatus}
@@ -95,6 +112,7 @@ export function DaasApp() {
               page={page}
               setPage={setPage}
               isHubEditor={isHubEditor}
+              isProjectEditor={isProjectEditor}
               env={env}
               setEnv={setEnv}
               daasStatus={daasStatus}
