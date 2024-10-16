@@ -100,7 +100,7 @@ function PreviewAndAdd({ value }: { value: string[] }) {
   const { add, isAdding, isAdded } = useAddElement(elements, setIsPreviewActive);
 
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", alignItems: "center" }}>
       <div style={{ marginRight: "5px" }}>{isAdding ? "Adding..." : isAdded ? "Added" : ""}</div>
       <weave-button variant="outlined" disabled={isAdding} onClick={add}>
         Add
@@ -127,9 +127,8 @@ export function SendElementToForma({ output }: { output: Output }) {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          lineHeight: "24px",
+          alignItems: "center",
           padding: "5px 0 5px 5px",
-          height: "24px",
           borderBottom: "1px solid var(--divider-lightweight)",
         }}
       >
@@ -145,9 +144,8 @@ export function SendElementToForma({ output }: { output: Output }) {
       style={{
         display: "flex",
         justifyContent: "space-between",
-        lineHeight: "24px",
+        alignItems: "center",
         padding: "5px 0 5px 5px",
-        height: "24px",
         borderBottom: "1px solid var(--divider-lightweight)",
       }}
     >
