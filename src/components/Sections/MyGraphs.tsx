@@ -67,6 +67,7 @@ export function MyGraphs({
   dynamoLocal,
   setPage,
   isHubEditor,
+  isProjectEditor,
 }: {
   env: "daas" | "local";
   setGraph: (v: FolderGraphInfo | JSONGraph | UnSavedGraph) => void;
@@ -76,6 +77,7 @@ export function MyGraphs({
   };
   setPage: (v: AppPageState) => void;
   isHubEditor: boolean;
+  isProjectEditor: boolean;
 }) {
   const graphs = () => {
     try {
@@ -193,7 +195,7 @@ export function MyGraphs({
                 key={graph.Id}
                 env={env}
                 onShare={
-                  isHubEditor
+                  isHubEditor || isProjectEditor
                     ? () =>
                         setPage({
                           name: "publish",

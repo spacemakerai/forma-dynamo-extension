@@ -69,6 +69,7 @@ const AppContent = ({
                 dynamoLocal={dynamoLocal}
                 setPage={setPage}
                 isHubEditor={isHubEditor}
+                isProjectEditor={isProjectEditor}
               />
               <SharedGraphs
                 env={env}
