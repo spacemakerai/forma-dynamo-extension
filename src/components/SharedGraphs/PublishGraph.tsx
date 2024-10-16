@@ -6,6 +6,7 @@ import { captureException } from "../../util/sentry";
 import styles from "./PublishGraph.module.pcss";
 import { DropZone } from "../DropZone";
 import GraphItem from "../GraphItem/GraphItem";
+import { AppPageState, ShareDestination } from "../../pages/DaasApp";
 
 type DynamoGraph = {
   Name: string;
@@ -20,6 +21,10 @@ type User = {
   name: string;
 };
 
+function toUpperCaseFirstLetter(str: string) {
+  return str.slice(0, 1).toUpperCase() + str.slice(1);
+}
+
 type PageState =
   | { type: "default" }
   | { type: "invalid"; message: string }
@@ -29,27 +34,23 @@ type PageState =
 
 export function PublishGraph({
   initialValue,
-  initialShareDestination = "project",
+  initialShareDestination,
+  allowedDestinations,
   setPage,
   env,
 }: {
   initialValue?: any;
-  initialShareDestination?: "project" | "hub";
-  setPage: (
-    page:
-      | { name: "default" }
-      | { name: "setup" }
-      | { name: "publish"; initialValue?: any; initialShareDestination?: "project" | "hub" },
-  ) => void;
+  initialShareDestination: ShareDestination;
+  allowedDestinations: ShareDestination[];
+  setPage: (page: AppPageState) => void;
   env: "daas" | "local";
 }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const [publisher, setPublisher] = useState<User | undefined>(undefined);
-  const [shareDestination, setShareDestination] = useState<"project" | "hub">(
-    initialShareDestination,
-  );
+  const [shareDestination, setShareDestination] =
+    useState<ShareDestination>(initialShareDestination);
   const [state, setState] = useState<PageState>({ type: "default" });
 
   useEffect(() => {
@@ -191,24 +192,23 @@ export function PublishGraph({
         <div className={styles.InputContainer}>
           <div>Choose where to share your graph:</div>
           <weave-radio-button-group
-            onChange={(e) =>
-              setShareDestination((e.target as HTMLInputElement).value as "project" | "hub")
-            }
+            onChange={(e) => {
+              setShareDestination((e.target as HTMLInputElement).value as ShareDestination);
+              e.stopPropagation();
+            }}
           >
-            <weave-radio-button
-              style={{ margin: "2px 0", cursor: "pointer" }}
-              name="environment"
-              value="project"
-              label="Project"
-              checked={shareDestination === "project"}
-            />
-            <weave-radio-button
-              style={{ margin: "2px 0", cursor: "pointer" }}
-              name="environment"
-              value="hub"
-              label="Hub"
-              checked={shareDestination === "hub"}
-            />
+            <>
+              {allowedDestinations.map((d) => (
+                <weave-radio-button
+                  key={d}
+                  style={{ margin: "2px 0", cursor: "pointer" }}
+                  name="environment"
+                  value={d}
+                  label={toUpperCaseFirstLetter(d)}
+                  checked={shareDestination === d}
+                />
+              ))}
+            </>
           </weave-radio-button-group>
         </div>
 

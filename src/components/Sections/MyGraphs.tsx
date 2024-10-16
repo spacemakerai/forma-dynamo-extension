@@ -8,6 +8,7 @@ import { captureException } from "../../util/sentry";
 import styles from "./MyGraphs.module.pcss";
 import GraphItem from "../GraphItem/GraphItem";
 import { download } from "../SharedGraphs/SharedGraphs";
+import { AppPageState, ShareDestination } from "../../pages/DaasApp";
 
 const FILE_TYPES = [".dyn"];
 
@@ -73,9 +74,7 @@ export function MyGraphs({
     state: DynamoState;
     dynamo: DynamoService;
   };
-  setPage: (
-    v: { name: "default" } | { name: "setup" } | { name: "publish"; initialValue?: any },
-  ) => void;
+  setPage: (v: AppPageState) => void;
   isHubEditor: boolean;
 }) {
   const graphs = () => {
@@ -194,7 +193,14 @@ export function MyGraphs({
                 key={graph.Id}
                 env={env}
                 onShare={
-                  isHubEditor ? () => setPage({ name: "publish", initialValue: graph }) : undefined
+                  isHubEditor
+                    ? () =>
+                        setPage({
+                          name: "publish",
+                          initialValue: graph,
+                          initialShareDestination: ShareDestination.Project,
+                        })
+                    : undefined
                 }
                 graph={graph}
                 onRemove={() => {
