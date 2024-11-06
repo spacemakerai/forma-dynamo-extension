@@ -42,6 +42,19 @@ export enum ShareDestination {
   Hub = "hub",
 }
 
+async function addClaimsToToken(token: string) {
+  const projectId = Forma.getProjectId();
+  return await Forma.getIframeMessenger().sendRequest("auth/add-token-claims", {
+    token,
+    authcontext: projectId,
+  });
+}
+
+async function prepareFormaToken() {
+  const { accessToken } = await Forma.auth.acquireTokenOverlay();
+  return await addClaimsToToken(accessToken);
+}
+
 export type AppPageState =
   | {
       name: "default";
@@ -69,7 +82,7 @@ export function DaasApp() {
 
   const daas = useMemo(() => {
     return new Dynamo(urls[String(envionment).toUpperCase()] || urls["DEV"], async () => {
-      const { accessToken } = await Forma.auth.acquireTokenOverlay();
+      const accessToken = await prepareFormaToken();
       return `Bearer ${accessToken}`;
     });
   }, []);
