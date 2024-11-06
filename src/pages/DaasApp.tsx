@@ -44,7 +44,7 @@ export enum ShareDestination {
 
 async function addClaimsToToken(token: string) {
   const projectId = Forma.getProjectId();
-  return await Forma.getIframeMessenger().sendRequest("auth/add-token-claims", {
+  return await Forma.getIframeMessenger().sendRequest("auth/add-authcontext-claim", {
     token,
     authcontext: projectId,
   });
