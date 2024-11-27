@@ -52,7 +52,7 @@ async function addClaimsToToken(token: string) {
 
 async function getTokenWithClaims(): Promise<string> {
   const { accessToken } = await Forma.auth.acquireTokenOverlay();
-  return await addClaimsToToken(accessToken);
+  return `Bearer ${await addClaimsToToken(accessToken)}`;
 }
 
 const TOKEN_REFRESH_LEEWAY_SECONDS = 60 * 30; // 30 minutes
