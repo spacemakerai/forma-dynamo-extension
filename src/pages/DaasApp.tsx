@@ -42,6 +42,52 @@ export enum ShareDestination {
   Hub = "hub",
 }
 
+async function addClaimsToToken(token: string) {
+  const projectId = Forma.getProjectId();
+  return (await Forma.getIframeMessenger().sendRequest("auth/add-authcontext-claim", {
+    token,
+    authcontext: projectId,
+  })) as string;
+}
+
+async function getTokenWithClaims(): Promise<string> {
+  const { accessToken } = await Forma.auth.acquireTokenOverlay();
+  return `Bearer ${await addClaimsToToken(accessToken)}`;
+}
+
+const TOKEN_REFRESH_LEEWAY_SECONDS = 60 * 30; // 30 minutes
+
+function shouldRefresh(tokenPayload: { exp: number }): boolean {
+  const expiry = tokenPayload.exp;
+  const now = Math.floor(Date.now() / 1000);
+  return expiry < now + TOKEN_REFRESH_LEEWAY_SECONDS;
+}
+
+function parseToken(rawToken: string) {
+  const payload = rawToken.split(".")[1];
+  if (!payload) {
+    throw new Error("Invalid token");
+  }
+  const decodedPayload = atob(payload);
+  return JSON.parse(decodedPayload) as { exp: number };
+}
+
+function createTokenManager() {
+  let currentToken: string | undefined;
+  return async () => {
+    if (!currentToken) {
+      currentToken = await getTokenWithClaims();
+      return getTokenWithClaims();
+    }
+    const parsedToken = parseToken(currentToken);
+    if (shouldRefresh(parsedToken)) {
+      const newToken = await Forma.auth.refreshCurrentToken();
+      return await addClaimsToToken(newToken.accessToken);
+    }
+    return currentToken;
+  };
+}
+
 export type AppPageState =
   | {
       name: "default";
@@ -68,10 +114,7 @@ export function DaasApp() {
   }, []);
 
   const daas = useMemo(() => {
-    return new Dynamo(urls[String(envionment).toUpperCase()] || urls["DEV"], async () => {
-      const { accessToken } = await Forma.auth.acquireTokenOverlay();
-      return `Bearer ${accessToken}`;
-    });
+    return new Dynamo(urls[String(envionment).toUpperCase()] || urls["DEV"], createTokenManager());
   }, []);
 
   const onTabChange = (e: CustomEvent) => {
