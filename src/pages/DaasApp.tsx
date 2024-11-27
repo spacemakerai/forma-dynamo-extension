@@ -77,12 +77,13 @@ function createTokenManager() {
   return async () => {
     if (!currentToken) {
       currentToken = await getTokenWithClaims();
-      return getTokenWithClaims();
+      return currentToken;
     }
     const parsedToken = parseToken(currentToken);
     if (shouldRefresh(parsedToken)) {
       const newToken = await Forma.auth.refreshCurrentToken();
-      return await addClaimsToToken(newToken.accessToken);
+      const tokenWithClaims = await addClaimsToToken(newToken.accessToken);
+      currentToken = `Bearer ${tokenWithClaims}`;
     }
     return currentToken;
   };
