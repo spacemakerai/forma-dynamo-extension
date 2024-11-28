@@ -50,11 +50,6 @@ async function addClaimsToToken(token: string) {
   })) as string;
 }
 
-async function getTokenWithClaims(): Promise<string> {
-  const { accessToken } = await Forma.auth.acquireTokenOverlay();
-  return `Bearer ${await addClaimsToToken(accessToken)}`;
-}
-
 const TOKEN_REFRESH_LEEWAY_SECONDS = 60 * 30; // 30 minutes
 
 function shouldRefresh(tokenPayload: { exp: number }): boolean {
@@ -76,16 +71,16 @@ function createTokenManager() {
   let currentToken: string | undefined;
   return async () => {
     if (!currentToken) {
-      currentToken = await getTokenWithClaims();
-      return currentToken;
+      const { accessToken } = await Forma.auth.acquireTokenOverlay();
+      currentToken = await addClaimsToToken(accessToken);
+    } else {
+      const parsedToken = parseToken(currentToken);
+      if (shouldRefresh(parsedToken)) {
+        const newToken = await Forma.auth.refreshCurrentToken();
+        currentToken = await addClaimsToToken(newToken.accessToken);
+      }
     }
-    const parsedToken = parseToken(currentToken);
-    if (shouldRefresh(parsedToken)) {
-      const newToken = await Forma.auth.refreshCurrentToken();
-      const tokenWithClaims = await addClaimsToToken(newToken.accessToken);
-      currentToken = `Bearer ${tokenWithClaims}`;
-    }
-    return currentToken;
+    return `Bearer ${currentToken}`;
   };
 }
 
