@@ -20,7 +20,6 @@ jobs:
           node-version: "20"
       - name: Build and format checks
         run: |
-          yarn --version
           yarn install --frozen-lockfile
           yarn lint:check
           yarn prettier:check
