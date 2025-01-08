@@ -45,5 +45,5 @@
     "trailingComma": "all",
     "printWidth": 100
   },
-  "packageManager": "yarn@3.2.3"
+  "packageManager": "pnpm@9.15.3"
 }
