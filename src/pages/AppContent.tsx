@@ -6,17 +6,14 @@ import { LocalScript } from "./LocalScript";
 import Dynamo, { DaasState, DynamoService, FolderGraphInfo } from "../service/dynamo";
 import { JSONGraph, UnSavedGraph } from "../types/types";
 import { DynamoState } from "../DynamoConnector";
-import { useState } from "preact/hooks";
+import { useMemo, useState } from "preact/hooks";
+import { ShareDestination, AppPageState } from "./DaasApp";
 
 type Props = {
-  page: { name: string; initialValue?: any; initialShareDestination?: "project" | "hub" };
-  setPage: (
-    page:
-      | { name: "default" }
-      | { name: "setup" }
-      | { name: "publish"; initialValue?: any; initialShareDestination?: "project" | "hub" },
-  ) => void;
+  page: AppPageState;
+  setPage: (page: AppPageState) => void;
   isHubEditor: boolean;
+  isProjectEditor: boolean;
   setEnv: (env: "daas" | "local") => void;
   dynamoLocal: {
     state: DynamoState;
@@ -33,6 +30,7 @@ const AppContent = ({
   page,
   setPage,
   isHubEditor,
+  isProjectEditor,
   setEnv,
   dynamoLocal,
   env,
@@ -43,14 +41,21 @@ const AppContent = ({
   const [graph, setGraph] = useState<JSONGraph | FolderGraphInfo | UnSavedGraph | undefined>(
     undefined,
   );
+  const allowedDestinations = useMemo(() => {
+    const destinations: ShareDestination[] = [];
+    if (isProjectEditor) destinations.push(ShareDestination.Project);
+    if (isHubEditor) destinations.push(ShareDestination.Hub);
+    return destinations;
+  }, [isHubEditor, isProjectEditor]);
 
   return (
     <>
-      {page.name === "publish" && isHubEditor && (
+      {page.name === "publish" && allowedDestinations.length > 0 && (
         <PublishGraph
           env={env}
           setPage={setPage}
           initialValue={page.initialValue}
+          allowedDestinations={allowedDestinations}
           initialShareDestination={page.initialShareDestination}
         />
       )}
@@ -64,14 +69,15 @@ const AppContent = ({
                 dynamoLocal={dynamoLocal}
                 setPage={setPage}
                 isHubEditor={isHubEditor}
+                isProjectEditor={isProjectEditor}
               />
               <SharedGraphs
                 env={env}
                 setEnv={setEnv}
                 setGraph={setGraph}
                 dynamoLocal={dynamoLocal}
-                isHubEditor={isHubEditor}
-                shareDestination="project"
+                isEditor={isProjectEditor}
+                shareDestination={ShareDestination.Project}
                 setPage={setPage}
               />
               <SharedGraphs
@@ -79,8 +85,8 @@ const AppContent = ({
                 setEnv={setEnv}
                 setGraph={setGraph}
                 dynamoLocal={dynamoLocal}
-                isHubEditor={isHubEditor}
-                shareDestination="hub"
+                isEditor={isHubEditor}
+                shareDestination={ShareDestination.Hub}
                 setPage={setPage}
               />
               <PublicGraphs
