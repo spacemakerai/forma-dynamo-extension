@@ -1,5 +1,6 @@
 import { useCallback, useState } from "preact/hooks";
 import { Import } from "../assets/icons/Import";
+import styles from "./DropZone.module.pcss";
 
 export function DropZone<T>({
   filetypes,
@@ -66,22 +67,9 @@ export function DropZone<T>({
   );
 
   return (
-    <div
-      id="dropzone"
-      style={{ zIndex: 2, cursor: "pointer", position: "relative", flexGrow: 1 }}
-      onClick={onClickDropZone}
-    >
+    <div id="dropzone" className={styles.DropzoneContainer} onClick={onClickDropZone}>
       <div
-        style={{
-          display: "flex",
-          padding: "16px",
-          backgroundColor: "white",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          border: "1px dashed var(--border-base)",
-          borderRadius: "4px",
-        }}
+        className={styles.DropzoneContent}
         onDragOver={(e) => {
           e.preventDefault();
         }}
@@ -91,20 +79,11 @@ export function DropZone<T>({
         onDrop={onDrop}
       >
         <Import />
-        <b>Drag & Drop</b>
-        {error && (
-          <div
-            style={{ cursor: "pointer" }}
-            onClick={(e) => {
-              e.stopPropagation();
-              setError(false);
-            }}
-          >
-            <span style={{ color: "red" }}>Error: Failed to parse file.</span>
-            <span> x</span>
-          </div>
+        <div className={styles.DropzoneText}>Drag & drop</div>
+        {error && <div className={styles.ErrorText}>failed to parse file</div>}
+        {!error && (
+          <div className={styles.FiletypesText}>files to upload ({filetypes.join(", ")})</div>
         )}
-        {!error && <>Files to import ({filetypes.join(", ")})</>}
       </div>
     </div>
   );

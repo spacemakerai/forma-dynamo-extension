@@ -91,6 +91,7 @@ export type Run = {
     outputs: Output[];
     status: string;
   };
+  title?: string;
 };
 
 export type FolderGraphInfo = {
@@ -133,6 +134,28 @@ class Dynamo implements DynamoService {
   constructor(url: string, authProvider?: () => Promise<string>) {
     this.url = url;
     this.authProvider = authProvider;
+
+    // Workaround to get a jump start on the API key creation (which can take ~30 seconds)
+    if (!this.url.startsWith("http://localhost")) {
+      this._fetch(`${this.url}/v1/graph/job/create`, { method: "GET" });
+    }
+  }
+
+  async retryFetch(input: RequestInfo, init?: RequestInit | undefined): Promise<Response> {
+    let response = await fetch(input, init);
+    const numRetries = 35;
+    let ii = 0;
+    while (response.status === 403 && ii < numRetries) {
+      try {
+        response = await fetch(input, init);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      } catch {
+        console.warn("Failed to fetch, retrying...");
+      } finally {
+        ii++;
+      }
+    }
+    return response;
   }
 
   async _fetch(input: RequestInfo, init?: RequestInit | undefined): Promise<Response> {
@@ -144,8 +167,7 @@ class Dynamo implements DynamoService {
         init.headers = headers;
       }
     }
-
-    return fetch(input, init);
+    return this.retryFetch(input, init);
   }
 
   async runAsync(target: GraphTarget, inputs: RunInputs): Promise<Run> {
@@ -169,7 +191,7 @@ class Dynamo implements DynamoService {
       }),
     });
 
-    const response = await this._fetch(`${this.url}/v1/graph/job/${jobId}/run`, {
+    const response = await this._fetch(`${this.url}/v1/graph/job/${jobId}/run?passtoken=1`, {
       method: "POST",
     });
 
@@ -223,11 +245,11 @@ class Dynamo implements DynamoService {
   }
 
   async info(target: GraphTarget): Promise<GraphInfo> {
-    const response = await this._fetch(`${this.url}/v1/graph/info`, {
+    const reqData = {
       method: "POST",
       body: JSON.stringify({
         target,
-        options: {
+        data: {
           metadata: true,
           issues: true,
           status: true,
@@ -236,13 +258,27 @@ class Dynamo implements DynamoService {
           dependencies: true,
         },
       }),
-    });
+    };
+
+    let response = await this._fetch(`${this.url}/v1/graph/info`, reqData);
+    const maxRetries = 3;
+    let ii = 0;
+    while (response.status === 500 && ii <= maxRetries) {
+      try {
+        response = await this._fetch(`${this.url}/v1/graph/info`, reqData);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      } catch {
+        console.warn("Failed to fetch, retrying...");
+      } finally {
+        ii++;
+      }
+    }
 
     if (response.status === 200) {
       return await response.json();
     }
-    const body = await response.json();
 
+    const body = await response.json();
     throw new FetchError(body?.title || response.statusText, response.status);
   }
 

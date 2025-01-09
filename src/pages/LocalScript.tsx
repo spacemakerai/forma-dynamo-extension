@@ -22,28 +22,27 @@ import {
   GraphTarget,
   Input,
 } from "../service/dynamo.js";
-import { JSONGraph } from "../types/types.ts";
+import { JSONGraph, UnSavedGraph } from "../types/types.ts";
 import { WarningBanner } from "../components/Warnings/WarningBanner.tsx";
-import { EnvironmentSelector } from "../components/EnvironmentSelector.tsx";
-import { Desktop } from "../icons/Desktop.tsx";
-import { Service } from "../icons/Service.tsx";
 import { DynamoState } from "../DynamoConnector.ts";
-import { IndicatorActive } from "../assets/icons/IndicatorActive.tsx";
-import { IndicatorInactive } from "../assets/icons/InidcatorInactive.tsx";
-import { IndicatorError } from "../assets/icons/InidcatorError.tsx";
+// import { IndicatorActive } from "../assets/icons/IndicatorActive.tsx";
+// import { IndicatorInactive } from "../assets/icons/InidcatorInactive.tsx";
+// import { IndicatorError } from "../assets/icons/InidcatorError.tsx";
 import { filterUnsupportedPackages, Package } from "../utils/daasSupportedPackages.ts";
 import { transformCoordinates } from "../utils/transformCoordinates.ts";
 
-type Status = "online" | "offline" | "error";
+// type Status = "online" | "offline" | "error";
 
-function StatusIcon({ status }: { status: Status }) {
-  if (status === "online") {
-    return <IndicatorActive />;
-  } else if (status === "offline") {
-    return <IndicatorInactive />;
-  }
-  return <IndicatorError />;
-}
+const IdentityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+
+// function StatusIcon({ status }: { status: Status }) {
+//   if (status === "online") {
+//     return <IndicatorActive />;
+//   } else if (status === "offline") {
+//     return <IndicatorInactive />;
+//   }
+//   return <IndicatorError />;
+// }
 
 function getDefaultValues(scriptInfo: ScriptResult) {
   if (scriptInfo.type === "loaded") {
@@ -85,7 +84,9 @@ function useScript(script: Script, dynamo: DynamoService): [ScriptResult, () => 
     const target: GraphTarget =
       script.type === "JSON"
         ? { type: "JsonGraphTarget", graph: script.graph }
-        : { path: script.id, type: "PathGraphTarget" };
+        : script.type === "FolderGraph"
+        ? { path: script.id, type: "PathGraphTarget" }
+        : { type: "CurrentGraphTarget" };
 
     dynamo
       .info(target)
@@ -127,10 +128,12 @@ export function AnimatedLoading() {
       <weave-skeleton-item width="70%" style={{ marginBottom: "5px" }} />
       <weave-skeleton-item width="50%" style={{ marginBottom: "5px" }} />
       {slow && (
-        <div style={{ marginTop: "5px" }}>
-          This is taking longer than usual. Please open Dynamo and check if it is blocked with a
-          message dialog.
-        </div>
+        <>
+          <div style={{ marginTop: "5px" }}>This is taking longer than usual.</div>
+          <div style={{ marginTop: "5px" }}>
+            Please open Dynamo and check if it is blocked with a message dialog.
+          </div>
+        </>
       )}
     </div>
   );
@@ -291,11 +294,29 @@ async function getAllPaths() {
   return findAllPaths("root");
 }
 
-export type Script = FolderGraphInfo | JSONGraph;
+export type Script = FolderGraphInfo | JSONGraph | UnSavedGraph;
+
+function createGraphTarget(script: Script, scriptInfo: ScriptResult): GraphTarget {
+  if (script.type === "FolderGraph" && scriptInfo.type === "loaded") {
+    return { type: "PathGraphTarget", path: scriptInfo.data.id };
+  } else if (script.type === "JSON") {
+    return { type: "JsonGraphTarget", contents: JSON.stringify(script.graph) };
+  } else if (script.type === "UNSAVED") {
+    return { type: "CurrentGraphTarget" };
+  }
+
+  throw new Error(`Invalid script type: ${JSON.stringify(script.type)}`);
+}
+
+function serviceIncludesCurrentFunction(
+  service: DynamoService,
+): service is DynamoService & { current: () => Promise<GraphInfo | undefined> } {
+  return (service as DynamoService & { current: () => Promise<GraphInfo> }).current !== undefined;
+}
 
 export function LocalScript({
   env,
-  setEnv,
+  // setEnv,
   script,
   setScript,
   services,
@@ -335,6 +356,67 @@ export function LocalScript({
 
   const [result, setResult] = useState<RunResult>({ type: "init" });
 
+  useEffect(() => {
+    // TODO: There exists some strangeness (maybe a bug somewhere):
+    // - Open in local dynamo a script that is saved from one of the "Graphs provided by Autodesk" e.g. cloud models.
+    // - Open the script here, but from the "Graphs provided by Autodesk" section. e.g. open a new cloud copy.
+    // The local script and the cloud model is now linked, and running the cloud model will run the local script.
+    // The names in dynamo and dynamo extensions are however out of sync.
+    // **May be related to the name variable that is rendered below.**
+
+    const isUsingLocalDynamo = env === "local";
+    const hasExtensionLoadedItsScript = scriptInfo.type === "loaded";
+    if (!isUsingLocalDynamo || !hasExtensionLoadedItsScript) return;
+
+    const dynamoService = services.local.dynamo;
+    if (!serviceIncludesCurrentFunction(dynamoService)) {
+      console.error("Service does not include current function");
+      return;
+    }
+
+    // clearInterval() does not cancel promises. This variable cancels any state changes.
+    let isCancelled = false;
+    const interval = setInterval(async () => {
+      // May throw exceptions if not connected to local dynamo or if local dynamo is busy. Ignore them.
+      const graphActiveInDynamoLocal = await dynamoService.current().catch(() => undefined);
+
+      const scriptIsLocalUnsavedCopyOfActiveScriptHere = graphActiveInDynamoLocal?.id !== "";
+      const dynamoAndExtensionHasSameScriptId = graphActiveInDynamoLocal?.id === scriptInfo.data.id;
+
+      // Case: Script has changed in local dynamo, Update the script in the extension.
+      if (
+        !isCancelled &&
+        graphActiveInDynamoLocal !== undefined &&
+        scriptIsLocalUnsavedCopyOfActiveScriptHere &&
+        !dynamoAndExtensionHasSameScriptId
+      ) {
+        setScript({ type: "FolderGraph", ...graphActiveInDynamoLocal });
+        return;
+      }
+
+      // Case: Same script has changed in local dynamo, (e.g. updated input/output nodes) reload the script in the extension.
+      /*if (
+        !isCancelled &&
+        graphActiveInDynamoLocal !== undefined &&
+        dynamoAndExtensionHasSameScriptId &&
+        !isSameScripts(scriptInfo.data, graphActiveInDynamoLocal)
+      ) {
+        console.log(
+          "reload script",
+          graphActiveInDynamoLocal !== undefined,
+          dynamoAndExtensionHasSameScriptId,
+          !isSameScripts(scriptInfo.data, graphActiveInDynamoLocal),
+        );
+        reload();
+        return;
+      }*/
+    }, 1000);
+    return () => {
+      isCancelled = true;
+      clearInterval(interval);
+    };
+  }, [env, reload, scriptInfo, services.local.dynamo, setScript]);
+
   const setValue = useCallback(
     (id: string, value: any) => setState((state) => ({ ...state, [id]: value })),
     [],
@@ -351,56 +433,40 @@ export function LocalScript({
       const inputs = await Promise.all(
         code.inputs.map(async ({ id, type, name }: Input) => {
           const value = state[id];
-          if (type === "SelectElementsExperimental") {
+          if (type === "SelectElementsHttp" || type === "SelectElementsExperimental") {
             const paths = (value || []) as string[];
 
             const elements = await Promise.all(
               paths.map(async (path) => ({
                 urn: (await Forma.elements.getByPath({ path })).element?.urn,
+                path,
                 worldTransform:
                   path === "root"
-                    ? [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                    ? IdentityMatrix
                     : (await Forma.elements.getWorldTransform({ path })).transform,
               })),
             );
 
-            const elementMap: { [urn: string]: number[] } = {};
-            elements.forEach((element) => {
-              elementMap[element.urn] = element.worldTransform;
-            });
+            return {
+              nodeId: id,
+              value: JSON.stringify({ elements, region: Forma.getRegion() }),
+            };
+          } else if (type === "GetAllElementsHttp" || type === "GetAllElementsExperimental") {
+            const urn = await Forma.proposal.getRootUrn();
 
             return {
               nodeId: id,
-              value: JSON.stringify(elementMap),
+              value: JSON.stringify({
+                elements: [{ urn, path: "root", worldTransform: IdentityMatrix }],
+                region: Forma.getRegion(),
+              }),
             };
-          } else if (type === "GetAllElementsExperimental") {
-            const paths = await getAllPaths();
-
-            const elements = await Promise.all(
-              paths.map(async (path) => ({
-                urn: (await Forma.elements.getByPath({ path })).element?.urn,
-                worldTransform:
-                  path === "root"
-                    ? [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-                    : (await Forma.elements.getWorldTransform({ path })).transform,
-              })),
-            );
-
-            const elementMap: { [urn: string]: number[] } = {};
-            elements.forEach((element) => {
-              elementMap[element.urn] = element.worldTransform;
-            });
-
+          } else if (type === "GetProjectHttp" || type === "GetProjectExperimental") {
             return {
               nodeId: id,
-              value: JSON.stringify(elementMap),
+              value: JSON.stringify({ projectId: Forma.getProjectId(), region: Forma.getRegion() }),
             };
-          } else if (type === "GetProjectExperimental") {
-            return {
-              nodeId: id,
-              value: Forma.getProjectId(),
-            };
-          } else if (type === "GetTerrainExperimental") {
+          } else if (type === "GetTerrainHttp" || type === "GetTerrainExperimental") {
             const [path] = await Forma.geometry.getPathsByCategory({
               category: "terrain",
             });
@@ -409,7 +475,10 @@ export function LocalScript({
 
             return {
               nodeId: id,
-              value: JSON.stringify({ [element.urn]: transform }),
+              value: JSON.stringify({
+                elements: [{ urn: element.urn, path, worldTransform: transform }],
+                region: Forma.getRegion(),
+              }),
             };
           } else if (
             type === "FormaSelectElements" ||
@@ -491,13 +560,9 @@ export function LocalScript({
         }),
       );
 
-      const target: GraphTarget =
-        script.type === "FolderGraph"
-          ? { type: "PathGraphTarget", path: scriptInfo.data.id }
-          : { type: "JsonGraphTarget", contents: JSON.stringify(script.graph) };
       setResult({
         type: "success",
-        data: await service.dynamo.run(target, inputs),
+        data: await service.dynamo.run(createGraphTarget(script, scriptInfo), inputs),
       });
     } catch (e) {
       console.error(e);
@@ -551,16 +616,16 @@ export function LocalScript({
       <div
         style={{
           display: activeSelectionNode ? "none" : "block",
-          height: "100%",
+          paddingBottom: `${fixedFooterHeight + 20}px`,
         }}
       >
-        <weave-button
+        {/* <weave-button
           style={{ marginTop: "16px" }}
           variant="outlined"
           onClick={() => setScript(undefined)}
         >
           {"<"} Back
-        </weave-button>
+        </weave-button> */}
         <div
           ref={headerRef}
           style={{
@@ -569,7 +634,8 @@ export function LocalScript({
             alignItems: "center",
           }}
         >
-          <h3>{script.name}</h3>
+          {/** Before the scriptInfo === loaded, use the script.name */}
+          <h3>{(scriptInfo.type === "loaded" && scriptInfo.data.name) || script.name}</h3>
         </div>
         <div
           style={{
@@ -590,7 +656,7 @@ export function LocalScript({
           {!service.connected && (
             <div>
               Not connected to Dynamo
-              <div>
+              {/* <div>
                 <weave-button
                   style={{ marginTop: "16px" }}
                   variant="outlined"
@@ -598,7 +664,7 @@ export function LocalScript({
                 >
                   Switch to {env === "local" ? "Service" : "Desktop"}
                 </weave-button>
-              </div>
+              </div> */}
               {env === "daas" && (
                 <div>
                   Are you connected to Autodesk VPN? This is required in the current development
@@ -616,7 +682,7 @@ export function LocalScript({
                   </weave-button>
                 </div>
               )}
-              {env == "local" && (
+              {/* {env == "local" && (
                 <div>
                   <weave-button
                     style={{ marginTop: "16px" }}
@@ -626,7 +692,7 @@ export function LocalScript({
                     Setup Desktop connection
                   </weave-button>
                 </div>
-              )}
+              )} */}
             </div>
           )}
           {["init", "loading"].includes(scriptInfo.type) && <AnimatedLoading />}
@@ -662,7 +728,10 @@ export function LocalScript({
             </>
           )}
         </div>
-        {result.type === "success" && result.data.info.issues.length > 0 && (
+        {result.type === "success" && result.data.title?.includes("Required property") && (
+          <div>Failed</div>
+        )}
+        {result.type === "success" && result.data.info?.issues?.length > 0 && (
           <WarningBanner
             title={"The graph returned with warnings or errors."}
             warnings={result.data.info.issues.map((issue) => ({
@@ -697,12 +766,13 @@ export function LocalScript({
           style={{
             height: `${fixedFooterHeight - 1}px`,
             display: "flex",
+            alignItems: "center",
             bottom: 0,
-            width: "100%",
+            left: 0,
+            right: 0,
+            margin: "4px 16px",
             backgroundColor: "white",
             position: "fixed",
-            marginRight: "4px",
-            paddingTop: "4px",
             justifyContent: "space-between",
             borderTop: "1px solid var(--divider-lightweight)",
           }}
@@ -710,7 +780,7 @@ export function LocalScript({
           <div style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
             {env === "local" && (
               <>
-                <div
+                {/* <div
                   style={{
                     display: "flex",
                     justifyContent: "center",
@@ -725,12 +795,18 @@ export function LocalScript({
                 Desktop
                 <div style={{ marginLeft: "3px", display: "flex" }}>
                   <StatusIcon status={service.connected ? "online" : "error"} />
-                </div>
+                </div> */}
+                <weave-button variant="outlined" onClick={() => setScript(undefined)}>
+                  Back
+                </weave-button>
               </>
             )}
             {env === "daas" && (
               <>
-                <div
+                <weave-button variant="outlined" onClick={() => setScript(undefined)}>
+                  Back
+                </weave-button>
+                {/* <div
                   style={{
                     display: "flex",
                     justifyContent: "center",
@@ -745,14 +821,16 @@ export function LocalScript({
                 Service
                 <div style={{ marginLeft: "3px", display: "flex" }}>
                   <StatusIcon status={service.connected ? "online" : "offline"} />
-                </div>
+                </div> */}
               </>
             )}
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <weave-button style={{ margin: "0 8px", width: "60px" }} onClick={reload}>
-              Refresh
-            </weave-button>
+            {env === "local" && (
+              <weave-button style={{ margin: "0 8px", width: "60px" }} onClick={reload}>
+                Update
+              </weave-button>
+            )}
             <weave-button
               style={{ width: "40px", margin: "0" }}
               variant="solid"
@@ -767,10 +845,28 @@ export function LocalScript({
               Run
             </weave-button>
 
-            {services.daas && services.local && <EnvironmentSelector env={env} setEnv={setEnv} />}
+            {/* {services.daas && services.local && <EnvironmentSelector env={env} setEnv={setEnv} />} */}
           </div>
         </div>
       </div>
     </>
   );
 }
+
+// function isSameScripts(graphA: GraphInfo, graphB: GraphInfo): boolean {
+//   return (
+//     graphA.id === graphB.id &&
+//     graphA.name === graphB.name &&
+//     graphA.metadata.description === graphB.metadata.description &&
+//     graphA.inputs.length === graphB.inputs.length &&
+//     graphA.outputs.length === graphB.outputs.length &&
+//     graphA.inputs.every((input) => {
+//       const inputInDynamo = graphB.inputs.find((it) => it.id === input.id);
+//       return inputInDynamo !== undefined && inputInDynamo.value === input.value;
+//     }) &&
+//     graphA.outputs.every((input) => {
+//       const inputInDynamo = graphB.outputs.find((it) => it.id === input.id);
+//       return inputInDynamo !== undefined && inputInDynamo.value === input.value;
+//     })
+//   );
+// }

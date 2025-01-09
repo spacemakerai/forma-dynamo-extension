@@ -1,16 +1,15 @@
-import { useState } from "preact/hooks";
-import { Download } from "../../assets/icons/Download";
-import sphereAreaGraph from "../../assets/spherearea.json";
-import buildingEnvelopeGraph from "../../assets/workflows/WorkFlow_01BuildingEnvelope.json";
-import buildingModification from "../../assets/workflows/WorkFlow_02BuildingModification.json";
-import customAnalysisIsovist from "../../assets/workflows/WorkFlow_04CustomAnalysis_Isovist.json";
-import customAnalysisTerrainSlope from "../../assets/workflows/WorkFlow_04CustomAnalysis_TerrainSlope.json";
-import customAnalysisViewToObject from "../../assets/workflows/WorkFlow_04CustomAnalysis_ViewToObject.json";
+import buildingEnvelopeGraph from "../../assets/workflows/BuildingEnvelope.json";
+import buildingModificationGraph from "../../assets/workflows/BuildingModification.json";
+import butterflyDiagram from "../../assets/workflows/ButterflyDiagram.json";
+import customAnalysisIsovist from "../../assets/workflows/IsovistAnalysis.json";
+import customAnalysisTerrainSlope from "../../assets/workflows/TerrainSlopeAnalysis.json";
+import customAnalysisViewToObject from "../../assets/workflows/ViewToObjectAnalysis.json";
+import elementCreation from "../../assets/tools/ElementCreation.json";
+import elementProperties from "../../assets/tools/ElementProperties.json";
 import { DynamoState } from "../../DynamoConnector";
-import { Edit } from "../../icons/Edit";
 import { DynamoService } from "../../service/dynamo";
 import { JSONGraph } from "../../types/types";
-import { Arrow } from "../../icons/Arrow";
+import GraphItem from "../GraphItem/GraphItem";
 
 function download(jsonGraph: JSONGraph) {
   const element = document.createElement("a");
@@ -30,135 +29,44 @@ function download(jsonGraph: JSONGraph) {
 
 function useSampleGraphs(): JSONGraph[] {
   return [
-    { id: "1", type: "JSON", name: "Sphere Area", graph: sphereAreaGraph },
-    { id: "2", type: "JSON", name: "Workflow_01BuildingEnvelope", graph: buildingEnvelopeGraph },
+    { id: "create", type: "JSON", name: "Element Creation", graph: elementCreation },
+    { id: "props", type: "JSON", name: "Element Properties", graph: elementProperties },
+    { id: "1", type: "JSON", name: "Building Envelope", graph: buildingEnvelopeGraph },
+    { id: "2", type: "JSON", name: "Building Modification", graph: buildingModificationGraph },
     {
       id: "3",
       type: "JSON",
-      name: "Workflow_02BuildingModification",
-      graph: buildingModification,
+      name: "Butterfly Diagram",
+      graph: butterflyDiagram,
     },
     {
       id: "4",
       type: "JSON",
-      name: "Workflow_04CustomAnalysis_Isovist",
+      name: "Isovist Analysis",
       graph: customAnalysisIsovist,
     },
     {
       id: "5",
       type: "JSON",
-      name: "Workflow_04CustomAnalysis_TerrainSlope",
+      name: "Terrain Slope Analysis",
       graph: customAnalysisTerrainSlope,
     },
     {
       id: "6",
       type: "JSON",
-      name: "Workflow_04CustomAnalysis_ViewToObject",
+      name: "View To Object Analysis",
       graph: customAnalysisViewToObject,
     },
   ];
 }
 
-function Item({
-  script,
-  dynamoLocal,
-  setEnv,
-  setGraph,
-}: {
-  setEnv: (env: "daas" | "local") => void;
-  script: any;
-  setGraph: (graph: JSONGraph) => void;
-  dynamoLocal: {
-    state: DynamoState;
-    dynamo: DynamoService;
-  };
-}) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  return (
-    <div>
-      <div
-        onClick={() => setIsExpanded(!isExpanded)}
-        style={{
-          cursor: "pointer",
-          padding: "8px 8px 8px 0px",
-          margin: "1px",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ flexDirection: "row", display: "flex", overflow: "hidden" }}>
-          <div
-            style={{
-              display: "flex",
-              minWidth: "24px",
-              width: "24px",
-              height: "24px",
-              justifyContent: "center",
-              alignItems: "center",
-              rotate: isExpanded ? "90deg" : "0deg",
-            }}
-          >
-            <Arrow />
-          </div>
-          <div style={{ height: "24px", alignContent: "center" }}>{script.name}</div>
-        </div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          {dynamoLocal.state.connectionState === "CONNECTED" && (
-            <div
-              style={{
-                cursor: "pointer",
-                height: "24px",
-                width: "24px",
-                justifyContent: "center",
-                alignContent: "center",
-              }}
-              onClick={() => {
-                setEnv("local");
-                setGraph(script);
-              }}
-            >
-              <Edit />
-            </div>
-          )}
-          <div
-            style={{
-              cursor: "pointer",
-              height: "24px",
-              width: "24px",
-              justifyContent: "center",
-              alignContent: "center",
-            }}
-            onClick={() => download(script)}
-          >
-            <Download />
-          </div>
-          <div>
-            <weave-button onClick={() => setGraph(script)}>Open</weave-button>
-          </div>
-        </div>
-      </div>
-      {isExpanded && (
-        <div style={{ padding: "0 24px 8px 24px" }}>
-          <div>{script.graph.Description}</div>
-          <div style={{ padding: "8px 0" }}>
-            <b>Author:</b> {script.graph.Author}
-          </div>
-          <div>
-            <b>Publisher:</b> Autodesk
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 export function PublicGraphs({
+  env,
   setEnv,
   setGraph,
   dynamoLocal,
 }: {
+  env: "daas" | "local";
   setEnv: (env: "daas" | "local") => void;
   setGraph: (graph: JSONGraph) => void;
   dynamoLocal: {
@@ -170,15 +78,24 @@ export function PublicGraphs({
 
   return (
     <>
-      <h4 style={{ marginLeft: "8px" }}>Graphs provided by Autodesk</h4>
+      <h4>Graphs provided by Autodesk</h4>
       {graphs.map((script) => {
         return (
-          <Item
+          <GraphItem
+            name={script.name}
             key={script.id}
-            script={script}
-            dynamoLocal={dynamoLocal}
-            setEnv={setEnv}
-            setGraph={setGraph}
+            graph={script}
+            env={env}
+            onEdit={
+              dynamoLocal.state.connectionState === "CONNECTED"
+                ? () => {
+                    setEnv("local");
+                    setGraph(script);
+                  }
+                : undefined
+            }
+            onDownload={() => download(script)}
+            onOpen={env === "daas" ? () => setGraph(script) : undefined}
           />
         );
       })}

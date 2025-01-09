@@ -35,10 +35,11 @@ export function WarningDetails({ warnings, close }: { warnings: Warning[]; close
       style={{
         display: "flex",
         flexDirection: "column",
+        height: "100%",
+        width: "100%",
+        overflow: "hidden",
         left: "0%",
         top: "0%",
-        height: "100%",
-        width: "calc(100% - 16px)",
         padding: "8px",
         backgroundColor: "white",
         color: "black",
@@ -81,7 +82,19 @@ export function WarningDetails({ warnings, close }: { warnings: Warning[]; close
         }}
       />
 
-      <div style={{ overflow: "scroll" }}>
+      <div style={{ overflowX: "scroll" }}>
+        {warnings.filter(criteria).length === 0 && (
+          <div
+            style={{
+              margin: "8px 8px",
+              padding: "8px 4px",
+              display: "flex",
+              borderBottom: "solid 1px #E0E0E0",
+            }}
+          >
+            Found no issues that match the search criteria
+          </div>
+        )}
         {warnings.filter(criteria).map((warning) => (
           <div
             style={{

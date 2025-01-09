@@ -8,6 +8,7 @@ import { BasicBuilding } from "./BasicBuilding.tsx";
 import { GroundPolygon } from "./GroundPolygon.tsx";
 import { ExtrudedPolygon } from "./ExtrudedPolygon.tsx";
 import { SendElementToForma } from "./SendElementToForma.tsx";
+import { VisualizeImage } from "./VisualizeImage.tsx";
 
 export type RunResult =
   | { type: "init" }
@@ -21,6 +22,10 @@ function DynamoOutputComponent({ output }: { output: Output }) {
   }
   if (output.type === "WatchImageCore") {
     return <WatchImage output={output} />;
+  }
+
+  if (output.type === "VisualizeImage") {
+    return <VisualizeImage output={output} />;
   }
 
   if (output.name === "FormaHousing.ByLine") {
@@ -47,7 +52,7 @@ function DynamoOutputComponent({ output }: { output: Output }) {
     return <SendToForma output={output} />;
   }
 
-  if (output.type === "SendElementsToForma") {
+  if (output.type === "SendElementsToForma" || output.type === "SendToFormaHttp") {
     return <SendElementToForma output={output} />;
   }
 
