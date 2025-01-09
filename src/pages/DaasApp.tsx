@@ -7,7 +7,7 @@ import { SetupWizard } from "../components/SetupDesktop/SetupWizard";
 import styles from "./Pages.module.pcss";
 import AppContent from "./AppContent";
 
-const envionment = new URLSearchParams(window.location.search).get("ext:daas") || "stg";
+const envionment = new URLSearchParams(window.location.search).get("ext:daas") || "prod";
 
 const urls: Record<string, string> = {
   DEV: "https://dev.service.dynamo.autodesk.com",
@@ -37,25 +37,80 @@ function useDaasStatus(daas: DynamoService) {
   return { daasStatus, reconnect: connect };
 }
 
+export enum ShareDestination {
+  Project = "project",
+  Hub = "hub",
+}
+
+async function addClaimsToToken(token: string) {
+  const projectId = Forma.getProjectId();
+  return (await Forma.getIframeMessenger().sendRequest("auth/add-authcontext-claim", {
+    token,
+    authcontext: projectId,
+  })) as string;
+}
+
+const TOKEN_REFRESH_LEEWAY_SECONDS = 60 * 30; // 30 minutes
+
+function shouldRefresh(tokenPayload: { exp: number }): boolean {
+  const expiry = tokenPayload.exp;
+  const now = Math.floor(Date.now() / 1000);
+  return expiry < now + TOKEN_REFRESH_LEEWAY_SECONDS;
+}
+
+function parseToken(rawToken: string) {
+  const payload = rawToken.split(".")[1];
+  if (!payload) {
+    throw new Error("Invalid token");
+  }
+  const decodedPayload = atob(payload);
+  return JSON.parse(decodedPayload) as { exp: number };
+}
+
+function createTokenManager() {
+  let currentToken: string | undefined;
+  return async () => {
+    if (!currentToken) {
+      const { accessToken } = await Forma.auth.acquireTokenOverlay();
+      currentToken = await addClaimsToToken(accessToken);
+    } else {
+      const parsedToken = parseToken(currentToken);
+      if (shouldRefresh(parsedToken)) {
+        const newToken = await Forma.auth.refreshCurrentToken();
+        currentToken = await addClaimsToToken(newToken.accessToken);
+      }
+    }
+    return `Bearer ${currentToken}`;
+  };
+}
+
+export type AppPageState =
+  | {
+      name: "default";
+    }
+  | {
+      name: "setup";
+    }
+  | {
+      name: "publish";
+      initialValue?: any;
+      initialShareDestination: ShareDestination;
+    };
+
 export function DaasApp() {
   const [env, setEnv] = useState<"daas" | "local">("daas");
 
-  const [page, setPage] = useState<
-    | { name: "default" }
-    | { name: "setup" }
-    | { name: "publish"; initialValue?: any; initialShareDestination?: "project" | "hub" }
-  >({ name: "default" });
+  const [page, setPage] = useState<AppPageState>({ name: "default" });
 
   const [isHubEditor, setIsHubEditor] = useState<boolean>(false);
+  const [isProjectEditor, setIsProjectEditor] = useState<boolean>(false);
   useEffect(() => {
     Forma.getCanEditHub().then(setIsHubEditor);
+    Forma.getCanEdit().then(setIsProjectEditor);
   }, []);
 
   const daas = useMemo(() => {
-    return new Dynamo(urls[String(envionment).toUpperCase()] || urls["DEV"], async () => {
-      const { accessToken } = await Forma.auth.acquireTokenOverlay();
-      return `Bearer ${accessToken}`;
-    });
+    return new Dynamo(urls[String(envionment).toUpperCase()] || urls["DEV"], createTokenManager());
   }, []);
 
   const onTabChange = (e: CustomEvent) => {
@@ -80,6 +135,7 @@ export function DaasApp() {
             page={page}
             setPage={setPage}
             isHubEditor={isHubEditor}
+            isProjectEditor={isProjectEditor}
             env={env}
             setEnv={setEnv}
             daasStatus={daasStatus}
@@ -95,6 +151,7 @@ export function DaasApp() {
               page={page}
               setPage={setPage}
               isHubEditor={isHubEditor}
+              isProjectEditor={isProjectEditor}
               env={env}
               setEnv={setEnv}
               daasStatus={daasStatus}
