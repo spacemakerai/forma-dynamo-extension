@@ -1,4 +1,5 @@
 const SUPPORTED_PACKAGES = [
+  "DynamoFormaBeta for 2.x",
   "DynamoFormaBeta",
   "DynamoForma.dll",
   "MeshToolkit",

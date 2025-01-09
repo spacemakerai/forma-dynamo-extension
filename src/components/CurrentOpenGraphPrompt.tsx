@@ -53,7 +53,6 @@ export function CurrentOpenGraphPrompt({
           width: "calc(100% - 74px)",
           margin: "10px",
           padding: "25px",
-          height: "60px",
           ...(currentFolder ? { bottom: "20px" } : { top: "20px" }),
           background: "white",
           border: "1px solid #ccc",
