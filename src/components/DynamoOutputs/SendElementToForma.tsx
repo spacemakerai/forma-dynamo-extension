@@ -95,7 +95,7 @@ function PreviewAndAdd({ value }: { value: string[] }) {
         captureException(e, "Failed to remove preview");
       });
     };
-  }, []);
+  }, [renderId]);
 
   const { add, isAdding, isAdded } = useAddElement(elements, setIsPreviewActive);
 
