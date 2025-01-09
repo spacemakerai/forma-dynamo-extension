@@ -38,11 +38,7 @@
     "eslint-config-react-hooks": "^1.0.0",
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "3.0.3",
-<<<<<<< HEAD
-    "typescript": "^5.0.2",
-=======
     "typescript": "^5.7.3",
->>>>>>> origin/main
     "vite": "^4.5.5"
   },
   "prettier": {
