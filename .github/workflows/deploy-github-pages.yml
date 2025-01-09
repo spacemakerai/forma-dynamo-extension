@@ -17,9 +17,7 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: "**/pnpm-lock.yaml"
       - run: pnpm install --frozen-lockfile
-      - run: pnpm lint:check
-      - run: pnpm prettier:check
-      - run: pnpm tsc --noEmit
+      - run: pnpm test
       - run: pnpm build
 
   deploy:

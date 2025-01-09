@@ -9,8 +9,8 @@
     "typecheck": "tsc --noEmit",
     "prettier:check": "prettier --check ./src",
     "prettier:write": "prettier --write ./src",
-    "lint:check": "eslint src",
-    "test": "yarn typecheck && yarn lint:check && yarn prettier:check"
+    "lint": "eslint ./src --max-warnings 0",
+    "test": "pnpm typecheck && pnpm lint && pnpm prettier:check"
   },
   "dependencies": {
     "@sentry/browser": "^7.120.2",
