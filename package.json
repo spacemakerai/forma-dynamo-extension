@@ -20,7 +20,7 @@
     "cross-env": "^7.0.3",
     "earcut": "^2.2.4",
     "forma-elements": "^2.4.0",
-    "forma-embedded-view-sdk": "0.85.0",
+    "forma-embedded-view-sdk": "0.87.0",
     "postcss": "^8.4.49",
     "postcss-nesting": "^13.0.1",
     "preact": "^10.25.4",
