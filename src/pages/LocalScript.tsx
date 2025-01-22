@@ -344,6 +344,10 @@ export function LocalScript({
 
   const [scriptInfo, reload] = useScript(script, service.dynamo);
 
+  const description =
+    (scriptInfo.type === "loaded" && scriptInfo.data?.metadata?.description) ??
+    (script.type === "JSON" && script.graph.Description);
+
   const [activeSelectionNode, setActiveSelectionNode] = useState<Input | undefined>(undefined);
 
   const [state, setState] = useState<Record<string, any>>({});
@@ -699,9 +703,9 @@ export function LocalScript({
 
           {scriptInfo.type === "loaded" && (
             <>
-              {scriptInfo.data?.metadata?.description && (
+              {description && (
                 <div>
-                  <span>{scriptInfo.data?.metadata?.description}</span>
+                  <span>{description}</span>
                 </div>
               )}
               <div
