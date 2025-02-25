@@ -12,7 +12,7 @@ export function ClosedBetaSignup() {
       <h3>Dynamo as a Service for Forma - Early Access</h3>
       <div style={{ display: "flex", flexDirection: "row" }}>
         <div>
-          For now this is released under a closed beta.{" "}
+          For now this is released under an open beta.{" "}
           <a
             target="_blank"
             rel="noreferrer"

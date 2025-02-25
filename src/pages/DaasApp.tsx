@@ -136,7 +136,7 @@ export function DaasApp() {
             window.location.reload();
           }}
         >
-          Opt out of Closed Beta
+          Go back to old version
         </weave-button>
       )}
       <forma-tabs selectedtab={0} gap="16" onChange={onTabChange}>
