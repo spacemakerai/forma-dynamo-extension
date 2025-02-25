@@ -8,6 +8,7 @@ import styles from "./Pages.module.pcss";
 import AppContent from "./AppContent";
 
 const envionment = new URLSearchParams(window.location.search).get("ext:daas") || "prod";
+const daasBetaOptIn = localStorage.getItem("daas-beta-opt") === "true";
 
 const urls: Record<string, string> = {
   DEV: "https://dev.service.dynamo.autodesk.com",
@@ -128,6 +129,16 @@ export function DaasApp() {
 
   return (
     <div className={styles.AppContainer}>
+      {daasBetaOptIn && (
+        <weave-button
+          onClick={() => {
+            localStorage.setItem("daas-beta-opt", "false");
+            window.location.reload();
+          }}
+        >
+          Opt out of Closed Beta
+        </weave-button>
+      )}
       <forma-tabs selectedtab={0} gap="16" onChange={onTabChange}>
         <forma-tab for="dynamoServiceContent" hpadding="0" label="Service" />
         <div id="dynamoServiceContent" slot="content" className={styles.TabContent}>
