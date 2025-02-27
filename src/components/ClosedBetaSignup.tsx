@@ -1,5 +1,3 @@
-const enableDirectOptIn = new URLSearchParams(window.location.search).has("ext:daas-optin");
-
 export function ClosedBetaSignup() {
   return (
     <div
@@ -22,30 +20,17 @@ export function ClosedBetaSignup() {
           </a>{" "}
           or test it out today!
         </div>
-        {enableDirectOptIn ? (
-          <div style={{ marginLeft: "32px" }}>
-            <weave-button
-              variant="solid"
-              onClick={() => {
-                localStorage.setItem("daas-beta-opt", "true");
-                window.location.reload();
-              }}
-            >
-              Opt in
-            </weave-button>
-          </div>
-        ) : (
-          <div style={{ marginLeft: "32px" }}>
-            <weave-button
-              variant="solid"
-              onClick={() =>
-                window.open("https://feedback.autodesk.com/key/DynamoForma", "_blank", "noreferrer")
-              }
-            >
-              Sign up
-            </weave-button>
-          </div>
-        )}
+        <div style={{ marginLeft: "32px" }}>
+          <weave-button
+            variant="solid"
+            onClick={() => {
+              localStorage.setItem("daas-beta-opt", "true");
+              window.location.reload();
+            }}
+          >
+            Opt in
+          </weave-button>
+        </div>
       </div>
     </div>
   );
