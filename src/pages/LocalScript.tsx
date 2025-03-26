@@ -465,10 +465,18 @@ export function LocalScript({
                 region: Forma.getRegion(),
               }),
             };
-          } else if (type === "GetProjectHttp" || type === "GetProjectExperimental") {
+          } else if (
+            type === "GetProjectHttp" ||
+            type === "GetProjectExperimental" ||
+            type === "GetSiteHttp"
+          ) {
             return {
               nodeId: id,
-              value: JSON.stringify({ projectId: Forma.getProjectId(), region: Forma.getRegion() }),
+              value: JSON.stringify({
+                projectId: Forma.getProjectId(),
+                siteId: Forma.getProjectId(),
+                region: Forma.getRegion(),
+              }),
             };
           } else if (type === "GetTerrainHttp" || type === "GetTerrainExperimental") {
             const [path] = await Forma.geometry.getPathsByCategory({
