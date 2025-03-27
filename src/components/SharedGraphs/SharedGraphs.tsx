@@ -80,14 +80,14 @@ export function SharedGraphs({
     (async () => {
       try {
         setState({ type: "fetching" });
-        const hasViewAccess = shareDestination === "project" ? true : await Forma.getCanViewHub();
+        const hasViewAccess = shareDestination === "site" ? true : await Forma.getCanViewHub();
         if (!hasViewAccess) {
           setState({ type: "no-access" });
           return;
         }
         const project = await Forma.project.get();
         const all = await Forma.extensions.storage.listObjects({
-          authcontext: shareDestination === "project" ? Forma.getProjectId() : project.hubId,
+          authcontext: shareDestination === "site" ? Forma.getProjectId() : project.hubId,
         });
 
         setState({ type: "partial", n: all.results.length });
@@ -95,7 +95,7 @@ export function SharedGraphs({
           all.results.map(async (data) => {
             const object = await Forma.extensions.storage.getTextObject({
               key: data.key,
-              authcontext: shareDestination === "project" ? Forma.getProjectId() : project.hubId,
+              authcontext: shareDestination === "site" ? Forma.getProjectId() : project.hubId,
             });
             return {
               key: data.key,
@@ -121,7 +121,7 @@ export function SharedGraphs({
         const project = await Forma.project.get();
         await Forma.extensions.storage.deleteObject({
           key,
-          authcontext: shareDestination === "project" ? Forma.getProjectId() : project.hubId,
+          authcontext: shareDestination === "site" ? Forma.getProjectId() : project.hubId,
         });
         setState((prev) =>
           prev.type === "success"

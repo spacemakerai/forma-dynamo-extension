@@ -43,7 +43,7 @@ const AppContent = ({
   );
   const allowedDestinations = useMemo(() => {
     const destinations: ShareDestination[] = [];
-    if (isProjectEditor) destinations.push(ShareDestination.Project);
+    if (isProjectEditor) destinations.push(ShareDestination.Site);
     if (isHubEditor) destinations.push(ShareDestination.Hub);
     return destinations;
   }, [isHubEditor, isProjectEditor]);
@@ -77,7 +77,7 @@ const AppContent = ({
                 setGraph={setGraph}
                 dynamoLocal={dynamoLocal}
                 isEditor={isProjectEditor}
-                shareDestination={ShareDestination.Project}
+                shareDestination={ShareDestination.Site}
                 setPage={setPage}
               />
               <SharedGraphs

@@ -84,7 +84,7 @@ export function PublishGraph({
       const project = await Forma.project.get();
       await Forma.extensions.storage.setObject({
         key: v4(),
-        authcontext: shareDestination === "project" ? Forma.getProjectId() : project.hubId,
+        authcontext: shareDestination === "site" ? Forma.getProjectId() : project.hubId,
         data: JSON.stringify(
           filterForSize({
             ...uploadedGraph,

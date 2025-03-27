@@ -200,7 +200,7 @@ export function MyGraphs({
                         setPage({
                           name: "publish",
                           initialValue: graph,
-                          initialShareDestination: ShareDestination.Project,
+                          initialShareDestination: ShareDestination.Site,
                         })
                     : undefined
                 }

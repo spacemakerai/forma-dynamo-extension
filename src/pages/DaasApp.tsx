@@ -38,7 +38,7 @@ function useDaasStatus(daas: DynamoService) {
 }
 
 export enum ShareDestination {
-  Project = "project",
+  Site = "site",
   Hub = "hub",
 }
 
