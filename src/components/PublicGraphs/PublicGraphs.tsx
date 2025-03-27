@@ -1,3 +1,4 @@
+import areaCalculation from "../../assets/workflows/AreaCalculation.json";
 import buildingEnvelopeGraph from "../../assets/workflows/BuildingEnvelope.json";
 import buildingModificationGraph from "../../assets/workflows/BuildingModification.json";
 import butterflyDiagram from "../../assets/workflows/ButterflyDiagram.json";
@@ -29,6 +30,7 @@ function download(jsonGraph: JSONGraph) {
 
 function useSampleGraphs(): JSONGraph[] {
   return [
+    { id: "area", type: "JSON", name: "Area Calculation", graph: areaCalculation },
     { id: "create", type: "JSON", name: "Element Creation", graph: elementCreation },
     { id: "props", type: "JSON", name: "Element Properties", graph: elementProperties },
     { id: "1", type: "JSON", name: "Building Envelope", graph: buildingEnvelopeGraph },
