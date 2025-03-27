@@ -8,7 +8,6 @@ import styles from "./Pages.module.pcss";
 import AppContent from "./AppContent";
 
 const envionment = new URLSearchParams(window.location.search).get("ext:daas") || "prod";
-const daasBetaOptIn = localStorage.getItem("daas-beta-opt") === "true";
 
 const urls: Record<string, string> = {
   DEV: "https://dev.service.dynamo.autodesk.com",
@@ -129,16 +128,6 @@ export function DaasApp() {
 
   return (
     <div className={styles.AppContainer}>
-      {daasBetaOptIn && (
-        <weave-button
-          onClick={() => {
-            localStorage.setItem("daas-beta-opt", "false");
-            window.location.reload();
-          }}
-        >
-          Go back to old version
-        </weave-button>
-      )}
       <forma-tabs selectedtab={0} gap="16" onChange={onTabChange}>
         <forma-tab for="dynamoServiceContent" hpadding="0" label="Service" />
         <div id="dynamoServiceContent" slot="content" className={styles.TabContent}>
@@ -156,6 +145,19 @@ export function DaasApp() {
           />
         </div>
         <forma-tab for="localContent" hpadding="0" label="Desktop" />
+        <div style={{ marginLeft: "auto" }}>
+          <weave-button
+            variant={"flat"}
+            onClick={() =>
+              window.open(
+                "https://spacemakerai.github.io/forma-dynamo-extension/assets/AutodeskDynamoFormaBetaTerms.pdf",
+                "_blank",
+              )
+            }
+          >
+            About BETA
+          </weave-button>
+        </div>
         <div id="localContent" slot="content" className={styles.TabContent}>
           {dynamoLocal.state.connectionState === "CONNECTED" ? (
             <AppContent

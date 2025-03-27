@@ -4,7 +4,6 @@ import { StatusBlock } from "../components/StatusBlock.tsx";
 import { LocalFileList } from "./LocalFileList.tsx";
 import { useState } from "preact/hooks";
 import { FolderGraphInfo } from "../service/dynamo.ts";
-import { ClosedBetaSignup } from "../components/ClosedBetaSignup.tsx";
 
 export function LocalApp() {
   const { state, reconnect, dynamo } = useDynamoConnector();
@@ -30,11 +29,6 @@ export function LocalApp() {
   }
   return (
     <>
-      <div>
-        <ClosedBetaSignup />
-        <br />
-        <br />
-      </div>
       <StatusBlock connectionState={state.connectionState} />
     </>
   );

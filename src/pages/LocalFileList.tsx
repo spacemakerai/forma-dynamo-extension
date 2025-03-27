@@ -3,7 +3,6 @@ import { Next } from "../icons/Next";
 import { SampleFiles } from "../components/SampleFiles.tsx";
 import { CurrentOpenGraphPrompt } from "../components/CurrentOpenGraphPrompt.tsx";
 import { DynamoService, FolderGraphInfo } from "../service/dynamo.ts";
-import { ClosedBetaSignup } from "../components/ClosedBetaSignup.tsx";
 
 type SetScript = (script: FolderGraphInfo) => void;
 
@@ -155,11 +154,6 @@ export function LocalFileList({
         }}
       />
       <br />
-      <>
-        <ClosedBetaSignup />
-        <br />
-        <br />
-      </>
 
       <div
         style={{
