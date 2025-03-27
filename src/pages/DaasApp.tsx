@@ -148,12 +148,13 @@ export function DaasApp() {
         <div style={{ marginLeft: "auto" }}>
           <weave-button
             variant={"flat"}
-            onClick={() =>
-              window.open(
-                "https://spacemakerai.github.io/forma-dynamo-extension/assets/AutodeskDynamoFormaBetaTerms.pdf",
-                "_blank",
-              )
-            }
+            onClick={() => {
+              const link = document.createElement("a");
+              link.href =
+                "https://spacemakerai.github.io/forma-dynamo-extension/assets/AutodeskDynamoFormaBetaTerms.pdf";
+              link.download = "AutodeskDynamoFormaBetaTerms.pdf";
+              link.dispatchEvent(new MouseEvent("click"));
+            }}
           >
             About BETA
           </weave-button>
