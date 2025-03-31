@@ -434,6 +434,7 @@ export function LocalScript({
       const code = scriptInfo.data;
       setResult({ type: "running" });
       const urn = await Forma.proposal.getRootUrn();
+
       const inputs = await Promise.all(
         code.inputs.map(async ({ id, type, name }: Input) => {
           const value = state[id];
@@ -564,7 +565,13 @@ export function LocalScript({
                 await Forma.areaMetrics.calculate({ paths: value as string[] }),
               ),
             };
+          } else if (type === "StringInput") {
+            return {
+              nodeId: id,
+              value: value ? String(value) : "",
+            };
           }
+
           return {
             nodeId: id,
             value,
