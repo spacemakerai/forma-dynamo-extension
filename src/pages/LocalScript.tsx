@@ -85,8 +85,8 @@ function useScript(script: Script, dynamo: DynamoService): [ScriptResult, () => 
       script.type === "JSON"
         ? { type: "JsonGraphTarget", graph: script.graph }
         : script.type === "FolderGraph"
-        ? { path: script.id, type: "PathGraphTarget" }
-        : { type: "CurrentGraphTarget" };
+          ? { path: script.id, type: "PathGraphTarget" }
+          : { type: "CurrentGraphTarget" };
 
     dynamo
       .info(target)

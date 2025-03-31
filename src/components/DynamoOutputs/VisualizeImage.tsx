@@ -57,7 +57,7 @@ export function VisualizeImage({ output }: { output: Output }) {
       try {
         return JSON.parse(output.value as string) as OutputValue;
       } catch (e) {
-        console.error("failed to parse output");
+        console.error("failed to parse output", e);
       }
     }
   }, [output.value]);

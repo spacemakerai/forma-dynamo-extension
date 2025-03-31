@@ -91,6 +91,7 @@ function useOnElementChange(id: string, elements: CreateIntegrateElement[]) {
             await Forma.render.geojson.remove({ id: elementRenderId });
           }
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         // ignore as we do not know if it is added or not
       }

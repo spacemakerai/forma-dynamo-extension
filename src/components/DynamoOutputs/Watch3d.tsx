@@ -57,6 +57,7 @@ function PreviewAndAdd({ id, value }: { id: string; value: string }) {
     return async () => {
       try {
         await Forma.render.glb.remove({ id });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         // ignore as we do not know if it is added or not
       }

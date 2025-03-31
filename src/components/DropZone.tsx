@@ -24,6 +24,7 @@ export function DropZone<T>({
         const [file] = Array.from(input.files);
         onFileDropped(await parse(file));
       } catch (e) {
+        console.warn(e);
         setError(true);
       }
     };
@@ -45,6 +46,7 @@ export function DropZone<T>({
               try {
                 onFileDropped(await parse(file));
               } catch (e) {
+                console.warn(e);
                 setError(true);
               }
             }
@@ -58,6 +60,7 @@ export function DropZone<T>({
           try {
             onFileDropped(await parse(file));
           } catch (e) {
+            console.warn(e);
             setError(true);
           }
         });

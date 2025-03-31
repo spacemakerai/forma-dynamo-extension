@@ -124,6 +124,7 @@ export function LocalFileList({
           );
           setPrograms(localPrograms);
           setIsLoading(false);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
           setIsLoading(false);
           setError("Could not load files. Please check the folder name and try to load again.");

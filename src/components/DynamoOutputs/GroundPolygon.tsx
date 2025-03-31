@@ -155,6 +155,7 @@ function PreviewAndAdd({
     return async () => {
       try {
         await Forma.render.geojson.remove({ id });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         // ignore as we do not know if it is added or not
       }
