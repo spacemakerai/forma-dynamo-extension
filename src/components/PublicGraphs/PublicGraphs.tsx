@@ -3,6 +3,8 @@ import areaCalculation from "../../assets/workflows/AreaCalculation.json";
 import createConstraintGraph from "../../assets/workflows/Create building Constraint.dyn";
 // @ts-ignore
 import createPixelTower from "../../assets/workflows/Create Pixel Tower.dyn";
+// @ts-ignore
+import buildingCostCalculator from "../../assets/workflows/Building Cost Calculator.dyn";
 import buildingModificationGraph from "../../assets/workflows/BuildingModification.json";
 import butterflyDiagram from "../../assets/workflows/ButterflyDiagram.json";
 import customAnalysisIsovist from "../../assets/workflows/IsovistAnalysis.json";
@@ -36,6 +38,7 @@ function download(jsonGraph: JSONGraph) {
 function useSampleGraphs(): JSONGraph[] {
   return [
     { id: "area", type: "JSON", name: "Area Calculation", graph: areaCalculation },
+    { id: "cost", type: "JSON", name: "Building Cost Calculator", graph: buildingCostCalculator },
     { id: "create", type: "JSON", name: "Element Creation", graph: elementCreation },
     { id: "props", type: "JSON", name: "Element Properties", graph: elementProperties },
     { id: "pixel", type: "JSON", name: "Create Pixel Tower", graph: createPixelTower },
