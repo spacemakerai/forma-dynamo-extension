@@ -1,6 +1,6 @@
 import areaCalculation from "../../assets/workflows/AreaCalculation.json";
 // @ts-ignore
-import createConstraintGraph from "../../assets/workflows/Create building Constraint.dyn";
+import createConstraintGraph from "../../assets/workflows/Create Building Constraint.dyn";
 // @ts-ignore
 import createPixelTower from "../../assets/workflows/Create Pixel Tower.dyn";
 // @ts-ignore
@@ -13,7 +13,8 @@ import customAnalysisViewToObject from "../../assets/workflows/ViewToObjectAnaly
 
 // @ts-ignore
 import elementCreation from "../../assets/tools/ElementCreation.dyn";
-import elementProperties from "../../assets/tools/ElementProperties.json";
+// @ts-ignore
+import elementProperties from "../../assets/tools/View Element Properties.dyn";
 import { DynamoState } from "../../DynamoConnector";
 import { DynamoService } from "../../service/dynamo";
 import { JSONGraph } from "../../types/types";
@@ -40,7 +41,7 @@ function useSampleGraphs(): JSONGraph[] {
     { id: "area", type: "JSON", name: "Area Calculation", graph: areaCalculation },
     { id: "cost", type: "JSON", name: "Building Cost Calculator", graph: buildingCostCalculator },
     { id: "create", type: "JSON", name: "Element Creation", graph: elementCreation },
-    { id: "props", type: "JSON", name: "Element Properties", graph: elementProperties },
+    { id: "props", type: "JSON", name: "View Element Properties", graph: elementProperties },
     { id: "pixel", type: "JSON", name: "Create Pixel Tower", graph: createPixelTower },
     { id: "1", type: "JSON", name: "Create Building Constraint", graph: createConstraintGraph },
     { id: "2", type: "JSON", name: "Building Modification", graph: buildingModificationGraph },
