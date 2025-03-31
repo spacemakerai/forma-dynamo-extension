@@ -1,3 +1,5 @@
+import allGraphs from "../../assets/graphs/index";
+
 import areaCalculation from "../../assets/workflows/AreaCalculation.json";
 // @ts-ignore
 import createConstraintGraph from "../../assets/workflows/Create Building Constraint.dyn";
@@ -19,6 +21,7 @@ import { DynamoState } from "../../DynamoConnector";
 import { DynamoService } from "../../service/dynamo";
 import { JSONGraph } from "../../types/types";
 import GraphItem from "../GraphItem/GraphItem";
+import { useEffect, useState } from "preact/hooks";
 
 function download(jsonGraph: JSONGraph) {
   const element = document.createElement("a");
@@ -34,6 +37,25 @@ function download(jsonGraph: JSONGraph) {
   element.click();
 
   document.body.removeChild(element);
+}
+
+function useSampleGraphs2(): JSONGraph[] {
+  const [graphs, setGraphs] = useState<JSONGraph[]>([]);
+
+  useEffect(() => {
+    Promise.all(
+      Object.entries(allGraphs).map(([name, fn]) => {
+        return fn().then((graph) => ({
+          id: name,
+          type: "JSON",
+          name: name.substring(2, name.length - 4),
+          graph: graph.default,
+        }));
+      }),
+    ).then(setGraphs);
+  }, []);
+
+  return graphs;
 }
 
 function useSampleGraphs(): JSONGraph[] {
@@ -86,7 +108,7 @@ export function PublicGraphs({
     dynamo: DynamoService;
   };
 }) {
-  const graphs = useSampleGraphs();
+  const graphs = useSampleGraphs2();
 
   return (
     <>
