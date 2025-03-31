@@ -5,7 +5,8 @@ import butterflyDiagram from "../../assets/workflows/ButterflyDiagram.json";
 import customAnalysisIsovist from "../../assets/workflows/IsovistAnalysis.json";
 import customAnalysisTerrainSlope from "../../assets/workflows/TerrainSlopeAnalysis.json";
 import customAnalysisViewToObject from "../../assets/workflows/ViewToObjectAnalysis.json";
-import elementCreation from "../../assets/tools/ElementCreation.json";
+// @ts-ignore
+import elementCreation from "../../assets/tools/ElementCreation.dyn";
 import elementProperties from "../../assets/tools/ElementProperties.json";
 import { DynamoState } from "../../DynamoConnector";
 import { DynamoService } from "../../service/dynamo";
