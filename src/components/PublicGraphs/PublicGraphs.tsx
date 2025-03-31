@@ -1,22 +1,4 @@
-import allGraphs from "../../assets/graphs/index";
-
-import areaCalculation from "../../assets/workflows/AreaCalculation.json";
-// @ts-ignore
-import createConstraintGraph from "../../assets/workflows/Create Building Constraint.dyn";
-// @ts-ignore
-import createPixelTower from "../../assets/workflows/Create Pixel Tower.dyn";
-// @ts-ignore
-import buildingCostCalculator from "../../assets/workflows/Building Cost Calculator.dyn";
-import buildingModificationGraph from "../../assets/workflows/BuildingModification.json";
-import butterflyDiagram from "../../assets/workflows/ButterflyDiagram.json";
-import customAnalysisIsovist from "../../assets/workflows/IsovistAnalysis.json";
-import customAnalysisTerrainSlope from "../../assets/workflows/TerrainSlopeAnalysis.json";
-import customAnalysisViewToObject from "../../assets/workflows/ViewToObjectAnalysis.json";
-
-// @ts-ignore
-import elementCreation from "../../assets/tools/ElementCreation.dyn";
-// @ts-ignore
-import elementProperties from "../../assets/tools/View Element Properties.dyn";
+import allGraphs from "../../assets/graphs";
 import { DynamoState } from "../../DynamoConnector";
 import { DynamoService } from "../../service/dynamo";
 import { JSONGraph } from "../../types/types";
@@ -39,15 +21,17 @@ function download(jsonGraph: JSONGraph) {
   document.body.removeChild(element);
 }
 
-function useSampleGraphs2(): JSONGraph[] {
+const type = "JSON" as const;
+
+function useSampleGraphs(): JSONGraph[] {
   const [graphs, setGraphs] = useState<JSONGraph[]>([]);
 
   useEffect(() => {
     Promise.all(
       Object.entries(allGraphs).map(([name, fn]) => {
-        return fn().then((graph) => ({
+        return fn().then((graph: any) => ({
           id: name,
-          type: "JSON",
+          type,
           name: name.substring(2, name.length - 4),
           graph: graph.default,
         }));
@@ -56,42 +40,6 @@ function useSampleGraphs2(): JSONGraph[] {
   }, []);
 
   return graphs;
-}
-
-function useSampleGraphs(): JSONGraph[] {
-  return [
-    { id: "area", type: "JSON", name: "Area Calculation", graph: areaCalculation },
-    { id: "cost", type: "JSON", name: "Building Cost Calculator", graph: buildingCostCalculator },
-    { id: "create", type: "JSON", name: "Element Creation", graph: elementCreation },
-    { id: "props", type: "JSON", name: "View Element Properties", graph: elementProperties },
-    { id: "pixel", type: "JSON", name: "Create Pixel Tower", graph: createPixelTower },
-    { id: "1", type: "JSON", name: "Create Building Constraint", graph: createConstraintGraph },
-    { id: "2", type: "JSON", name: "Building Modification", graph: buildingModificationGraph },
-    {
-      id: "3",
-      type: "JSON",
-      name: "Butterfly Diagram",
-      graph: butterflyDiagram,
-    },
-    {
-      id: "4",
-      type: "JSON",
-      name: "Isovist Analysis",
-      graph: customAnalysisIsovist,
-    },
-    {
-      id: "5",
-      type: "JSON",
-      name: "Terrain Slope Analysis",
-      graph: customAnalysisTerrainSlope,
-    },
-    {
-      id: "6",
-      type: "JSON",
-      name: "View To Object Analysis",
-      graph: customAnalysisViewToObject,
-    },
-  ];
 }
 
 export function PublicGraphs({
@@ -108,7 +56,7 @@ export function PublicGraphs({
     dynamo: DynamoService;
   };
 }) {
-  const graphs = useSampleGraphs2();
+  const graphs = useSampleGraphs();
 
   return (
     <>
