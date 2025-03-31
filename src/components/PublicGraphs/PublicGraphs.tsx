@@ -1,5 +1,6 @@
 import areaCalculation from "../../assets/workflows/AreaCalculation.json";
-import buildingEnvelopeGraph from "../../assets/workflows/BuildingEnvelope.json";
+//@ts-ignore
+import createConstraintGraph from "../../assets/workflows/Create building Constraint.dyn";
 import buildingModificationGraph from "../../assets/workflows/BuildingModification.json";
 import butterflyDiagram from "../../assets/workflows/ButterflyDiagram.json";
 import customAnalysisIsovist from "../../assets/workflows/IsovistAnalysis.json";
@@ -34,7 +35,7 @@ function useSampleGraphs(): JSONGraph[] {
     { id: "area", type: "JSON", name: "Area Calculation", graph: areaCalculation },
     { id: "create", type: "JSON", name: "Element Creation", graph: elementCreation },
     { id: "props", type: "JSON", name: "Element Properties", graph: elementProperties },
-    { id: "1", type: "JSON", name: "Building Envelope", graph: buildingEnvelopeGraph },
+    { id: "1", type: "JSON", name: "Create Building Constraint", graph: createConstraintGraph },
     { id: "2", type: "JSON", name: "Building Modification", graph: buildingModificationGraph },
     {
       id: "3",
