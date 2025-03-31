@@ -1,11 +1,14 @@
 import areaCalculation from "../../assets/workflows/AreaCalculation.json";
-//@ts-ignore
+// @ts-ignore
 import createConstraintGraph from "../../assets/workflows/Create building Constraint.dyn";
+// @ts-ignore
+import createPixelTower from "../../assets/workflows/Create Pixel Tower.dyn";
 import buildingModificationGraph from "../../assets/workflows/BuildingModification.json";
 import butterflyDiagram from "../../assets/workflows/ButterflyDiagram.json";
 import customAnalysisIsovist from "../../assets/workflows/IsovistAnalysis.json";
 import customAnalysisTerrainSlope from "../../assets/workflows/TerrainSlopeAnalysis.json";
 import customAnalysisViewToObject from "../../assets/workflows/ViewToObjectAnalysis.json";
+
 // @ts-ignore
 import elementCreation from "../../assets/tools/ElementCreation.dyn";
 import elementProperties from "../../assets/tools/ElementProperties.json";
@@ -35,6 +38,7 @@ function useSampleGraphs(): JSONGraph[] {
     { id: "area", type: "JSON", name: "Area Calculation", graph: areaCalculation },
     { id: "create", type: "JSON", name: "Element Creation", graph: elementCreation },
     { id: "props", type: "JSON", name: "Element Properties", graph: elementProperties },
+    { id: "pixel", type: "JSON", name: "Create Pixel Tower", graph: createPixelTower },
     { id: "1", type: "JSON", name: "Create Building Constraint", graph: createConstraintGraph },
     { id: "2", type: "JSON", name: "Building Modification", graph: buildingModificationGraph },
     {
