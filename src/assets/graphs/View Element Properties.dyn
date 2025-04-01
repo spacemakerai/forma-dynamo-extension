@@ -574,7 +574,7 @@
   "NodeLibraryDependencies": [
     {
       "Name": "DynamoFormaBeta",
-      "Version": "4.1.0",
+      "Version": "4.2.3",
       "ReferenceType": "Package",
       "Nodes": [
         "37d97e8fed414a12801ee04a30607796",

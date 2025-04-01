@@ -29,7 +29,7 @@
       "Name": "Select view Target",
       "Type": "string",
       "Type2": "string",
-      "Value": "{\"elements\":[{\"urn\":\"urn:adsk-forma-elements:basic:pro_mptwspj6cs:e475b2c79f38c+3860fa02-743f-424c-adf2-d622f457209c:1731012912105\",\"path\":\"root/d51a128\",\"worldTransform\":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]}],\"region\":\"US\"}",
+      "Value": "{\"elements\":[{\"urn\":\"urn:adsk-forma-elements:basic:pro_mptwspj6cs:19fdcfb3f4065+9c6ee83e-3fb4-4b1f-957c-5051ab00d0c6:1731012912105\",\"path\":\"root/3b00b454-6e70-4c83-9e5c-b5b5e071ba67/a42e746\",\"worldTransform\":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]}],\"region\":\"US\"}",
       "Description": "Select Element in the Forma Player Extension"
     },
     {
@@ -37,7 +37,7 @@
       "Name": "Select Obstacles to impede View",
       "Type": "string",
       "Type2": "string",
-      "Value": "{\"elements\":[{\"urn\":\"urn:adsk-forma-elements:parametric:pro_mptwspj6cs:eed95e01e04d8:1743195454327-ed3e2f3\",\"path\":\"root/d6477ee\",\"worldTransform\":[1,0,0,0,0,1,0,0,0,0,1,0,1.0864646149554318,-7.549923993162281,-1.5884126845935667,1]}],\"region\":\"US\"}",
+      "Value": "{\"elements\":[{\"urn\":\"urn:adsk-forma-elements:basic:pro_mptwspj6cs:19fdcfb3f4065+31c3cfcb-92d9-419b-a766-b6b0ff328654:1731012912105\",\"path\":\"root/3b00b454-6e70-4c83-9e5c-b5b5e071ba67/a97a88\",\"worldTransform\":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]}],\"region\":\"US\"}",
       "Description": "Select Element in the Forma Player Extension"
     },
     {
@@ -45,7 +45,7 @@
       "Name": "Select Building to View From",
       "Type": "string",
       "Type2": "string",
-      "Value": "{\"elements\":[{\"urn\":\"urn:adsk-forma-elements:basicbuilding:pro_mptwspj6cs:2zjwbwarb5:1743197479542\",\"path\":\"root/914fac9\",\"worldTransform\":[1,0,0,0,0,1,0,0,0,0,1,0,63.33187651961703,-244.4637541936267,6.5686699211978805,1]}],\"region\":\"US\"}",
+      "Value": "{\"elements\":[{\"urn\":\"urn:adsk-forma-elements:basic:pro_mptwspj6cs:19fdcfb3f4065+631cbebc-97aa-4a05-aecf-2bab28ef13e4:1731012912105\",\"path\":\"root/3b00b454-6e70-4c83-9e5c-b5b5e071ba67/10be96b\",\"worldTransform\":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]}],\"region\":\"US\"}",
       "Description": "Select Element in the Forma Player Extension"
     }
   ],
@@ -3401,7 +3401,7 @@
       ],
       "Replication": "Disabled",
       "Description": "Select Element in the Forma Player Extension",
-      "InputValue": "{\"elements\":[{\"urn\":\"urn:adsk-forma-elements:basic:pro_mptwspj6cs:e475b2c79f38c+3860fa02-743f-424c-adf2-d622f457209c:1731012912105\",\"path\":\"root/d51a128\",\"worldTransform\":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]}],\"region\":\"US\"}"
+      "InputValue": "{\"elements\":[{\"urn\":\"urn:adsk-forma-elements:basic:pro_mptwspj6cs:19fdcfb3f4065+9c6ee83e-3fb4-4b1f-957c-5051ab00d0c6:1731012912105\",\"path\":\"root/3b00b454-6e70-4c83-9e5c-b5b5e071ba67/a42e746\",\"worldTransform\":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]}],\"region\":\"US\"}"
     },
     {
       "ConcreteType": "Forma.NodeModels.SelectElementsHttp, DynamoForma.NodeModels",
@@ -3421,7 +3421,7 @@
       ],
       "Replication": "Disabled",
       "Description": "Select Element in the Forma Player Extension",
-      "InputValue": "{\"elements\":[{\"urn\":\"urn:adsk-forma-elements:parametric:pro_mptwspj6cs:eed95e01e04d8:1743195454327-ed3e2f3\",\"path\":\"root/d6477ee\",\"worldTransform\":[1,0,0,0,0,1,0,0,0,0,1,0,1.0864646149554318,-7.549923993162281,-1.5884126845935667,1]}],\"region\":\"US\"}"
+      "InputValue": "{\"elements\":[{\"urn\":\"urn:adsk-forma-elements:basic:pro_mptwspj6cs:19fdcfb3f4065+31c3cfcb-92d9-419b-a766-b6b0ff328654:1731012912105\",\"path\":\"root/3b00b454-6e70-4c83-9e5c-b5b5e071ba67/a97a88\",\"worldTransform\":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]}],\"region\":\"US\"}"
     },
     {
       "ConcreteType": "Forma.NodeModels.SelectElementsHttp, DynamoForma.NodeModels",
@@ -3441,7 +3441,7 @@
       ],
       "Replication": "Disabled",
       "Description": "Select Element in the Forma Player Extension",
-      "InputValue": "{\"elements\":[{\"urn\":\"urn:adsk-forma-elements:basicbuilding:pro_mptwspj6cs:2zjwbwarb5:1743197479542\",\"path\":\"root/914fac9\",\"worldTransform\":[1,0,0,0,0,1,0,0,0,0,1,0,63.33187651961703,-244.4637541936267,6.5686699211978805,1]}],\"region\":\"US\"}"
+      "InputValue": "{\"elements\":[{\"urn\":\"urn:adsk-forma-elements:basic:pro_mptwspj6cs:19fdcfb3f4065+631cbebc-97aa-4a05-aecf-2bab28ef13e4:1731012912105\",\"path\":\"root/3b00b454-6e70-4c83-9e5c-b5b5e071ba67/10be96b\",\"worldTransform\":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]}],\"region\":\"US\"}"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
@@ -5928,7 +5928,7 @@
     },
     {
       "Name": "DynamoFormaBeta",
-      "Version": "1.0.0.0",
+      "Version": "4.2.3",
       "ReferenceType": "Package",
       "Nodes": [
         "23981e0d81714ee28e09c47957a3b6cf",
@@ -5996,75 +5996,87 @@
     "ConnectorPins": [
       {
         "Left": -1571.6569495558288,
-        "Top": 2992.5029844606865,
+        "Top": 2972.503184460687,
         "IsHidden": false,
         "ConnectorGuid": "87909e96-b9f7-47e2-8e34-cb40e99e7ca9"
       },
       {
         "Left": -1575.387292564726,
-        "Top": 3062.934885530064,
+        "Top": 3042.9350855300645,
         "IsHidden": false,
         "ConnectorGuid": "386c86a7-9fa2-4975-8f62-37cc9f82bae9"
       },
       {
         "Left": 931.0875963592609,
-        "Top": 3078.4179889276343,
+        "Top": 3058.4181889276347,
         "IsHidden": false,
         "ConnectorGuid": "386c86a7-9fa2-4975-8f62-37cc9f82bae9"
       },
       {
         "Left": -1571.8439549846607,
-        "Top": 2992.5029844606865,
+        "Top": 2972.503184460687,
         "IsHidden": false,
         "ConnectorGuid": "90a32dd5-caec-4805-bdab-54f0bae44674"
       },
       {
         "Left": -1741.138323657035,
-        "Top": 2003.213046436914,
+        "Top": 1983.213246436914,
         "IsHidden": false,
         "ConnectorGuid": "9d682229-e57e-491a-b104-3b659daee821"
       },
       {
         "Left": -1743.210772164691,
-        "Top": 1959.6916277761327,
+        "Top": 1939.6918277761326,
         "IsHidden": false,
         "ConnectorGuid": "5a7a1814-6dde-40ab-ba86-43dcea14ff10"
       },
       {
         "Left": 931.28505475574,
-        "Top": 2992.5029844606865,
+        "Top": 2972.503184460687,
         "IsHidden": false,
         "ConnectorGuid": "90a32dd5-caec-4805-bdab-54f0bae44674"
       },
       {
         "Left": 2551.2762175304297,
-        "Top": 3163.9721599229424,
+        "Top": 3143.972359922943,
         "IsHidden": false,
         "ConnectorGuid": "33d809f7-65cf-4657-a027-3fb5da2fa966"
       },
       {
         "Left": 6614.911797460932,
-        "Top": 2939.7252977880653,
+        "Top": 2919.7254977880657,
         "IsHidden": false,
         "ConnectorGuid": "c834da9b-7ddf-4ed8-be1c-fc80053b7550"
       },
       {
-        "Left": -321.3041094798235,
-        "Top": 635.2601026992122,
+        "Left": -325.19765777909095,
+        "Top": 677.4923305631936,
         "IsHidden": false,
         "ConnectorGuid": "93d59515-2604-4f60-8d38-b1d5b00923ac"
       },
       {
-        "Left": 920.3276191061536,
-        "Top": 1848.6816092011948,
+        "Left": 910.3277191061536,
+        "Top": 1828.6818092011947,
         "IsHidden": false,
         "ConnectorGuid": "93d59515-2604-4f60-8d38-b1d5b00923ac"
       },
       {
         "Left": 7492.655646754657,
-        "Top": 2470.272593806942,
+        "Top": 2450.2727938069424,
         "IsHidden": false,
         "ConnectorGuid": "07247e34-1855-4b77-8e99-c370be8accd2"
+      },
+      {
+        "Left": 913.388217475771,
+        "Top": -161.21022956047335,
+        "IsHidden": false,
+        "ConnectorGuid": "0ab24da4-1fbd-4841-820d-cc149a39be5f"
+      },
+      {
+        "Left": -324.6089536282361,
+        "Top": 677.4923305631936,
+        "IsHidden": false,
+        "ConnectorGuid": "0ab24da4-1fbd-4841-820d-cc149a39be5f"
       }
     ],
     "NodeViews": [
@@ -7852,7 +7864,6 @@
           "07a0580cb30244ea9ff0f37393fc9bed",
           "f4ae948a1249410cbff52b41116a00c4",
           "fa80e3328b454422b8c5e963befcc265",
-          "0e54e750712c441b8fb1930cb3c091bc",
           "44a5aec6cc094b04bc1ade30ff125a0a",
           "9d728d0fd7494cfba47059a4403a4c44",
           "a7cbb1f470f54ef3adebb04e30905325",
@@ -7862,7 +7873,8 @@
           "947dd71484e2472abed67c22c05c8950",
           "dabd0a7c1b8f4ca98ddd6f57ab0d7026",
           "2bca548d4f354a3a90ee12a167d41c8c",
-          "a1cc50f763754e1f94781dfef55b3870"
+          "a1cc50f763754e1f94781dfef55b3870",
+          "0e54e750712c441b8fb1930cb3c091bc"
         ],
         "HasNestedGroups": false,
         "Left": -5660.405456114795,
@@ -7872,7 +7884,7 @@
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 1254.4525787141056,
-        "InitialHeight": 343.13730751713,
+        "InitialHeight": 620.8605949484431,
         "TextblockHeight": 63.0,
         "Background": "#FFB9F9E1"
       },
@@ -7916,11 +7928,9 @@
           "ab1104542bb5445a95b8098a8f534c82",
           "dc909a7b8e6a41caa85246baeca5c0aa",
           "1f8ec380e09f422daf389e127d71db30",
-          "1e08eb89ee1c45ceb7e243e6c1e389f2",
           "7430ed1bfd8a434cb6b882df404cc2b1",
           "715b7a4b142444f382d5c2732516d233",
           "6a24c032ba53499fa8e398fde070a3c9",
-          "4be15f2f827041798d384771c8a0f3d3",
           "bd8bc96b8b8a462e8d20c7c0a7bbfa5a",
           "61e25c655bd040a6a52ce65b7618c0d0",
           "320ae694a7f741c5b3e74ef398ce9a60",
@@ -7928,7 +7938,9 @@
           "4d9dd10e7d6f43a9beac99aa18d39a20",
           "ccfef035ce4444109a7c7dff2cb7355a",
           "709ac5ce9a9f4f59a75fdc64cf218bb1",
-          "2456339483de4e9da6bac29b16704423"
+          "2456339483de4e9da6bac29b16704423",
+          "1e08eb89ee1c45ceb7e243e6c1e389f2",
+          "4be15f2f827041798d384771c8a0f3d3"
         ],
         "HasNestedGroups": false,
         "Left": -5368.067636473552,
@@ -7938,7 +7950,7 @@
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": -318.217905877691,
-        "InitialHeight": 528.9600537402144,
+        "InitialHeight": 604.2885115113006,
         "TextblockHeight": 63.0,
         "Background": "#FFB9F9E1"
       },
@@ -8225,8 +8237,8 @@
         "PinnedNode": "9d728d0fd7494cfba47059a4403a4c44"
       }
     ],
-    "X": 971.7232206099436,
-    "Y": 172.94778442785193,
-    "Zoom": 0.11037527981598014
+    "X": 738.9819846125134,
+    "Y": 311.3199465323041,
+    "Zoom": 0.07843819384952753
   }
 }

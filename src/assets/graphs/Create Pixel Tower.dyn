@@ -2349,7 +2349,7 @@
   "NodeLibraryDependencies": [
     {
       "Name": "DynamoFormaBeta",
-      "Version": "1.0.0.0",
+      "Version": "4.2.3",
       "ReferenceType": "Package",
       "Nodes": [
         "a850acc5007946d5b5177c08b44915f3",
