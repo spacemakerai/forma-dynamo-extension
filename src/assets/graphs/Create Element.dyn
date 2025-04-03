@@ -1,7 +1,7 @@
 {
   "Uuid": "b325d0b7-0108-41af-a972-9b4e3ca559cb",
   "IsCustomNode": false,
-  "Description": "This graph shows how you can use Dynamo to create elements in Forma. In this example you ceate a contraint cube in the middle of the scene, you can adjust the size and category in Dynamo Player for Forma without opening the graph. Note: make sure you are using active categories, other text e.g. \"floor\" and \"terrain\" creates un-deletable elements.",
+  "Description": "This graph shows how you can use Dynamo to create elements in Forma. In this example you create a constraint cube in the middle of the scene, you can adjust the size and category in Dynamo Player for Forma without opening the graph. Note: make sure you are using active categories, other text e.g. \"floor\" and \"terrain\" creates un-deletable elements.",
   "Name": "Create Element",
   "ElementResolver": {
     "ResolutionMap": {}
