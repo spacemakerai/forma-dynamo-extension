@@ -17,7 +17,7 @@ export function captureException(
   });
   Sentry.withScope((scope) => {
     scope.setTags({
-      owner: "analyze-extensions",
+      owner: "ecosystem",
       projectId: Forma.getProjectId(),
     });
     Sentry.captureException(new Error(message));
