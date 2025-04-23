@@ -149,6 +149,15 @@ export function DaasApp() {
           <weave-button
             variant={"flat"}
             onClick={() => {
+              localStorage.setItem("showQuickStart", "true");
+              window.location.reload();
+            }}
+          >
+            Quick Start
+          </weave-button>
+          <weave-button
+            variant={"flat"}
+            onClick={() => {
               const link = document.createElement("a");
               link.href =
                 "https://spacemakerai.github.io/forma-dynamo-extension/assets/AutodeskDynamoFormaBetaTerms.pdf";

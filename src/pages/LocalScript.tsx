@@ -591,6 +591,15 @@ export function LocalScript({
   }, [service.dynamo, scriptInfo, state, script]);
 
   useEffect(() => {
+    if (localStorage.getItem("dynamoRunOnLoad") === "true") {
+      if (service.connected !== false && scriptInfo.type === "loaded") {
+        localStorage.removeItem("dynamoRunOnLoad");
+        onRun();
+      }
+    }
+  }, [service.connected, scriptInfo.type, onRun]);
+
+  useEffect(() => {
     setResult({ type: "init" });
   }, [state]);
 

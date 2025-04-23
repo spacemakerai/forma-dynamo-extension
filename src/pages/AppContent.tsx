@@ -56,6 +56,8 @@ const AppContent = ({
         openSample={() => {
           const graph = allGraphs["./Terrain Slope Analysis.dyn"];
 
+          localStorage.setItem("dynamoRunOnLoad", "true");
+
           graph().then((graph: any) => {
             setGraph({
               id: "Terrain Slope Analysis",
