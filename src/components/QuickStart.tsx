@@ -1,4 +1,7 @@
 import { useCallback, useState } from "preact/compat";
+import lucky from "../assets/quickstart/lucky.png";
+import forum from "../assets/quickstart/forum.png";
+import youtube from "../assets/quickstart/youtube.png";
 
 const showQuickStart = localStorage.getItem("showQuickStart") !== "false";
 
@@ -71,7 +74,7 @@ export function QuickStart({ openSample }: { openSample: () => void }) {
         >
           {[
             {
-              src: "/src/assets/quickstart/lucky.png",
+              src: lucky,
               alt: "Lucky",
               title: "I feel Lucky",
               onClick: () => {
@@ -80,7 +83,7 @@ export function QuickStart({ openSample }: { openSample: () => void }) {
               },
             },
             {
-              src: "/src/assets/quickstart/forum.png",
+              src: forum,
               alt: "Forum",
               onClick: () =>
                 window.open(
@@ -91,7 +94,7 @@ export function QuickStart({ openSample }: { openSample: () => void }) {
               title: "Dynamo Forum Challenge",
             },
             {
-              src: "/src/assets/quickstart/youtube.png",
+              src: youtube,
               alt: "YouTube",
               onClick: () =>
                 window.open(
