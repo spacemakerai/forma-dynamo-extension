@@ -7,6 +7,7 @@ export declare module "preact/src/jsx" {
         density?: "high" | "medium";
         iconposition?: "left" | "right";
       };
+      "weave-close": JSXInternal.HTMLAttributes<HTMLElement>;
       "weave-tooltip": JSXInternal.HTMLAttributes<HTMLElement> & {
         nub?:
           | "up-left"

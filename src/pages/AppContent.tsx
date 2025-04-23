@@ -8,6 +8,8 @@ import { JSONGraph, UnSavedGraph } from "../types/types";
 import { DynamoState } from "../DynamoConnector";
 import { useMemo, useState } from "preact/hooks";
 import { ShareDestination, AppPageState } from "./DaasApp";
+import { QuickStart } from "../components/QuickStart";
+import allGraphs from "../assets/graphs";
 
 type Props = {
   page: AppPageState;
@@ -50,6 +52,20 @@ const AppContent = ({
 
   return (
     <>
+      <QuickStart
+        openSample={() => {
+          const graph = allGraphs["./Terrain Slope Analysis.dyn"];
+
+          graph().then((graph: any) => {
+            setGraph({
+              id: "Terrain Slope Analysis",
+              type: "JSON",
+              name: "Terrain Slope Analysis",
+              graph: graph.default,
+            });
+          });
+        }}
+      />
       {page.name === "publish" && allowedDestinations.length > 0 && (
         <PublishGraph
           env={env}
