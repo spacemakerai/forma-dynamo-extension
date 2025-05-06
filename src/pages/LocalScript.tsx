@@ -30,6 +30,7 @@ import { DynamoState } from "../DynamoConnector.ts";
 // import { IndicatorError } from "../assets/icons/InidcatorError.tsx";
 import { filterUnsupportedPackages, Package } from "../utils/daasSupportedPackages.ts";
 import { transformCoordinates } from "../utils/transformCoordinates.ts";
+import { SelectPointMode } from "../components/SelectPointMode.tsx";
 
 // type Status = "online" | "offline" | "error";
 
@@ -349,6 +350,7 @@ export function LocalScript({
     (script.type === "JSON" && script.graph.Description);
 
   const [activeSelectionNode, setActiveSelectionNode] = useState<Input | undefined>(undefined);
+  const [activeSelectPointNode, setActiveSelectPointNode] = useState<Input | undefined>(undefined);
 
   const [state, setState] = useState<Record<string, any>>({});
 
@@ -523,6 +525,12 @@ export function LocalScript({
               nodeId: id,
               value: JSON.stringify(elements[0]),
             };
+          } else if (type === "SelectPoint") {
+            const point = value;
+            return {
+              nodeId: id,
+              value: JSON.stringify(point),
+            };
           } else if (type === "FormaProject" || type === "GetProject") {
             const project = await Forma.project.get();
             return {
@@ -641,9 +649,16 @@ export function LocalScript({
           setValue={setValue}
         />
       )}
+      {activeSelectPointNode && (
+        <SelectPointMode
+          activeSelectPointNode={activeSelectPointNode}
+          setActiveSelectPointNode={setActiveSelectPointNode}
+          setValue={setValue}
+        />
+      )}
       <div
         style={{
-          display: activeSelectionNode ? "none" : "block",
+          display: activeSelectionNode || activeSelectPointNode ? "none" : "block",
           paddingBottom: `${fixedFooterHeight + 20}px`,
         }}
       >
@@ -749,6 +764,7 @@ export function LocalScript({
                   state={state}
                   setValue={setValue}
                   setActiveSelectionNode={setActiveSelectionNode}
+                  setActiveSelectPointNode={setActiveSelectPointNode}
                 />
 
                 <DynamoOutput result={result} />

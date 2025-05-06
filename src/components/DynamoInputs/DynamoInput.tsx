@@ -9,16 +9,32 @@ function DynamoInputComponent({
   value,
   setValue,
   setActiveSelectionNode,
+  setActiveSelectPointNode,
 }: {
   input: Input;
   value: any;
   setValue: (id: string, v: any) => void;
   setActiveSelectionNode?: (input: Input) => void;
+  setActiveSelectPointNode?: (input: Input) => void;
 }) {
   if (input.type === "FormaTerrain" || input.type === "GetTerrain") {
     return null;
   } else if (input.type === "FormaProject" || input.type === "GetProject") {
     return null;
+  } else if (input.type === "SelectPoint") {
+    return (
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        {value && <span> Selected &nbsp;</span>}
+        {!value && <WarningIcon />}
+        <weave-button
+          variant="outlined"
+          style={{ margin: "0 5px" }}
+          onClick={() => setActiveSelectPointNode?.(input)}
+        >
+          Select
+        </weave-button>
+      </div>
+    );
   } else if (input.type === "FormaHousingTemplate") {
     return <Housing input={input} value={value} setValue={setValue} />;
   } else if (isSelect(input)) {
@@ -27,7 +43,7 @@ function DynamoInputComponent({
         {value && <span>{value.length} Selected</span>}
         {!value && <WarningIcon />}
         <weave-button
-          style={{ marginLeft: "5px" }}
+          style={{ margin: "0 5px" }}
           variant="outlined"
           onClick={() => setActiveSelectionNode?.(input)}
         >
@@ -124,11 +140,13 @@ export function DynamoInput({
   state,
   setValue,
   setActiveSelectionNode,
+  setActiveSelectPointNode,
 }: {
   script: GraphInfo;
   state: Record<string, any>;
   setValue: (id: string, v: any) => void;
   setActiveSelectionNode?: (input: Input | undefined) => void;
+  setActiveSelectPointNode?: (input: Input | undefined) => void;
 }) {
   return (
     <div>
@@ -163,6 +181,7 @@ export function DynamoInput({
             value={state[input.id]}
             setValue={setValue}
             setActiveSelectionNode={setActiveSelectionNode}
+            setActiveSelectPointNode={setActiveSelectPointNode}
           />
         </div>
       ))}
