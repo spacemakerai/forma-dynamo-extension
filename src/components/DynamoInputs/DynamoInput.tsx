@@ -3,6 +3,7 @@ import { isSelect } from "../../utils/node";
 import { Housing } from "./Housing";
 import { GraphInfo } from "../../service/dynamo";
 import { WarningIcon } from "../../icons/Warning";
+import { Forma } from "forma-embedded-view-sdk/auto";
 
 function DynamoInputComponent({
   input,
@@ -39,7 +40,16 @@ function DynamoInputComponent({
     return <Housing input={input} value={value} setValue={setValue} />;
   } else if (isSelect(input)) {
     return (
-      <div style={{ display: "flex", flexDirection: "row" }}>
+      <div
+        style={{ display: "flex", flexDirection: "row" }}
+        onMouseOver={() =>
+          value &&
+          Forma.render.elementColors.set({
+            pathsToColor: new Map(value.map((path: string) => [path, "#0696d7"])),
+          })
+        }
+        onMouseOut={() => Forma.render.elementColors.clearAll()}
+      >
         {value && <span>{value.length} Selected</span>}
         {!value && <WarningIcon />}
         <weave-button

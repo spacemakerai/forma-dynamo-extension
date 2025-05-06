@@ -34,6 +34,16 @@ export function SelectMode({
   const onClickCancel = async () => {
     setActiveSelectionNode(undefined);
   };
+
+  useEffect(() => {
+    Forma.render.elementColors.set({
+      pathsToColor: new Map(selection.map((path: string) => [path, "#0696d7"])),
+    });
+
+    return () => {
+      Forma.render.elementColors.clearAll();
+    };
+  }, [selection]);
   return (
     <div>
       <h2>Select in the canvas</h2>
