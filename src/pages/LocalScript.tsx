@@ -31,6 +31,7 @@ import { DynamoState } from "../DynamoConnector.ts";
 import { filterUnsupportedPackages, Package } from "../utils/daasSupportedPackages.ts";
 import { transformCoordinates } from "../utils/transformCoordinates.ts";
 import { SelectPointMode } from "../components/SelectPointMode.tsx";
+import { DisplayPreferences } from "../components/DisplayPreferences.tsx";
 
 // type Status = "online" | "offline" | "error";
 
@@ -640,6 +641,19 @@ export function LocalScript({
     return filterUnsupportedPackages(script.graph);
   }, [env, script]);
 
+  const storedPreferences = useMemo(() => {
+    const stored = localStorage.getItem("dynamoPreferences");
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    return { sortNodes: false, hideCollectNodes: false };
+  }, []);
+  const [preferences, setPreferences] = useState(storedPreferences);
+
+  useEffect(() => {
+    localStorage.setItem("dynamoPreferences", JSON.stringify(preferences));
+  }, [preferences]);
+
   return (
     <>
       {activeSelectionNode && (
@@ -679,6 +693,8 @@ export function LocalScript({
         >
           {/** Before the scriptInfo === loaded, use the script.name */}
           <h3>{(scriptInfo.type === "loaded" && scriptInfo.data.name) || script.name}</h3>
+
+          <DisplayPreferences preferences={preferences} setPreferences={setPreferences} />
         </div>
         <div
           style={{
@@ -763,6 +779,7 @@ export function LocalScript({
                   script={scriptInfo.data}
                   state={state}
                   setValue={setValue}
+                  preferences={preferences}
                   setActiveSelectionNode={setActiveSelectionNode}
                   setActiveSelectPointNode={setActiveSelectPointNode}
                 />

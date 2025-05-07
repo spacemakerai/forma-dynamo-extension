@@ -148,6 +148,7 @@ function DynamoInputComponent({
 export function DynamoInput({
   script,
   state,
+  preferences,
   setValue,
   setActiveSelectionNode,
   setActiveSelectPointNode,
@@ -155,9 +156,14 @@ export function DynamoInput({
   script: GraphInfo;
   state: Record<string, any>;
   setValue: (id: string, v: any) => void;
+  preferences: { hideCollectNodes: boolean; sortNodes: boolean };
   setActiveSelectionNode?: (input: Input | undefined) => void;
   setActiveSelectPointNode?: (input: Input | undefined) => void;
 }) {
+  const inputs = preferences.sortNodes
+    ? [...(script.inputs || [])].sort((inputA, inputB) => inputA.name.localeCompare(inputB.name))
+    : script.inputs || [];
+
   return (
     <div>
       <div
@@ -173,28 +179,34 @@ export function DynamoInput({
         Inputs
       </div>
 
-      {(script.inputs || []).map((input: Input) => (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "5px 0 5px 5px",
-            lineHeight: "24px",
-            borderBottom: "1px solid var(--divider-lightweight)",
-          }}
-          key={input.id}
-        >
-          {input.name}
-          <DynamoInputComponent
-            input={input}
-            value={state[input.id]}
-            setValue={setValue}
-            setActiveSelectionNode={setActiveSelectionNode}
-            setActiveSelectPointNode={setActiveSelectPointNode}
-          />
-        </div>
-      ))}
+      {inputs
+        .filter(
+          (input) =>
+            !preferences.hideCollectNodes ||
+            !(input.name.startsWith("[") && input.name.endsWith("]")),
+        )
+        .map((input: Input) => (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "5px 0 5px 5px",
+              lineHeight: "24px",
+              borderBottom: "1px solid var(--divider-lightweight)",
+            }}
+            key={input.id}
+          >
+            {input.name}
+            <DynamoInputComponent
+              input={input}
+              value={state[input.id]}
+              setValue={setValue}
+              setActiveSelectionNode={setActiveSelectionNode}
+              setActiveSelectPointNode={setActiveSelectPointNode}
+            />
+          </div>
+        ))}
 
       {script.inputs?.length === 0 && (
         <div

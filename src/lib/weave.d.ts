@@ -63,7 +63,9 @@ export declare module "preact/src/jsx" {
       };
       "weave-checkbox": Omit<JSX.HTMLAttributes<HTMLElement>, "onChange"> & {
         checked?: boolean;
-        onChange: (e: CustomEvent<{ checked: boolean }>) => void;
+        onChange?: (e: CustomEvent<{ checked: boolean }>) => void;
+        label?: string;
+        showlabel?: "true" | "false";
       };
       "forma-select-native": Omit<JSX.SelectHTMLAttributes<HTMLSelectElement>, "onChange"> & {
         onChange?: (event: CustomEvent<{ value: string }>) => void;
