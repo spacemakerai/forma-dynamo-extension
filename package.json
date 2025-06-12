@@ -13,10 +13,10 @@
     "test": "pnpm typecheck && pnpm lint && pnpm prettier:check"
   },
   "dependencies": {
-    "@eslint/compat": "^1.2.7",
+    "@eslint/compat": "^1.3.0",
     "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.23.0",
-    "@sentry/browser": "^9.10.1",
+    "@eslint/js": "^9.28.0",
+    "@sentry/browser": "^9.28.1",
     "@types/earcut": "^3.0.0",
     "@types/geojson": "^7946.0.16",
     "@types/uuid": "^10.0.0",
@@ -24,29 +24,29 @@
     "earcut": "^3.0.1",
     "forma-elements": "^2.4.0",
     "forma-embedded-view-sdk": "0.88.0",
-    "postcss": "^8.5.3",
-    "postcss-nesting": "^13.0.1",
-    "preact": "^10.26.4",
+    "postcss": "^8.5.5",
+    "postcss-nesting": "^13.0.2",
+    "preact": "^10.26.9",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.1",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^22.13.14",
-    "@typescript-eslint/eslint-plugin": "^8.28.0",
-    "@typescript-eslint/parser": "^8.28.0",
-    "eslint": "^9.23.0",
+    "@typescript-eslint/eslint-plugin": "^8.34.0",
+    "@typescript-eslint/parser": "^8.34.0",
+    "eslint": "^9.28.0",
     "eslint-config-preact": "^1.5.0",
-    "eslint-config-prettier": "^10.1.1",
+    "eslint-config-prettier": "^10.1.5",
     "eslint-config-react-hooks": "^1.0.0",
-    "eslint-plugin-prettier": "^5.2.5",
+    "eslint-plugin-prettier": "^5.4.1",
     "prettier": "3.5.3",
-    "typescript": "^5.8.2",
-    "vite": "^6.2.7"
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
   },
   "prettier": {
     "trailingComma": "all",
     "printWidth": 100
   },
-  "packageManager": "pnpm@9.15.3"
+  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
 }
