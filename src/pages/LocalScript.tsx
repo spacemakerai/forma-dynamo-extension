@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from "preact/compat";
 
-import { DynamoOutput, RunResult } from "../components/DynamoOutputs/DynamoOutput.js";
+import { DynamoOutput, RunResult, RunStatus } from "../components/DynamoOutputs/DynamoOutput.js";
 import { DynamoInput } from "../components/DynamoInputs/DynamoInput.js";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { isGet, isSelect } from "../utils/node.js";
@@ -21,6 +21,7 @@ import {
   GraphInfo,
   GraphTarget,
   Input,
+  TimeoutError,
 } from "../service/dynamo.js";
 import { JSONGraph, UnSavedGraph } from "../types/types.ts";
 import { WarningBanner } from "../components/Warnings/WarningBanner.tsx";
@@ -435,7 +436,9 @@ export function LocalScript({
         return;
       }
       const code = scriptInfo.data;
-      setResult({ type: "running" });
+      var lastStatus: RunResult = { type: "preparing", uiMsg: "Preparing job" };
+      setResult(lastStatus);
+
       const urn = await Forma.proposal.getRootUrn();
 
       const inputs = await Promise.all(
@@ -588,14 +591,30 @@ export function LocalScript({
         }),
       );
 
-      setResult({
-        type: "success",
-        data: await service.dynamo.run(createGraphTarget(script, scriptInfo), inputs),
+      const graphTarget = createGraphTarget(script, scriptInfo);
+
+      const result = await service.dynamo.run(graphTarget, inputs, (status: string) => {
+        // Update intermediate job status.
+        if (status === "CREATED") {
+          setResult({type: "created", uiMsg: "Job created"});
+        } else if (status === "PENDING") {
+          setResult({type: "pending", uiMsg: "Job pending"});
+        } else if (status === "EXECUTING") {
+           setResult({type: "executing", uiMsg: "Job executing"});
+        }
       });
+
+      setResult({type: "complete", uiMsg: "Job complete", data: result});
     } catch (e) {
+      // errors caught in the forma code.
       console.error(e);
       captureException(e, "Error running Dynamo graph");
-      setResult({ type: "error", data: e });
+
+      if (e instanceof TimeoutError) {
+        setResult({ type: "timeout", uiMsg: "Job timed out", data: e });
+      } else {
+        setResult({type: "failed", uiMsg: "Job failed", data: e});
+      }
     }
   }, [service.dynamo, scriptInfo, state, script]);
 
@@ -789,10 +808,10 @@ export function LocalScript({
             </>
           )}
         </div>
-        {result.type === "success" && result.data.title?.includes("Required property") && (
+        {result.type === "complete" && result.data.title?.includes("Required property") && (
           <div>Failed</div>
         )}
-        {result.type === "success" && result.data.info?.issues?.length > 0 && (
+        {result.type === "complete" && result.data.info?.issues?.length > 0 && (
           <WarningBanner
             title={"The graph returned with warnings or errors."}
             warnings={result.data.info.issues.map((issue) => ({
@@ -897,7 +916,8 @@ export function LocalScript({
               variant="solid"
               disabled={
                 service.connected === false ||
-                result.type === "running" ||
+                result.type === "pending" || result.type === "executing" || 
+                result.type === "created" || result.type === "preparing" ||
                 scriptInfo.type !== "loaded" ||
                 unsupportedPackages.length > 0
               }

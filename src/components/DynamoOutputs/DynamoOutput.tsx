@@ -10,11 +10,25 @@ import { ExtrudedPolygon } from "./ExtrudedPolygon.tsx";
 import { SendElementToForma } from "./SendElementToForma.tsx";
 import { VisualizeImage } from "./VisualizeImage.tsx";
 
+export const RunStatus = {
+  Init: { type: "init" },
+  Created: { uiMsg: "Job started" }, // Job created.
+  Pending: { uiMsg: "Job pending" }, // Job sent and pending execution.
+  Executing: { uiMsg: "Job executing" }, // Job is executing.
+  Complete: (data: Run) : RunResult => {  return {type: "complete", uiMsg: "Job completed", data}; }, // Job ran to completion (success).
+  Failed: (data: any) => { uiMsg: "Job failed"; data }, // Job failed.
+  Timeout: (data: any) => { uiMsg: "Job timed out"; data } // Job ran out of time.
+};
+
 export type RunResult =
-  | { type: "init" }
-  | { type: "running" }
-  | { type: "success"; data: Run }
-  | { type: "error"; data: any };
+  | { type: "init" } // Initial state.
+  | { type: "preparing", uiMsg: string } // Preparing graph state.
+  | { type: "created"; uiMsg: string } // Job created.
+  | { type: "pending"; uiMsg: string } // Job sent and pending execution.
+  | { type: "executing"; uiMsg: string } // Job is executing.
+  | { type: "complete"; uiMsg: string; data: Run } // Job ran to completion (success).
+  | { type: "failed"; uiMsg: string; data: any } // Job failed.
+  | { type: "timeout"; uiMsg: string; data: any }; // Job ran out of time.
 
 function DynamoOutputComponent({ output }: { output: Output }) {
   if (output.type === "Watch3D") {
@@ -75,12 +89,13 @@ function DynamoOutputComponent({ output }: { output: Output }) {
 
 export function DynamoOutput({ result }: { result: RunResult }) {
   if (result.type === "init") return null;
-  if (result.type === "error") return <div>Failed</div>;
-  if (result.type === "running")
+  if (result.type === "failed") return <div>{result.uiMsg}</div>;// Maybe add a Timeout icon?
+  if (result.type === "timeout") return <div>{result.uiMsg}</div>;// Maybe add a Failed icon?
+  if (result.type !== "complete")
     return (
       <div>
         <weave-progress-bar />
-        Running
+        {result.uiMsg}
       </div>
     );
 
