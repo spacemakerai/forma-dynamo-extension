@@ -10,16 +10,6 @@ import { ExtrudedPolygon } from "./ExtrudedPolygon.tsx";
 import { SendElementToForma } from "./SendElementToForma.tsx";
 import { VisualizeImage } from "./VisualizeImage.tsx";
 
-export const RunStatus = {
-  Init: { type: "init" },
-  Created: { uiMsg: "Job started" }, // Job created.
-  Pending: { uiMsg: "Job pending" }, // Job sent and pending execution.
-  Executing: { uiMsg: "Job executing" }, // Job is executing.
-  Complete: (data: Run) : RunResult => {  return {type: "complete", uiMsg: "Job completed", data}; }, // Job ran to completion (success).
-  Failed: (data: any) => { uiMsg: "Job failed"; data }, // Job failed.
-  Timeout: (data: any) => { uiMsg: "Job timed out"; data } // Job ran out of time.
-};
-
 export type RunResult =
   | { type: "init" } // Initial state.
   | { type: "preparing", uiMsg: string } // Preparing graph state.

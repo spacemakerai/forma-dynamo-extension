@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from "preact/compat";
 
-import { DynamoOutput, RunResult, RunStatus } from "../components/DynamoOutputs/DynamoOutput.js";
+import { DynamoOutput, RunResult } from "../components/DynamoOutputs/DynamoOutput.js";
 import { DynamoInput } from "../components/DynamoInputs/DynamoInput.js";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { isGet, isSelect } from "../utils/node.js";
