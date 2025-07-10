@@ -201,7 +201,7 @@ class Dynamo implements DynamoService {
       } else if (job.status === "FAILED") {
         throw new FetchError("Job failed", 500);
       } else if (job.status === "TIMEOUT") {
-        throw new FetchError("Job timed out", 500);
+        throw new TimeoutError("Job timed out", 500);
       }
       onUpdate(job.status);
       await new Promise((resolve) => setTimeout(resolve, 200));
