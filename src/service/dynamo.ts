@@ -7,6 +7,15 @@ export class FetchError extends Error {
   }
 }
 
+export class TimeoutError extends Error {
+  status: number;
+  constructor(m: string, status: number) {
+    super(m);
+
+    this.status = status;
+  }
+}
+
 export type DaasState =
   | {
       status: "online";
@@ -21,7 +30,7 @@ export type DaasState =
     };
 
 export interface DynamoService {
-  run: (target: GraphTarget, inputs: RunInputs) => Promise<Run>;
+  run: (target: GraphTarget, inputs: RunInputs, onUpdate: OnUpdateRunStatus) => Promise<Run>;
   folder: (path: string) => Promise<FolderGraphInfo[]>;
   info: (target: GraphTarget) => Promise<GraphInfo>;
   trust: (path: string) => Promise<boolean>;
@@ -66,6 +75,10 @@ export type Output = {
     count: number;
     value: string | number;
   };
+};
+
+export type OnUpdateRunStatus = {
+  (status: string) : void;
 };
 
 export type Metadata = {
@@ -134,28 +147,6 @@ class Dynamo implements DynamoService {
   constructor(url: string, authProvider?: () => Promise<string>) {
     this.url = url;
     this.authProvider = authProvider;
-
-    // Workaround to get a jump start on the API key creation (which can take ~30 seconds)
-    if (!this.url.startsWith("http://localhost")) {
-      this._fetch(`${this.url}/v1/graph/job/create`, { method: "GET" });
-    }
-  }
-
-  async retryFetch(input: RequestInfo, init?: RequestInit | undefined): Promise<Response> {
-    let response = await fetch(input, init);
-    const numRetries = 35;
-    let ii = 0;
-    while (response.status === 403 && ii < numRetries) {
-      try {
-        response = await fetch(input, init);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      } catch {
-        console.warn("Failed to fetch, retrying...");
-      } finally {
-        ii++;
-      }
-    }
-    return response;
   }
 
   async _fetch(input: RequestInfo, init?: RequestInit | undefined): Promise<Response> {
@@ -167,10 +158,10 @@ class Dynamo implements DynamoService {
         init.headers = headers;
       }
     }
-    return this.retryFetch(input, init);
+    return fetch(input, init);
   }
 
-  async runAsync(target: GraphTarget, inputs: RunInputs): Promise<Run> {
+  async runAsync(target: GraphTarget, inputs: RunInputs, onUpdate: OnUpdateRunStatus): Promise<Run> {
     const createJob = await this._fetch(`${this.url}/v1/graph/job/create`, { method: "GET" });
 
     if (createJob.status !== 200) {
@@ -209,14 +200,17 @@ class Dynamo implements DynamoService {
         return job.result;
       } else if (job.status === "FAILED") {
         throw new FetchError("Job failed", 500);
+      } else if (job.status === "TIMEOUT") {
+        throw new TimeoutError("Job timed out", 500);
       }
+      onUpdate(job.status);
       await new Promise((resolve) => setTimeout(resolve, 200));
     }
   }
 
-  async run(target: GraphTarget, inputs: RunInputs): Promise<Run> {
+  async run(target: GraphTarget, inputs: RunInputs, onUpdate: OnUpdateRunStatus): Promise<Run> {
     if (!runSync && !this.url.startsWith("http://localhost")) {
-      return this.runAsync(target, inputs);
+      return this.runAsync(target, inputs, onUpdate);
     }
 
     const response = await this._fetch(`${this.url}/v1/graph/run`, {
