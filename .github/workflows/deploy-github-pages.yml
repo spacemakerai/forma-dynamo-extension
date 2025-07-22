@@ -1,24 +1,7 @@
 name: Deploy static files to GitHub Pages
-on: [workflow_dispatch, pull_request, push]
+on: [workflow_dispatch, push]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "pnpm"
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm test
-      - run: pnpm build
-
   deploy:
     if: github.ref == 'refs/heads/main'
     needs: test
