@@ -436,7 +436,7 @@ export function LocalScript({
         return;
       }
       const code = scriptInfo.data;
-      var lastStatus: RunResult = { type: "preparing", uiMsg: "Preparing job" };
+      const lastStatus: RunResult = { type: "preparing", uiMsg: "Preparing to run" };
       setResult(lastStatus);
 
       const urn = await Forma.proposal.getRootUrn();
@@ -596,24 +596,24 @@ export function LocalScript({
       const result = await service.dynamo.run(graphTarget, inputs, (status: string) => {
         // Update intermediate job status.
         if (status === "CREATED") {
-          setResult({type: "created", uiMsg: "Job created"});
+          setResult({ type: "created", uiMsg: "Job created" });
         } else if (status === "PENDING") {
-          setResult({type: "pending", uiMsg: "Job pending"});
+          setResult({ type: "pending", uiMsg: "Waiting to run" });
         } else if (status === "EXECUTING") {
-           setResult({type: "executing", uiMsg: "Job executing"});
+          setResult({ type: "executing", uiMsg: "Running" });
         }
       });
 
-      setResult({type: "complete", uiMsg: "Job complete", data: result});
+      setResult({ type: "complete", uiMsg: "Run complete", data: result });
     } catch (e) {
       // errors caught in the forma code.
       console.error(e);
       captureException(e, "Error running Dynamo graph");
 
       if (e instanceof TimeoutError) {
-        setResult({ type: "timeout", uiMsg: "Job timed out", data: e });
+        setResult({ type: "timeout", uiMsg: "Run timed out", data: e });
       } else {
-        setResult({type: "failed", uiMsg: "Job failed", data: e});
+        setResult({ type: "failed", uiMsg: "Run failed", data: e });
       }
     }
   }, [service.dynamo, scriptInfo, state, script]);
@@ -916,8 +916,10 @@ export function LocalScript({
               variant="solid"
               disabled={
                 service.connected === false ||
-                result.type === "pending" || result.type === "executing" || 
-                result.type === "created" || result.type === "preparing" ||
+                result.type === "pending" ||
+                result.type === "executing" ||
+                result.type === "created" ||
+                result.type === "preparing" ||
                 scriptInfo.type !== "loaded" ||
                 unsupportedPackages.length > 0
               }

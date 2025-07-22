@@ -111,13 +111,15 @@ export const useDynamoConnector = () => {
       },
       run: (target: GraphTarget, inputs: RunInputs) => {
         return queue.enqueue(() =>
-          dynamo.run(target, inputs, () => {}).catch((e) => {
-            setState((state) => ({
-              ...state,
-              connectionState: DynamoConnectionState.LOST_CONNECTION,
-            }));
-            throw e;
-          }),
+          dynamo
+            .run(target, inputs, () => {})
+            .catch((e) => {
+              setState((state) => ({
+                ...state,
+                connectionState: DynamoConnectionState.LOST_CONNECTION,
+              }));
+              throw e;
+            }),
         );
       },
       trust: (path: string) => {

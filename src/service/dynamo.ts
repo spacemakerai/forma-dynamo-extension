@@ -78,7 +78,7 @@ export type Output = {
 };
 
 export type OnUpdateRunStatus = {
-  (status: string) : void;
+  (status: string): void;
 };
 
 export type Metadata = {
@@ -161,7 +161,11 @@ class Dynamo implements DynamoService {
     return fetch(input, init);
   }
 
-  async runAsync(target: GraphTarget, inputs: RunInputs, onUpdate: OnUpdateRunStatus): Promise<Run> {
+  async runAsync(
+    target: GraphTarget,
+    inputs: RunInputs,
+    onUpdate: OnUpdateRunStatus,
+  ): Promise<Run> {
     const createJob = await this._fetch(`${this.url}/v1/graph/job/create`, { method: "GET" });
 
     if (createJob.status !== 200) {
