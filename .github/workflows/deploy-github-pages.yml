@@ -1,4 +1,5 @@
 name: Deploy static files to GitHub Pages
+
 on: [workflow_dispatch, push]
 
 jobs:
