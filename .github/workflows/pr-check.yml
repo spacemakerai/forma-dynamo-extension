@@ -1,5 +1,4 @@
-name: Deploy static files to GitHub Pages
-
+name: Build and Test
 on:
   push:
     branches:
@@ -8,7 +7,6 @@ on:
 
 jobs:
   test:
-    on: [pull_request]
     runs-on: ubuntu-latest
     permissions:
       contents: read
