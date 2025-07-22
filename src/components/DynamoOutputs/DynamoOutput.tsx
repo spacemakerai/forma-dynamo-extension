@@ -12,7 +12,7 @@ import { VisualizeImage } from "./VisualizeImage.tsx";
 
 export type RunResult =
   | { type: "init" } // Initial state.
-  | { type: "preparing", uiMsg: string } // Preparing graph state.
+  | { type: "preparing"; uiMsg: string } // Preparing graph state.
   | { type: "created"; uiMsg: string } // Job created.
   | { type: "pending"; uiMsg: string } // Job sent and pending execution.
   | { type: "executing"; uiMsg: string } // Job is executing.
@@ -79,8 +79,8 @@ function DynamoOutputComponent({ output }: { output: Output }) {
 
 export function DynamoOutput({ result }: { result: RunResult }) {
   if (result.type === "init") return null;
-  if (result.type === "failed") return <div>{result.uiMsg}</div>;// Maybe add a Timeout icon?
-  if (result.type === "timeout") return <div>{result.uiMsg}</div>;// Maybe add a Failed icon?
+  if (result.type === "failed") return <div>{result.uiMsg}</div>; // Maybe add a Timeout icon?
+  if (result.type === "timeout") return <div>{result.uiMsg}</div>; // Maybe add a Failed icon?
   if (result.type !== "complete")
     return (
       <div>
