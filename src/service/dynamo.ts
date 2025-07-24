@@ -99,6 +99,7 @@ export type Issue = {
 export type Run = {
   info: {
     id: string;
+    jobId?: string;
     issues: Issue[];
     name: string;
     outputs: Output[];
@@ -201,7 +202,13 @@ class Dynamo implements DynamoService {
       const job = await jobResponse.json();
 
       if (job.status === "SUCCESS" || job.status === "COMPLETE") {
-        return job.result;
+        return {
+          ...job.result,
+          info: {
+            ...job.result.info,
+            jobId: jobId
+          }
+        };
       } else if (job.status === "FAILED") {
         throw new FetchError("Job failed", 500);
       } else if (job.status === "TIMEOUT") {
