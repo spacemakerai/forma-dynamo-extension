@@ -18,19 +18,20 @@ export class TimeoutError extends Error {
 
 export type DaasState =
   | {
-      status: "online";
-      serverInfo: ServerInfo;
-    }
+    status: "online";
+    serverInfo: ServerInfo;
+  }
   | {
-      status: "error";
-      error: string;
-    }
+    status: "error";
+    error: string;
+  }
   | {
-      status: "offline";
-    };
+    status: "offline";
+  };
 
 export interface DynamoService {
-  run: (target: GraphTarget, inputs: RunInputs, onUpdate: OnUpdateRunStatus) => Promise<Run>;
+  //TODO fix for local.
+  run: (target: GraphTarget, inputs: RunInputs, onUpdate: OnUpdateRunStatus) => Promise<DaasRunResult>;
   folder: (path: string) => Promise<FolderGraphInfo[]>;
   info: (target: GraphTarget) => Promise<GraphInfo>;
   trust: (path: string) => Promise<boolean>;
@@ -40,18 +41,18 @@ export interface DynamoService {
 
 export type GraphTarget =
   | {
-      type: "PathGraphTarget";
-      path: string;
-      forceReopen?: boolean;
-    }
+    type: "PathGraphTarget";
+    path: string;
+    forceReopen?: boolean;
+  }
   | {
-      type: "CurrentGraphTarget";
-    }
+    type: "CurrentGraphTarget";
+  }
   | {
-      type: "JsonGraphTarget";
-      graph?: unknown;
-      contents?: string;
-    };
+    type: "JsonGraphTarget";
+    graph?: unknown;
+    contents?: string;
+  };
 
 export type Input = {
   id: string;
@@ -96,16 +97,33 @@ export type Issue = {
   type: string;
 };
 
+//we probably should just derive a new type from this type for daas runs...
+//TODO
 export type Run = {
   info: {
     id: string;
-    jobId?: string;
     issues: Issue[];
     name: string;
     outputs: Output[];
     status: string;
   };
   title?: string;
+};
+
+export enum DaaSJobStatus {
+  CREATED = "CREATED",
+  PENDING = "PENDING",
+  EXECUTING = "EXECUTING",
+  COMPLETE = "COMPLETE",
+  FAILED = "FAILED",
+  TIMEOUT = "TIMEOUT",
+}
+
+export type DaasRunResult = {
+  result?: Run;
+  status?: DaaSJobStatus;
+  jobId?: string;
+  error?: string;
 };
 
 export type FolderGraphInfo = {
@@ -166,7 +184,9 @@ class Dynamo implements DynamoService {
     target: GraphTarget,
     inputs: RunInputs,
     onUpdate: OnUpdateRunStatus,
-  ): Promise<Run> {
+    //TODO define type for the real return type from daas results.
+    //TODO will have to see how to keep local desktop runs working since local does not return daas format.
+  ): Promise<DaasRunResult> {
     const createJob = await this._fetch(`${this.url}/v1/graph/job/create`, { method: "GET" });
 
     if (createJob.status !== 200) {
@@ -199,27 +219,17 @@ class Dynamo implements DynamoService {
       const jobResponse = await this._fetch(`${this.url}/v1/graph/results/${jobId}`, {
         method: "GET",
       });
-      const job = await jobResponse.json();
+      const job = await jobResponse.json() as DaasRunResult;
 
-      if (job.status === "SUCCESS" || job.status === "COMPLETE") {
-        return {
-          ...job.result,
-          info: {
-            ...job.result.info,
-            jobId: jobId
-          }
-        };
-      } else if (job.status === "FAILED") {
-        throw new FetchError("Job failed", 500);
-      } else if (job.status === "TIMEOUT") {
-        throw new TimeoutError("Job timed out", 500);
+      if (job.status === DaaSJobStatus.COMPLETE || job.status === DaaSJobStatus.FAILED || job.status === DaaSJobStatus.TIMEOUT) {
+        return job;
       }
-      onUpdate(job.status);
+      onUpdate(job.status!);
       await new Promise((resolve) => setTimeout(resolve, 200));
     }
   }
 
-  async run(target: GraphTarget, inputs: RunInputs, onUpdate: OnUpdateRunStatus): Promise<Run> {
+  async run(target: GraphTarget, inputs: RunInputs, onUpdate: OnUpdateRunStatus): Promise<DaasRunResult> {
     if (!runSync && !this.url.startsWith("http://localhost")) {
       return this.runAsync(target, inputs, onUpdate);
     }

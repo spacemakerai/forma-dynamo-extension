@@ -16,11 +16,13 @@ import {
 } from "forma-elements";
 import {
   DaasState,
+  DaaSJobStatus,
   DynamoService,
   FolderGraphInfo,
   GraphInfo,
   GraphTarget,
   Input,
+  Issue,
   TimeoutError,
 } from "../service/dynamo.js";
 import { JSONGraph, UnSavedGraph } from "../types/types.ts";
@@ -445,8 +447,8 @@ export function LocalScript({
     // Create a temporary download link
     const link = document.createElement('a');
     link.href = url;
-    link.download = `dynamo-log-${jobId || 'unknown'}-${Date.now()}.txt`;
-    
+    link.download = `dynamo-log-${jobId || 'unknownJobId'}-${new Date().toISOString()}.txt`;
+
     // Trigger the download
     document.body.appendChild(link);
     link.click();
@@ -621,23 +623,33 @@ export function LocalScript({
 
       const graphTarget = createGraphTarget(script, scriptInfo);
 
-      const result = await service.dynamo.run(graphTarget, inputs, (status: string) => {
+      const jobResult = await service.dynamo.run(graphTarget, inputs, (status: string) => {
         // Update intermediate job status.
-        if (status === "CREATED") {
+        if (status === DaaSJobStatus.CREATED) {
           setResult({ type: "created", uiMsg: "Job created" });
-        } else if (status === "PENDING") {
+        } else if (status === DaaSJobStatus.PENDING) {
           setResult({ type: "pending", uiMsg: "Waiting to run" });
-        } else if (status === "EXECUTING") {
+        } else if (status === DaaSJobStatus.EXECUTING) {
           setResult({ type: "executing", uiMsg: "Running" });
         }
       });
 
-      setResult({ type: "complete", uiMsg: "Run complete", data: result });
+      debugger;
+
+
+      // Check the result status to determine if it was successful, failed, or timed out
+      if (jobResult.status === DaaSJobStatus.FAILED) {
+        setResult({ type: "failed", uiMsg: "Run failed", data: jobResult });
+      } else if (jobResult.status === DaaSJobStatus.TIMEOUT) {
+        setResult({ type: "timeout", uiMsg: "Run timed out", data: jobResult });
+      } else {
+        setResult({ type: "complete", uiMsg: "Run complete", data: jobResult });
+      }
     } catch (e) {
-      // errors caught in the forma code.
+      // errors caught in the forma code (network issues, etc.)
       console.error(e);
       captureException(e, "Error running Dynamo graph");
-
+      
       if (e instanceof TimeoutError) {
         setResult({ type: "timeout", uiMsg: "Run timed out", data: e });
       } else {
@@ -702,7 +714,8 @@ export function LocalScript({
     if (script.type === "FolderGraph") {
       return [];
     }
-
+    //TODO remove - local test only so we can run graphs with ironPython.
+    return [];
     return filterUnsupportedPackages(script.graph);
   }, [env, script]);
 
@@ -860,7 +873,7 @@ export function LocalScript({
         {result.type === "complete" && result.data.info?.issues?.length > 0 && (
           <WarningBanner
             title={"The graph returned with warnings or errors."}
-            warnings={result.data.info.issues.map((issue) => ({
+            warnings={result.data.result?.info.issues.map((issue: Issue) => ({
               id: issue.nodeId,
               title: issue.nodeName,
               description: issue.message,
@@ -958,7 +971,7 @@ export function LocalScript({
                 <weave-button 
                   variant="outlined" 
                   style={{ minWidth: "80px" }}
-                  onClick={() => handleExportLog(result.type === "complete" ? result.data?.info?.jobId : "unknown job id, something has gone wrong")}
+                  onClick={() => handleExportLog(result.data?.jobId)}
                 >
                   Export Log
                 </weave-button>
