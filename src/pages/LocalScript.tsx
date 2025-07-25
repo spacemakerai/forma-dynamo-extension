@@ -634,8 +634,6 @@ export function LocalScript({
         }
       });
 
-      debugger;
-
 
       // Check the result status to determine if it was successful, failed, or timed out
       if (jobResult.status === DaaSJobStatus.FAILED) {
@@ -867,10 +865,10 @@ export function LocalScript({
             </>
           )}
         </div>
-        {result.type === "complete" && result.data.title?.includes("Required property") && (
+        {result.type === "complete" && result.data.result?.title?.includes("Required property") && (
           <div>Failed</div>
         )}
-        {result.type === "complete" && result.data.info?.issues?.length > 0 && (
+        {result.type === "complete" && result.data.result?.info?.issues && result.data.result?.info?.issues?.length > 0 && (
           <WarningBanner
             title={"The graph returned with warnings or errors."}
             warnings={result.data.result?.info.issues.map((issue: Issue) => ({
