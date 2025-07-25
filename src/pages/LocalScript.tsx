@@ -16,11 +16,13 @@ import {
 } from "forma-elements";
 import {
   DaasState,
+  DaaSJobStatus,
   DynamoService,
   FolderGraphInfo,
   GraphInfo,
   GraphTarget,
   Input,
+  Issue,
   TimeoutError,
 } from "../service/dynamo.js";
 import { JSONGraph, UnSavedGraph } from "../types/types.ts";
@@ -33,6 +35,10 @@ import { filterUnsupportedPackages, Package } from "../utils/daasSupportedPackag
 import { transformCoordinates } from "../utils/transformCoordinates.ts";
 import { SelectPointMode } from "../components/SelectPointMode.tsx";
 import { DisplayPreferences } from "../components/DisplayPreferences.tsx";
+
+// Check query parameter to enable export log feature
+//example ?ext:daas=dev&ext:exportlog=true
+const showExportLog = new URLSearchParams(window.location.search).get("ext:exportlog") === "true";
 
 // type Status = "online" | "offline" | "error";
 
@@ -430,6 +436,30 @@ export function LocalScript({
     [],
   );
 
+  const handleExportLog = (jobId?: string) => {
+    // Generate minimal log content with just the job ID
+    const logContent = `${jobId || 'N/A'}`;
+
+    // Create and download the file
+    const blob = new Blob([logContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    
+    // Create a temporary download link
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `dynamo-log-${jobId || 'unknownJobId'}-${new Date().toISOString()}.txt`;
+
+    // Trigger the download
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    console.log("Log file downloaded for job:", jobId);
+  };
+
   const onRun = useCallback(async () => {
     try {
       if (scriptInfo.type !== "loaded") {
@@ -593,23 +623,31 @@ export function LocalScript({
 
       const graphTarget = createGraphTarget(script, scriptInfo);
 
-      const result = await service.dynamo.run(graphTarget, inputs, (status: string) => {
+      const jobResult = await service.dynamo.run(graphTarget, inputs, (status: string) => {
         // Update intermediate job status.
-        if (status === "CREATED") {
+        if (status === DaaSJobStatus.CREATED) {
           setResult({ type: "created", uiMsg: "Job created" });
-        } else if (status === "PENDING") {
+        } else if (status === DaaSJobStatus.PENDING) {
           setResult({ type: "pending", uiMsg: "Waiting to run" });
-        } else if (status === "EXECUTING") {
+        } else if (status === DaaSJobStatus.EXECUTING) {
           setResult({ type: "executing", uiMsg: "Running" });
         }
       });
 
-      setResult({ type: "complete", uiMsg: "Run complete", data: result });
+
+      // Check the result status to determine if it was successful, failed, or timed out
+      if (jobResult.status === DaaSJobStatus.FAILED) {
+        setResult({ type: "failed", uiMsg: "Run failed", data: jobResult });
+      } else if (jobResult.status === DaaSJobStatus.TIMEOUT) {
+        setResult({ type: "timeout", uiMsg: "Run timed out", data: jobResult });
+      } else {
+        setResult({ type: "complete", uiMsg: "Run complete", data: jobResult });
+      }
     } catch (e) {
-      // errors caught in the forma code.
+      // errors caught in the forma code (network issues, etc.)
       console.error(e);
       captureException(e, "Error running Dynamo graph");
-
+      
       if (e instanceof TimeoutError) {
         setResult({ type: "timeout", uiMsg: "Run timed out", data: e });
       } else {
@@ -631,9 +669,10 @@ export function LocalScript({
     setResult({ type: "init" });
   }, [state]);
 
-  const fixedFooterHeight = 44;
   const headerRef = useRef(null);
+  const footerRef = useRef(null);
   const [headerHeight, setHeaderHeight] = useState(0);
+  const [footerHeight, setFooterHeight] = useState(44);
 
   useEffect(() => {
     function handleResize() {
@@ -642,11 +681,28 @@ export function LocalScript({
         // @ts-ignore
         setHeaderHeight(headerRef.current.offsetHeight);
       }
+      // @ts-ignore
+      if (footerRef?.current?.offsetHeight) {
+        // @ts-ignore
+        setFooterHeight(footerRef.current.offsetHeight);
+      }
     }
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Recalculate footer height when result changes (affects Export Log button visibility)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // @ts-ignore
+      if (footerRef?.current?.offsetHeight) {
+        // @ts-ignore
+        setFooterHeight(footerRef.current.offsetHeight);
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [result]);
 
   const unsupportedPackages = useMemo(() => {
     if (env !== "daas") {
@@ -656,7 +712,8 @@ export function LocalScript({
     if (script.type === "FolderGraph") {
       return [];
     }
-
+    //TODO remove - local test only so we can run graphs with ironPython.
+    return [];
     return filterUnsupportedPackages(script.graph);
   }, [env, script]);
 
@@ -692,7 +749,7 @@ export function LocalScript({
       <div
         style={{
           display: activeSelectionNode || activeSelectPointNode ? "none" : "block",
-          paddingBottom: `${fixedFooterHeight + 20}px`,
+          paddingBottom: `${footerHeight + 20}px`,
         }}
       >
         {/* <weave-button
@@ -717,7 +774,7 @@ export function LocalScript({
         </div>
         <div
           style={{
-            height: `calc(100% - ${fixedFooterHeight + headerHeight + 16 + 24}px)`,
+            height: `calc(100% - ${footerHeight + headerHeight + 16 + 24}px)`,
             display: "flex",
             flexDirection: "column",
             flexWrap: "nowrap",
@@ -808,13 +865,13 @@ export function LocalScript({
             </>
           )}
         </div>
-        {result.type === "complete" && result.data.title?.includes("Required property") && (
+        {result.type === "complete" && result.data.result?.title?.includes("Required property") && (
           <div>Failed</div>
         )}
-        {result.type === "complete" && result.data.info?.issues?.length > 0 && (
+        {result.type === "complete" && result.data.result?.info?.issues && result.data.result?.info?.issues?.length > 0 && (
           <WarningBanner
             title={"The graph returned with warnings or errors."}
-            warnings={result.data.info.issues.map((issue) => ({
+            warnings={result.data.result?.info.issues.map((issue: Issue) => ({
               id: issue.nodeId,
               title: issue.nodeName,
               description: issue.message,
@@ -843,8 +900,8 @@ export function LocalScript({
           />
         )}
         <div
+          ref={footerRef}
           style={{
-            height: `${fixedFooterHeight - 1}px`,
             display: "flex",
             alignItems: "center",
             bottom: 0,
@@ -855,6 +912,7 @@ export function LocalScript({
             position: "fixed",
             justifyContent: "space-between",
             borderTop: "1px solid var(--divider-lightweight)",
+            paddingTop: "8px",
           }}
         >
           <div style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
@@ -906,27 +964,38 @@ export function LocalScript({
             )}
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            {env === "local" && (
-              <weave-button style={{ margin: "0 8px", width: "60px" }} onClick={reload}>
-                Update
+            <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end" }}>
+              {showExportLog && (result.type === "complete" || result.type === "failed" || result.type === "timeout") && (
+                <weave-button 
+                  variant="outlined" 
+                  style={{ minWidth: "80px" }}
+                  onClick={() => handleExportLog(result.data?.jobId)}
+                >
+                  Export Log
+                </weave-button>
+              )}
+              {env === "local" && (
+                <weave-button style={{ width: "60px" }} onClick={reload}>
+                  Update
+                </weave-button>
+              )}
+              <weave-button
+                style={{ width: "40px", margin: "0" }}
+                variant="solid"
+                disabled={
+                  service.connected === false ||
+                  result.type === "pending" ||
+                  result.type === "executing" ||
+                  result.type === "created" ||
+                  result.type === "preparing" ||
+                  scriptInfo.type !== "loaded" ||
+                  unsupportedPackages.length > 0
+                }
+                onClick={onRun}
+              >
+                Run
               </weave-button>
-            )}
-            <weave-button
-              style={{ width: "40px", margin: "0" }}
-              variant="solid"
-              disabled={
-                service.connected === false ||
-                result.type === "pending" ||
-                result.type === "executing" ||
-                result.type === "created" ||
-                result.type === "preparing" ||
-                scriptInfo.type !== "loaded" ||
-                unsupportedPackages.length > 0
-              }
-              onClick={onRun}
-            >
-              Run
-            </weave-button>
+            </div>
 
             {/* {services.daas && services.local && <EnvironmentSelector env={env} setEnv={setEnv} />} */}
           </div>

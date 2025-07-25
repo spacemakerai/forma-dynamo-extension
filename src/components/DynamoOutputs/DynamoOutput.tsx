@@ -3,7 +3,7 @@ import { Watch3D } from "./Watch3d.tsx";
 import { HousingByLine } from "./HousingByLine.tsx";
 import { WatchImage } from "./WatchImage.tsx";
 import { SendToForma } from "./SendToForma.tsx";
-import { Run } from "../../service/dynamo.ts";
+import { DaasRunResult, Run } from "../../service/dynamo.ts";
 import { BasicBuilding } from "./BasicBuilding.tsx";
 import { GroundPolygon } from "./GroundPolygon.tsx";
 import { ExtrudedPolygon } from "./ExtrudedPolygon.tsx";
@@ -16,9 +16,9 @@ export type RunResult =
   | { type: "created"; uiMsg: string } // Job created.
   | { type: "pending"; uiMsg: string } // Job sent and pending execution.
   | { type: "executing"; uiMsg: string } // Job is executing.
-  | { type: "complete"; uiMsg: string; data: Run } // Job ran to completion (success).
-  | { type: "failed"; uiMsg: string; data: any } // Job failed.
-  | { type: "timeout"; uiMsg: string; data: any }; // Job ran out of time.
+  | { type: "complete"; uiMsg: string; data: DaasRunResult } // Job ran to completion (success).
+  | { type: "failed"; uiMsg: string; data: DaasRunResult } // Job failed.
+  | { type: "timeout"; uiMsg: string; data: DaasRunResult }; // Job ran out of time.
 
 function DynamoOutputComponent({ output }: { output: Output }) {
   if (output.type === "Watch3D") {
