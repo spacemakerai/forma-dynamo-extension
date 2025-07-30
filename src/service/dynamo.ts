@@ -7,12 +7,14 @@ export class FetchError extends Error {
   }
 }
 
-export class TimeoutError extends Error {
-  status: number;
-  constructor(m: string, status: number) {
-    super(m);
+export class DaasError extends Error {
+  jobId: string | null;
+  constructor(jobId: string | null, originalErr: Error) {
+    super();
 
-    this.status = status;
+    this.message = `Failed run ${jobId ?? "unknownJobId"} with error: ${originalErr.message}`;
+    this.stack = originalErr.stack;
+    this.jobId = jobId;
   }
 }
 
@@ -30,7 +32,12 @@ export type DaasState =
     };
 
 export interface DynamoService {
-  run: (target: GraphTarget, inputs: RunInputs, onUpdate: OnUpdateRunStatus) => Promise<Run>;
+  //TODO fix for local.
+  run: (
+    target: GraphTarget,
+    inputs: RunInputs,
+    onUpdate: OnUpdateRunStatus,
+  ) => Promise<DaasRunResult>;
   folder: (path: string) => Promise<FolderGraphInfo[]>;
   info: (target: GraphTarget) => Promise<GraphInfo>;
   trust: (path: string) => Promise<boolean>;
@@ -96,6 +103,8 @@ export type Issue = {
   type: string;
 };
 
+//we probably should just derive a new type from this type for daas runs...
+//TODO
 export type Run = {
   info: {
     id: string;
@@ -105,6 +114,26 @@ export type Run = {
     status: string;
   };
   title?: string;
+};
+
+export enum DaaSJobStatus {
+  // States that are set from the forma client side
+  CLIENT_INITIALIZED = "CLIENT_INITIALIZED",
+  CLIENT_PREPARING = "CLIENT_PREPARING",
+  // States that are set by the Dynamo service
+  CREATED = "CREATED",
+  PENDING = "PENDING",
+  EXECUTING = "EXECUTING",
+  COMPLETE = "COMPLETE",
+  FAILED = "FAILED",
+  TIMEOUT = "TIMEOUT",
+}
+
+export type DaasRunResult = {
+  result?: Run;
+  status?: DaaSJobStatus;
+  jobId?: string;
+  error?: string;
 };
 
 export type FolderGraphInfo = {
@@ -161,19 +190,25 @@ class Dynamo implements DynamoService {
     return fetch(input, init);
   }
 
-  async runAsync(
-    target: GraphTarget,
-    inputs: RunInputs,
-    onUpdate: OnUpdateRunStatus,
-  ): Promise<Run> {
+  async createJob() {
     const createJob = await this._fetch(`${this.url}/v1/graph/job/create`, { method: "GET" });
 
     if (createJob.status !== 200) {
       throw new FetchError(createJob.statusText, createJob.status);
     }
 
-    const { jobId, uploadUrl } = await createJob.json();
+    return await createJob.json();
+  }
 
+  async runAsync(
+    jobId: string,
+    target: GraphTarget,
+    uploadUrl: string,
+    inputs: RunInputs,
+    onUpdate: OnUpdateRunStatus,
+    //TODO define type for the real return type from daas results.
+    //TODO will have to see how to keep local desktop runs working since local does not return daas format.
+  ): Promise<DaasRunResult> {
     await fetch(uploadUrl, {
       method: "PUT",
       body: JSON.stringify({
@@ -198,23 +233,33 @@ class Dynamo implements DynamoService {
       const jobResponse = await this._fetch(`${this.url}/v1/graph/results/${jobId}`, {
         method: "GET",
       });
-      const job = await jobResponse.json();
+      const job = (await jobResponse.json()) as DaasRunResult;
 
-      if (job.status === "SUCCESS" || job.status === "COMPLETE") {
-        return job.result;
-      } else if (job.status === "FAILED") {
-        throw new FetchError("Job failed", 500);
-      } else if (job.status === "TIMEOUT") {
-        throw new TimeoutError("Job timed out", 500);
+      if (
+        job.status === DaaSJobStatus.COMPLETE ||
+        job.status === DaaSJobStatus.FAILED ||
+        job.status === DaaSJobStatus.TIMEOUT
+      ) {
+        return job;
       }
-      onUpdate(job.status);
+      onUpdate(job.status!);
       await new Promise((resolve) => setTimeout(resolve, 200));
     }
   }
 
-  async run(target: GraphTarget, inputs: RunInputs, onUpdate: OnUpdateRunStatus): Promise<Run> {
+  async run(
+    target: GraphTarget,
+    inputs: RunInputs,
+    onUpdate: OnUpdateRunStatus,
+  ): Promise<DaasRunResult> {
     if (!runSync && !this.url.startsWith("http://localhost")) {
-      return this.runAsync(target, inputs, onUpdate);
+      const { jobId, uploadUrl } = await this.createJob();
+
+      try {
+        return this.runAsync(jobId, target, uploadUrl, inputs, onUpdate);
+      } catch (err: any) {
+        throw new DaasError(jobId, err);
+      }
     }
 
     const response = await this._fetch(`${this.url}/v1/graph/run`, {
