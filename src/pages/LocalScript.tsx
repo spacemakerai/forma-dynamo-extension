@@ -23,7 +23,7 @@ import {
   GraphTarget,
   Input,
   Issue,
-  TimeoutError,
+  DaasError,
 } from "../service/dynamo.js";
 import { JSONGraph, UnSavedGraph } from "../types/types.ts";
 import { WarningBanner } from "../components/Warnings/WarningBanner.tsx";
@@ -368,7 +368,7 @@ export function LocalScript({
     }
   }, [scriptInfo]);
 
-  const [result, setResult] = useState<RunResult>({ type: "init" });
+  const [result, setResult] = useState<RunResult>({ type: DaaSJobStatus.CLIENT_INITIALIZED });
 
   useEffect(() => {
     // TODO: There exists some strangeness (maybe a bug somewhere):
@@ -436,7 +436,7 @@ export function LocalScript({
     [],
   );
 
-  const handleExportLog = (jobId?: string) => {
+  const handleExportLog = (jobId?: string | null) => {
     // Generate minimal log content with just the job ID
     const logContent = `${jobId || 'N/A'}`;
 
@@ -466,7 +466,7 @@ export function LocalScript({
         return;
       }
       const code = scriptInfo.data;
-      const lastStatus: RunResult = { type: "preparing", uiMsg: "Preparing to run" };
+      const lastStatus: RunResult = { type: DaaSJobStatus.CLIENT_PREPARING, uiMsg: "Preparing to run" };
       setResult(lastStatus);
 
       const urn = await Forma.proposal.getRootUrn();
@@ -626,32 +626,31 @@ export function LocalScript({
       const jobResult = await service.dynamo.run(graphTarget, inputs, (status: string) => {
         // Update intermediate job status.
         if (status === DaaSJobStatus.CREATED) {
-          setResult({ type: "created", uiMsg: "Job created" });
+          setResult({ type: DaaSJobStatus.CREATED, uiMsg: "Job created" });
         } else if (status === DaaSJobStatus.PENDING) {
-          setResult({ type: "pending", uiMsg: "Waiting to run" });
+          setResult({ type: DaaSJobStatus.PENDING, uiMsg: "Waiting to run" });
         } else if (status === DaaSJobStatus.EXECUTING) {
-          setResult({ type: "executing", uiMsg: "Running" });
+          setResult({ type: DaaSJobStatus.EXECUTING, uiMsg: "Running" });
         }
       });
 
-
       // Check the result status to determine if it was successful, failed, or timed out
       if (jobResult.status === DaaSJobStatus.FAILED) {
-        setResult({ type: "failed", uiMsg: "Run failed", data: jobResult });
+        setResult({ type: DaaSJobStatus.FAILED, uiMsg: "Run failed", data: jobResult });
       } else if (jobResult.status === DaaSJobStatus.TIMEOUT) {
-        setResult({ type: "timeout", uiMsg: "Run timed out", data: jobResult });
+        setResult({ type: DaaSJobStatus.TIMEOUT, uiMsg: "Run timed out", data: jobResult });
       } else {
-        setResult({ type: "complete", uiMsg: "Run complete", data: jobResult });
+        setResult({ type: DaaSJobStatus.COMPLETE, uiMsg: "Run complete", data: jobResult });
       }
-    } catch (e) {
+    } catch (e: any) {
       // errors caught in the forma code (network issues, etc.)
       console.error(e);
       captureException(e, "Error running Dynamo graph");
-      
-      if (e instanceof TimeoutError) {
-        setResult({ type: "timeout", uiMsg: "Run timed out", data: e });
+
+      if ( e instanceof DaasError) {
+        setResult({ type: DaaSJobStatus.FAILED, uiMsg: "Run failed", data: e });
       } else {
-        setResult({ type: "failed", uiMsg: "Run failed", data: e });
+        setResult({ type: DaaSJobStatus.FAILED, uiMsg: "Run failed", data: new DaasError(null, e) });
       }
     }
   }, [service.dynamo, scriptInfo, state, script]);
@@ -666,7 +665,7 @@ export function LocalScript({
   }, [service.connected, scriptInfo.type, onRun]);
 
   useEffect(() => {
-    setResult({ type: "init" });
+    setResult({ type: DaaSJobStatus.CLIENT_INITIALIZED });
   }, [state]);
 
   const headerRef = useRef(null);
@@ -713,7 +712,7 @@ export function LocalScript({
       return [];
     }
     //TODO remove - local test only so we can run graphs with ironPython.
-    return [];
+    //return [];
     return filterUnsupportedPackages(script.graph);
   }, [env, script]);
 
@@ -865,10 +864,10 @@ export function LocalScript({
             </>
           )}
         </div>
-        {result.type === "complete" && result.data.result?.title?.includes("Required property") && (
+        {result.type === DaaSJobStatus.COMPLETE && result.data.result?.title?.includes("Required property") && (
           <div>Failed</div>
         )}
-        {result.type === "complete" && result.data.result?.info?.issues && result.data.result?.info?.issues?.length > 0 && (
+        {result.type === DaaSJobStatus.COMPLETE && result.data.result?.info?.issues && result.data.result?.info?.issues?.length > 0 && (
           <WarningBanner
             title={"The graph returned with warnings or errors."}
             warnings={result.data.result?.info.issues.map((issue: Issue) => ({
@@ -965,7 +964,7 @@ export function LocalScript({
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end" }}>
-              {showExportLog && (result.type === "complete" || result.type === "failed" || result.type === "timeout") && (
+              {showExportLog && (result.type === DaaSJobStatus.COMPLETE || result.type === DaaSJobStatus.FAILED || result.type === DaaSJobStatus.TIMEOUT) && (
                 <weave-button 
                   variant="outlined" 
                   style={{ minWidth: "80px" }}
@@ -984,10 +983,10 @@ export function LocalScript({
                 variant="solid"
                 disabled={
                   service.connected === false ||
-                  result.type === "pending" ||
-                  result.type === "executing" ||
-                  result.type === "created" ||
-                  result.type === "preparing" ||
+                  result.type === DaaSJobStatus.PENDING ||
+                  result.type === DaaSJobStatus.EXECUTING ||
+                  result.type === DaaSJobStatus.CREATED ||
+                  result.type === DaaSJobStatus.CLIENT_PREPARING ||
                   scriptInfo.type !== "loaded" ||
                   unsupportedPackages.length > 0
                 }

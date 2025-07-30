@@ -3,7 +3,7 @@ import { Watch3D } from "./Watch3d.tsx";
 import { HousingByLine } from "./HousingByLine.tsx";
 import { WatchImage } from "./WatchImage.tsx";
 import { SendToForma } from "./SendToForma.tsx";
-import { DaasRunResult, Run } from "../../service/dynamo.ts";
+import { DaasRunResult, DaaSJobStatus, DaasError } from "../../service/dynamo.ts";
 import { BasicBuilding } from "./BasicBuilding.tsx";
 import { GroundPolygon } from "./GroundPolygon.tsx";
 import { ExtrudedPolygon } from "./ExtrudedPolygon.tsx";
@@ -11,14 +11,14 @@ import { SendElementToForma } from "./SendElementToForma.tsx";
 import { VisualizeImage } from "./VisualizeImage.tsx";
 
 export type RunResult =
-  | { type: "init" } // Initial state.
-  | { type: "preparing"; uiMsg: string } // Preparing graph state.
-  | { type: "created"; uiMsg: string } // Job created.
-  | { type: "pending"; uiMsg: string } // Job sent and pending execution.
-  | { type: "executing"; uiMsg: string } // Job is executing.
-  | { type: "complete"; uiMsg: string; data: DaasRunResult } // Job ran to completion (success).
-  | { type: "failed"; uiMsg: string; data: DaasRunResult } // Job failed.
-  | { type: "timeout"; uiMsg: string; data: DaasRunResult }; // Job ran out of time.
+  | { type: DaaSJobStatus.CLIENT_INITIALIZED } // Initial state.
+  | { type: DaaSJobStatus.CLIENT_PREPARING; uiMsg: string } // Preparing graph state.
+  | { type: DaaSJobStatus.CREATED; uiMsg: string } // Job created.
+  | { type: DaaSJobStatus.PENDING; uiMsg: string } // Job sent and pending execution.
+  | { type: DaaSJobStatus.EXECUTING; uiMsg: string } // Job is executing.
+  | { type: DaaSJobStatus.COMPLETE; uiMsg: string; data: DaasRunResult } // Job ran to completion (success).
+  | { type: DaaSJobStatus.FAILED; uiMsg: string; data: DaasRunResult | DaasError } // Job failed.
+  | { type: DaaSJobStatus.TIMEOUT; uiMsg: string; data: DaasRunResult }; // Job ran out of time.
 
 function DynamoOutputComponent({ output }: { output: Output }) {
   if (output.type === "Watch3D") {
@@ -78,10 +78,10 @@ function DynamoOutputComponent({ output }: { output: Output }) {
 }
 
 export function DynamoOutput({ result }: { result: RunResult }) {
-  if (result.type === "init") return null;
-  if (result.type === "failed") return <div>{result.uiMsg}</div>; // Maybe add a Timeout icon?
-  if (result.type === "timeout") return <div>{result.uiMsg}</div>; // Maybe add a Failed icon?
-  if (result.type !== "complete")
+  if (result.type === DaaSJobStatus.CLIENT_INITIALIZED) return null;
+  if (result.type === DaaSJobStatus.FAILED) return <div>{result.uiMsg}</div>; // Maybe add a Timeout icon?
+  if (result.type === DaaSJobStatus.TIMEOUT) return <div>{result.uiMsg}</div>; // Maybe add a Failed icon?
+  if (result.type !== DaaSJobStatus.COMPLETE)
     return (
       <div>
         <weave-progress-bar />
@@ -89,7 +89,7 @@ export function DynamoOutput({ result }: { result: RunResult }) {
       </div>
     );
 
-  const outputs = (result.data?.info?.outputs || []) as Output[];
+  const outputs = (result?.data?.result?.info?.outputs || []) as Output[];
 
   return (
     <>
