@@ -438,25 +438,25 @@ export function LocalScript({
 
   const handleExportLog = (jobId?: string | null) => {
     // Generate minimal log content with just the job ID
-    const logContent = `${jobId || 'N/A'}`;
+    const logContent = `${jobId || "N/A"}`;
 
     // Create and download the file
-    const blob = new Blob([logContent], { type: 'text/plain' });
+    const blob = new Blob([logContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    
+
     // Create a temporary download link
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = `dynamo-log-${jobId || 'unknownJobId'}-${new Date().toISOString()}.txt`;
+    link.download = `dynamo-log-${jobId || "unknownJobId"}-${new Date().toISOString()}.txt`;
 
     // Trigger the download
     document.body.appendChild(link);
     link.click();
-    
+
     // Clean up
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    
+
     console.log("Log file downloaded for job:", jobId);
   };
 
@@ -466,7 +466,10 @@ export function LocalScript({
         return;
       }
       const code = scriptInfo.data;
-      const lastStatus: RunResult = { type: DaaSJobStatus.CLIENT_PREPARING, uiMsg: "Preparing to run" };
+      const lastStatus: RunResult = {
+        type: DaaSJobStatus.CLIENT_PREPARING,
+        uiMsg: "Preparing to run",
+      };
       setResult(lastStatus);
 
       const urn = await Forma.proposal.getRootUrn();
@@ -647,10 +650,14 @@ export function LocalScript({
       console.error(e);
       captureException(e, "Error running Dynamo graph");
 
-      if ( e instanceof DaasError) {
+      if (e instanceof DaasError) {
         setResult({ type: DaaSJobStatus.FAILED, uiMsg: "Run failed", data: e });
       } else {
-        setResult({ type: DaaSJobStatus.FAILED, uiMsg: "Run failed", data: new DaasError(null, e) });
+        setResult({
+          type: DaaSJobStatus.FAILED,
+          uiMsg: "Run failed",
+          data: new DaasError(null, e),
+        });
       }
     }
   }, [service.dynamo, scriptInfo, state, script]);
@@ -864,19 +871,20 @@ export function LocalScript({
             </>
           )}
         </div>
-        {result.type === DaaSJobStatus.COMPLETE && result.data.result?.title?.includes("Required property") && (
-          <div>Failed</div>
-        )}
-        {result.type === DaaSJobStatus.COMPLETE && result.data.result?.info?.issues && result.data.result?.info?.issues?.length > 0 && (
-          <WarningBanner
-            title={"The graph returned with warnings or errors."}
-            warnings={result.data.result?.info.issues.map((issue: Issue) => ({
-              id: issue.nodeId,
-              title: issue.nodeName,
-              description: issue.message,
-            }))}
-          />
-        )}
+        {result.type === DaaSJobStatus.COMPLETE &&
+          result.data.result?.title?.includes("Required property") && <div>Failed</div>}
+        {result.type === DaaSJobStatus.COMPLETE &&
+          result.data.result?.info?.issues &&
+          result.data.result?.info?.issues?.length > 0 && (
+            <WarningBanner
+              title={"The graph returned with warnings or errors."}
+              warnings={result.data.result?.info.issues.map((issue: Issue) => ({
+                id: issue.nodeId,
+                title: issue.nodeName,
+                description: issue.message,
+              }))}
+            />
+          )}
         {unsupportedPackages.length !== 0 && (
           <WarningBanner
             title="Unsupported packages"
@@ -963,16 +971,26 @@ export function LocalScript({
             )}
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end" }}>
-              {showExportLog && (result.type === DaaSJobStatus.COMPLETE || result.type === DaaSJobStatus.FAILED || result.type === DaaSJobStatus.TIMEOUT) && (
-                <weave-button 
-                  variant="outlined" 
-                  style={{ minWidth: "80px" }}
-                  onClick={() => handleExportLog(result.data?.jobId)}
-                >
-                  Export Log
-                </weave-button>
-              )}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "4px",
+                alignItems: "flex-end",
+              }}
+            >
+              {showExportLog &&
+                (result.type === DaaSJobStatus.COMPLETE ||
+                  result.type === DaaSJobStatus.FAILED ||
+                  result.type === DaaSJobStatus.TIMEOUT) && (
+                  <weave-button
+                    variant="outlined"
+                    style={{ minWidth: "80px" }}
+                    onClick={() => handleExportLog(result.data?.jobId)}
+                  >
+                    Export Log
+                  </weave-button>
+                )}
               {env === "local" && (
                 <weave-button style={{ width: "60px" }} onClick={reload}>
                   Update
