@@ -444,16 +444,16 @@ export function LocalScript({
       try {
         const logString = await services.daas?.dynamo.log(jobId);
         if (logString && logString?.length >= 0) {
-          logContent += "/n" + logString;
+          logContent += "\n" + logString;
         } else {
-          logContent += "/n" + "Dynamo graph logs were not found.";
+          logContent += "\nDynamo graph logs were not found.";
         }
       } catch (e) {
         console.error(e);
         captureException(e, "Error trying to ge the Dynamo graph logs");
 
         // TODO: Valuable ? should we add the entire exception string?
-        logContent += "/n" + "Error trying to ge the Dynamo graph logs.";
+        logContent += "\nError trying to ge the Dynamo graph logs.";
       }
     }
     
