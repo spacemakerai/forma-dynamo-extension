@@ -437,7 +437,6 @@ export function LocalScript({
   );
 
   const handleExportLog = async (jobId?: string | null) => {
-
     // Generate minimal log content with just the job ID
     let logContent = "N/A";
 
@@ -445,8 +444,8 @@ export function LocalScript({
       logContent = `Graph run ID: ${jobId}`;
       try {
         const logString = await services.daas?.dynamo?.log(jobId);
-        if (logString && logString?.length >= 0) {
-          logContent += "\n" + logString;
+        if (logString && logString?.length > 0) {
+          logContent += `\n${logString}`;
         } else {
           logContent += "\nDynamo graph logs were not found.";
         }
@@ -458,7 +457,7 @@ export function LocalScript({
         logContent += "\nError trying to ge the Dynamo graph logs.";
       }
     }
-    
+
     // Create and download the file
     const blob = new Blob([logContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);

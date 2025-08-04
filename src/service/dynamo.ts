@@ -180,7 +180,7 @@ class Dynamo implements DynamoService {
   }
 
   async log(jobId: string): Promise<string> {
-      const getLog = await this._fetch(`${this.url}/v1/graph/job/${jobId}/log`, { method: "GET" });
+    const getLog = await this._fetch(`${this.url}/v1/graph/job/${jobId}/log`, { method: "GET" });
 
     if (getLog.status !== 200) {
       throw new FetchError(getLog.statusText, getLog.status);
@@ -229,7 +229,7 @@ class Dynamo implements DynamoService {
         getGeometry: false,
         getContents: false,
         inputs,
-        collectLogs: true
+        collectLogs: true,
       }),
     });
 
