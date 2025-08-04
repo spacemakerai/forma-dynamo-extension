@@ -42,6 +42,7 @@ export interface DynamoService {
   info: (target: GraphTarget) => Promise<GraphInfo>;
   trust: (path: string) => Promise<boolean>;
   serverInfo: () => Promise<ServerInfo>;
+  log: (jobId: string) => Promise<string>;
   //health: (port: number) => Promise<Health>;
 }
 
@@ -176,6 +177,16 @@ class Dynamo implements DynamoService {
   constructor(url: string, authProvider?: () => Promise<string>) {
     this.url = url;
     this.authProvider = authProvider;
+  }
+
+  async log(jobId: string): Promise<string> {
+      const getLog = await this._fetch(`${this.url}/v1/graph/job/${jobId}/log`, { method: "GET" });
+
+    if (getLog.status !== 200) {
+      throw new FetchError(getLog.statusText, getLog.status);
+    }
+
+    return await getLog.text();
   }
 
   async _fetch(input: RequestInfo, init?: RequestInit | undefined): Promise<Response> {

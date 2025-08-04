@@ -436,10 +436,27 @@ export function LocalScript({
     [],
   );
 
-  const handleExportLog = (jobId?: string | null) => {
+  const handleExportLog = async (jobId?: string | null) => {
     // Generate minimal log content with just the job ID
-    const logContent = `${jobId || "N/A"}`;
+    let logContent = `${jobId || "N/A"}`;
 
+    if (jobId) {
+      try {
+        const logString = await services.daas?.dynamo.log(jobId);
+        if (logString && logString?.length >= 0) {
+          logContent += "/n" + logString;
+        } else {
+          logContent += "/n" + "Dynamo graph logs were not found.";
+        }
+      } catch (e) {
+        console.error(e);
+        captureException(e, "Error trying to ge the Dynamo graph logs");
+
+        // TODO: Valuable ? should we add the entire exception string?
+        logContent += "/n" + "Error trying to ge the Dynamo graph logs.";
+      }
+    }
+    
     // Create and download the file
     const blob = new Blob([logContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
