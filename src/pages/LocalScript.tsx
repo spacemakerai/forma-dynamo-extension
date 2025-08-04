@@ -437,10 +437,12 @@ export function LocalScript({
   );
 
   const handleExportLog = async (jobId?: string | null) => {
-    // Generate minimal log content with just the job ID
-    let logContent = `${jobId || "N/A"}`;
 
+    // Generate minimal log content with just the job ID
+    let logContent = "N/A";
+    
     if (jobId) {
+      logContent = `Graph run ID: ${jobId}`;
       try {
         const logString = await services.daas?.dynamo.log(jobId);
         if (logString && logString?.length >= 0) {
