@@ -229,6 +229,7 @@ class Dynamo implements DynamoService {
         getGeometry: false,
         getContents: false,
         inputs,
+        collectLogs: true
       }),
     });
 
