@@ -217,7 +217,6 @@ class Dynamo implements DynamoService {
     uploadUrl: string,
     inputs: RunInputs,
     onUpdate: OnUpdateRunStatus,
-    //TODO define type for the real return type from daas results.
     //TODO will have to see how to keep local desktop runs working since local does not return daas format.
   ): Promise<DaasRunResult> {
     await fetch(uploadUrl, {
