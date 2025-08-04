@@ -454,7 +454,7 @@ export function LocalScript({
         captureException(e, "Error trying to ge the Dynamo graph logs");
 
         // TODO: Valuable ? should we add the entire exception string?
-        logContent += "\nError trying to ge the Dynamo graph logs.";
+        logContent += "\nError trying to get the Dynamo graph logs.";
       }
     }
 
