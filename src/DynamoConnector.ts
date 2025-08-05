@@ -93,6 +93,9 @@ export const useDynamoConnector = () => {
           }),
         );
       },
+      log: async () => {
+        return "N/A";
+      },
       current: () => {
         return queue.enqueue(() => dynamo.info({ type: "CurrentGraphTarget" }));
       },

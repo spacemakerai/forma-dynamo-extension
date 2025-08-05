@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "cross-env DEV_SERVER=1 vite",
+    "build:win": "vite build",
     "build": "cross-env VITE_SENTRY_RELEASE=$(git rev-parse --short HEAD) vite build",
     "typecheck": "tsc --noEmit",
     "prettier:check": "prettier --check ./src",
