@@ -997,7 +997,7 @@ export function LocalScript({
                 alignItems: "flex-end",
               }}
             >
-              {showExportLog &&
+              {env === "daas" && showExportLog &&
                 (result.type === DaaSJobStatus.COMPLETE ||
                   result.type === DaaSJobStatus.FAILED ||
                   result.type === DaaSJobStatus.TIMEOUT) && (
@@ -1008,7 +1008,7 @@ export function LocalScript({
                   >
                     Export Log
                   </weave-button>
-                )}
+              )}
               {env === "local" && (
                 <weave-button style={{ width: "60px" }} onClick={reload}>
                   Update

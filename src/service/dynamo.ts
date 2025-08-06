@@ -117,6 +117,7 @@ export type Run = {
   title?: string;
 };
 
+// These states cover both cloud and desktop versions of Dynamo
 export enum DaaSJobStatus {
   // States that are set from the forma client side
   CLIENT_INITIALIZED = "CLIENT_INITIALIZED",
@@ -285,7 +286,12 @@ class Dynamo implements DynamoService {
       }),
     });
 
-    return await response.json();
+    var dynResponse = await response.json();
+
+    return {
+      result: dynResponse,
+      status: DaaSJobStatus.COMPLETE
+    };
   }
 
   async folder(path: string): Promise<FolderGraphInfo[]> {
