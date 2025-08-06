@@ -997,7 +997,8 @@ export function LocalScript({
                 alignItems: "flex-end",
               }}
             >
-              {showExportLog &&
+              {env === "daas" &&
+                showExportLog &&
                 (result.type === DaaSJobStatus.COMPLETE ||
                   result.type === DaaSJobStatus.FAILED ||
                   result.type === DaaSJobStatus.TIMEOUT) && (
