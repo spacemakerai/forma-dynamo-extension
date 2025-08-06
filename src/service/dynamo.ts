@@ -286,11 +286,11 @@ class Dynamo implements DynamoService {
       }),
     });
 
-    var dynResponse = await response.json();
+    const dynResponse = await response.json();
 
     return {
       result: dynResponse,
-      status: DaaSJobStatus.COMPLETE
+      status: DaaSJobStatus.COMPLETE,
     };
   }
 
