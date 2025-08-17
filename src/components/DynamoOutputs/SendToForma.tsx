@@ -1,11 +1,11 @@
-import { Dispatch, StateUpdater, useCallback, useEffect, useMemo, useState } from "preact/hooks";
-import { addElement, CreateIntegrateElement } from "../../service/element.ts";
-import { Visibility } from "../../icons/Visibility.tsx";
 import { Forma } from "forma-embedded-view-sdk/auto";
-import { captureException } from "../../util/sentry.ts";
-import { Output } from "./types.tsx";
 import { GeometryData } from "forma-embedded-view-sdk/dist/internal/scene/render";
+import { Dispatch, StateUpdater, useCallback, useEffect, useMemo, useState } from "preact/hooks";
+import { Visibility } from "../../icons/Visibility.tsx";
+import { addElement, CreateIntegrateElement } from "../../service/element.ts";
+import { captureException } from "../../util/sentry.ts";
 import { createFeatureCollection } from "../../utils/geojson.ts";
+import { Output } from "./types.tsx";
 
 function hashCode(string: string) {
   let hash = 0;

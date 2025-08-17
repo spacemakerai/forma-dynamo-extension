@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
+import { Transform, Urn } from "forma-elements";
 import { Forma } from "forma-embedded-view-sdk/auto";
+import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
+import * as UUID from "uuid";
+import { Visibility } from "../../icons/Visibility.tsx";
 import { captureException } from "../../util/sentry.ts";
 import { Output } from "./types.tsx";
-import { Transform, Urn } from "forma-elements";
-import { Visibility } from "../../icons/Visibility.tsx";
-import * as UUID from "uuid";
 
 type SendElementDTO = {
   urn: Urn;

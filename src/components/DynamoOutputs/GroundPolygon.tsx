@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 
 import { Forma } from "forma-embedded-view-sdk/auto";
-import { captureException } from "../../util/sentry.ts";
-import { Output } from "./types.tsx";
-import { Visibility } from "../../icons/Visibility.tsx";
 import { FeatureCollection, Polygon } from "geojson";
 import { v4 } from "uuid";
+import { Visibility } from "../../icons/Visibility.tsx";
+import { captureException } from "../../util/sentry.ts";
+import { Output } from "./types.tsx";
 
 type SiteLimitValue = {
   closedCurve: { x: number; y: number }[];

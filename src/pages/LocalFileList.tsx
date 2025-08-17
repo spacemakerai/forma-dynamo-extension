@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "preact/compat";
-import { Next } from "../icons/Next";
-import { SampleFiles } from "../components/SampleFiles.tsx";
 import { CurrentOpenGraphPrompt } from "../components/CurrentOpenGraphPrompt.tsx";
+import { SampleFiles } from "../components/SampleFiles.tsx";
+import { Next } from "../icons/Next";
 import { DynamoService, FolderGraphInfo } from "../service/dynamo.ts";
 
 type SetScript = (script: FolderGraphInfo) => void;

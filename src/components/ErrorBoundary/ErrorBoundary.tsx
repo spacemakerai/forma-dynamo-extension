@@ -1,6 +1,6 @@
-import { captureException, Sentry } from "../../util/sentry";
 import { ComponentChildren } from "preact";
 import { useCallback, useErrorBoundary } from "preact/hooks";
+import { captureException, Sentry } from "../../util/sentry";
 import styles from "./ErrorBoundary.module.pcss";
 
 export function useCustomErrorBoundary(): [unknown, () => void] {

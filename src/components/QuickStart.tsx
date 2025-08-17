@@ -1,6 +1,6 @@
 import { useCallback, useState } from "preact/compat";
-import lucky from "../assets/quickstart/lucky.png";
 import forum from "../assets/quickstart/forum.png";
+import lucky from "../assets/quickstart/lucky.png";
 import youtube from "../assets/quickstart/youtube.png";
 
 const showQuickStart = localStorage.getItem("showQuickStart") !== "false";

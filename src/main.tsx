@@ -1,8 +1,8 @@
+import { Forma } from "forma-embedded-view-sdk/auto";
 import { render } from "preact";
 import { App } from "./app.tsx";
-import "./styles.css";
 import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary.tsx";
-import { Forma } from "forma-embedded-view-sdk/auto";
+import "./styles.css";
 
 const isProd = import.meta.env.MODE === "production";
 const callbackUrl = isProd

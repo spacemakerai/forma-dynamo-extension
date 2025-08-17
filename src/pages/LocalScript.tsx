@@ -1,12 +1,5 @@
-import { useState, useCallback, useEffect, useRef, useMemo } from "preact/compat";
+import { useCallback, useEffect, useMemo, useRef, useState } from "preact/compat";
 
-import { DynamoOutput, RunResult } from "../components/DynamoOutputs/DynamoOutput.js";
-import { DynamoInput } from "../components/DynamoInputs/DynamoInput.js";
-import { Forma } from "forma-embedded-view-sdk/auto";
-import { isGet, isSelect } from "../utils/node.js";
-import { NotTrustedGraph } from "../components/NotTrustedGraph.js";
-import { SelectMode } from "../components/SelectMode.tsx";
-import { captureException } from "../util/sentry.ts";
 import {
   Child,
   JsonRepresentations,
@@ -14,27 +7,34 @@ import {
   RepresentationSelection,
   Volume25D,
 } from "forma-elements";
+import { Forma } from "forma-embedded-view-sdk/auto";
+import { DynamoInput } from "../components/DynamoInputs/DynamoInput.js";
+import { DynamoOutput, RunResult } from "../components/DynamoOutputs/DynamoOutput.js";
+import { NotTrustedGraph } from "../components/NotTrustedGraph.js";
+import { SelectMode } from "../components/SelectMode.tsx";
+import { WarningBanner } from "../components/Warnings/WarningBanner.tsx";
+import { DynamoState } from "../DynamoConnector.ts";
 import {
-  DaasState,
+  DaasError,
   DaaSJobStatus,
+  DaasState,
   DynamoService,
   FolderGraphInfo,
   GraphInfo,
   GraphTarget,
   Input,
   Issue,
-  DaasError,
 } from "../service/dynamo.js";
 import { JSONGraph, UnSavedGraph } from "../types/types.ts";
-import { WarningBanner } from "../components/Warnings/WarningBanner.tsx";
-import { DynamoState } from "../DynamoConnector.ts";
+import { captureException } from "../util/sentry.ts";
+import { isGet, isSelect } from "../utils/node.js";
 // import { IndicatorActive } from "../assets/icons/IndicatorActive.tsx";
 // import { IndicatorInactive } from "../assets/icons/InidcatorInactive.tsx";
 // import { IndicatorError } from "../assets/icons/InidcatorError.tsx";
+import { DisplayPreferences } from "../components/DisplayPreferences.tsx";
+import { SelectPointMode } from "../components/SelectPointMode.tsx";
 import { filterUnsupportedPackages, Package } from "../utils/daasSupportedPackages.ts";
 import { transformCoordinates } from "../utils/transformCoordinates.ts";
-import { SelectPointMode } from "../components/SelectPointMode.tsx";
-import { DisplayPreferences } from "../components/DisplayPreferences.tsx";
 
 // Check query parameter to enable export log feature
 //example ?ext:daas=dev&ext:exportlog=true

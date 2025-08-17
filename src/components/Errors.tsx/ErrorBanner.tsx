@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
-import { ErrorIcon } from "../../icons/Error";
 import { Close } from "../../icons/Close";
+import { ErrorIcon } from "../../icons/Error";
 
 export function ErrorBanner({ message, description }: { message: string; description?: string }) {
   const [show, setShow] = useState(true);

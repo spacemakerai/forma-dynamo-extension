@@ -1,9 +1,9 @@
-import { LocalScript } from "./LocalScript";
+import { useState } from "preact/hooks";
 import { useDynamoConnector } from "../DynamoConnector.ts";
 import { StatusBlock } from "../components/StatusBlock.tsx";
-import { LocalFileList } from "./LocalFileList.tsx";
-import { useState } from "preact/hooks";
 import { FolderGraphInfo } from "../service/dynamo.ts";
+import { LocalFileList } from "./LocalFileList.tsx";
+import { LocalScript } from "./LocalScript";
 
 export function LocalApp() {
   const { state, reconnect, dynamo } = useDynamoConnector();

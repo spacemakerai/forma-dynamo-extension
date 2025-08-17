@@ -1,6 +1,6 @@
 import { Forma } from "forma-embedded-view-sdk/auto";
-import { useState } from "preact/hooks";
 import { useEffect } from "preact/compat";
+import { useState } from "preact/hooks";
 import { Input } from "../service/dynamo";
 
 function useCurrentSelection() {

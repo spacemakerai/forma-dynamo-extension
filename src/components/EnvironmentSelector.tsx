@@ -1,6 +1,6 @@
+import { createRef } from "preact";
 import { useCallback, useState } from "preact/hooks";
 import { Caret } from "../icons/Caret";
-import { createRef } from "preact";
 
 export function EnvironmentSelector({
   setEnv,

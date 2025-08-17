@@ -1,9 +1,9 @@
 import { useState } from "preact/hooks";
-import { SetupInstructions } from "./SetupInstructions";
-import styles from "./SetupWizard.module.pcss";
-import revitImage from "../../assets/images/revit.png";
 import civil3dImage from "../../assets/images/civil3d.png";
 import dynamoImage from "../../assets/images/dynamo.png";
+import revitImage from "../../assets/images/revit.png";
+import { SetupInstructions } from "./SetupInstructions";
+import styles from "./SetupWizard.module.pcss";
 
 export type InstallationMethod = "revit" | "civil3d" | "dynamo";
 

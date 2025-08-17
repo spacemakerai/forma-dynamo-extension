@@ -1,9 +1,9 @@
+import { useEffect, useState } from "preact/hooks";
 import allGraphs from "../../assets/graphs";
 import { DynamoState } from "../../DynamoConnector";
 import { DynamoService } from "../../service/dynamo";
 import { JSONGraph } from "../../types/types";
 import GraphItem from "../GraphItem/GraphItem";
-import { useEffect, useState } from "preact/hooks";
 
 function download(jsonGraph: JSONGraph) {
   const element = document.createElement("a");

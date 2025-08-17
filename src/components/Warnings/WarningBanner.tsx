@@ -1,7 +1,7 @@
+import { ComponentChildren } from "preact";
 import { useState } from "preact/hooks";
 import { WarningIcon } from "../../icons/Warning";
 import { Warning, WarningDetails } from "./WarningDetails";
-import { ComponentChildren } from "preact";
 
 export function WarningBanner({
   title,

@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 
+import earcut from "earcut";
 import { Forma } from "forma-embedded-view-sdk/auto";
+import { GeometryData } from "forma-embedded-view-sdk/dist/internal/scene/render";
+import { v4 } from "uuid";
+import { Visibility } from "../../icons/Visibility.tsx";
 import { captureException } from "../../util/sentry.ts";
 import { Output } from "./types.tsx";
-import { Visibility } from "../../icons/Visibility.tsx";
-import { v4 } from "uuid";
-import earcut from "earcut";
-import { GeometryData } from "forma-embedded-view-sdk/dist/internal/scene/render";
 
 type ConstraintValue = {
   closedCurve: { x: number; y: number }[];

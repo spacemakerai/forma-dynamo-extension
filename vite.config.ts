@@ -1,5 +1,5 @@
-import { defineConfig } from "vite";
 import preact from "@preact/preset-vite";
+import { defineConfig } from "vite";
 
 const dynAsJsonPlugin = () => ({
   name: "dyn-as-json",

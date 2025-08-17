@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useState } from "preact/hooks";
 import { Forma } from "forma-embedded-view-sdk/auto";
+import { useCallback, useEffect, useState } from "preact/hooks";
 import { v4 } from "uuid";
-import { filterForSize } from "../../utils/filterGraph";
+import { AppPageState, ShareDestination } from "../../pages/DaasApp";
 import { captureException } from "../../util/sentry";
-import styles from "./PublishGraph.module.pcss";
+import { filterForSize } from "../../utils/filterGraph";
 import { DropZone } from "../DropZone";
 import GraphItem from "../GraphItem/GraphItem";
-import { AppPageState, ShareDestination } from "../../pages/DaasApp";
+import styles from "./PublishGraph.module.pcss";
 
 type DynamoGraph = {
   Name: string;

@@ -1,6 +1,6 @@
 import { useCallback } from "preact/hooks";
-import { DynamoService, FolderGraphInfo } from "../service/dynamo";
 import { Script } from "../pages/LocalScript";
+import { DynamoService, FolderGraphInfo } from "../service/dynamo";
 
 export function NotTrustedGraph({
   script,

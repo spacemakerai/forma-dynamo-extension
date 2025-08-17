@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
-import { JSONGraph, UnSavedGraph } from "../../types/types";
 import { DynamoState } from "../../DynamoConnector";
+import { AppPageState, ShareDestination } from "../../pages/DaasApp";
 import { DynamoService, FolderGraphInfo, GraphInfo } from "../../service/dynamo";
+import { JSONGraph, UnSavedGraph } from "../../types/types";
+import { captureException } from "../../util/sentry";
 import { filterForSize } from "../../utils/filterGraph";
 import { DropZone } from "../DropZone";
-import { captureException } from "../../util/sentry";
-import styles from "./MyGraphs.module.pcss";
 import GraphItem from "../GraphItem/GraphItem";
 import { download } from "../SharedGraphs/SharedGraphs";
-import { AppPageState, ShareDestination } from "../../pages/DaasApp";
+import styles from "./MyGraphs.module.pcss";
 
 const FILE_TYPES = [".dyn"];
 

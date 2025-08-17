@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/browser";
 import { defaultStackParser, makeFetchTransport } from "@sentry/browser";
-import { ErrorInfo } from "preact";
 import { Forma } from "forma-embedded-view-sdk/auto";
+import { ErrorInfo } from "preact";
 
 export function captureException(
   error: Error | any,

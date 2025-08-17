@@ -1,9 +1,9 @@
-import { Input } from "./types";
+import { Forma } from "forma-embedded-view-sdk/auto";
+import { WarningIcon } from "../../icons/Warning";
+import { GraphInfo } from "../../service/dynamo";
 import { isSelect } from "../../utils/node";
 import { Housing } from "./Housing";
-import { GraphInfo } from "../../service/dynamo";
-import { WarningIcon } from "../../icons/Warning";
-import { Forma } from "forma-embedded-view-sdk/auto";
+import { Input } from "./types";
 
 function DynamoInputComponent({
   input,

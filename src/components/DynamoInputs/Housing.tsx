@@ -1,6 +1,6 @@
-import { useEffect, useState } from "preact/hooks";
 import { Forma } from "forma-embedded-view-sdk/auto";
 import { Template } from "forma-embedded-view-sdk/dist/internal/experimental/housing";
+import { useEffect, useState } from "preact/hooks";
 import { Input } from "./types";
 
 export function Housing({

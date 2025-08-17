@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
-import Dynamo, { DaasState, DynamoService } from "../service/dynamo";
 import { Forma } from "forma-embedded-view-sdk/auto";
-import { useDynamoConnector } from "../DynamoConnector";
-import { captureException } from "../util/sentry";
+import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 import { SetupWizard } from "../components/SetupDesktop/SetupWizard";
-import styles from "./Pages.module.pcss";
+import { useDynamoConnector } from "../DynamoConnector";
+import Dynamo, { DaasState, DynamoService } from "../service/dynamo";
+import { captureException } from "../util/sentry";
 import AppContent from "./AppContent";
+import styles from "./Pages.module.pcss";
 
 const envionment = new URLSearchParams(window.location.search).get("ext:daas") || "prod";
 

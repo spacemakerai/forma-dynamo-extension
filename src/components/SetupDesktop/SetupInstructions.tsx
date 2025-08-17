@@ -1,10 +1,10 @@
 import { useState } from "preact/hooks";
-import { InstallationMethod } from "./SetupWizard";
-import styles from "./SetupInstructions.module.pcss";
 import step1Animation from "../../assets/animations/step-1.mp4";
 import step2Animation from "../../assets/animations/step-2.mp4";
 import step3Animation from "../../assets/animations/step-3.mp4";
 import step4Animation from "../../assets/animations/step-4.mp4";
+import styles from "./SetupInstructions.module.pcss";
+import { InstallationMethod } from "./SetupWizard";
 
 type Props = {
   selectedSoftware: InstallationMethod;

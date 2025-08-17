@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 
+import earcut from "earcut";
 import { Forma } from "forma-embedded-view-sdk/auto";
+import { Floor } from "forma-embedded-view-sdk/dist/internal/elements";
+import { GeometryData } from "forma-embedded-view-sdk/dist/internal/scene/render";
+import { Visibility } from "../../icons/Visibility.tsx";
 import { captureException } from "../../util/sentry.ts";
 import { Output } from "./types.tsx";
-import { Floor } from "forma-embedded-view-sdk/dist/internal/elements";
-import { Visibility } from "../../icons/Visibility.tsx";
-import { GeometryData } from "forma-embedded-view-sdk/dist/internal/scene/render";
-import earcut from "earcut";
 
 type BasicBuildingValue = {
   position: { x: number; y: number; z: number };
