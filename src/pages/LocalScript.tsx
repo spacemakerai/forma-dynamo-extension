@@ -36,6 +36,10 @@ import { SelectPointMode } from "../components/SelectPointMode.tsx";
 import { filterUnsupportedPackages, Package } from "../utils/daasSupportedPackages.ts";
 import { transformCoordinates } from "../utils/transformCoordinates.ts";
 
+// Check query parameter to enable export log feature
+//example ?ext:daas=dev&ext:exportlog=true
+const showExportLog = new URLSearchParams(window.location.search).get("ext:exportlog") === "true";
+
 // type Status = "online" | "offline" | "error";
 
 const IdentityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
@@ -994,6 +998,7 @@ export function LocalScript({
               }}
             >
               {env === "daas" &&
+                showExportLog &&
                 (result.type === DaaSJobStatus.COMPLETE ||
                   result.type === DaaSJobStatus.FAILED ||
                   result.type === DaaSJobStatus.TIMEOUT) && (
