@@ -1,19 +1,18 @@
 import js from "@eslint/js";
 import prettier from "eslint-plugin-prettier/recommended";
 import react from "eslint-plugin-react";
-import hooksPlugin from "eslint-plugin-react-hooks";
+import reactHooks from "eslint-plugin-react-hooks";
+import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 
-export default tseslint.config(
+export default defineConfig(
   js.configs.recommended,
   // Ideally we should be using recommendedTypeChecked, but too much of existing code breaks with it.
-  ...tseslint.configs.recommended,
+  tseslint.configs.recommended,
   react.configs.flat.recommended,
   react.configs.flat["jsx-runtime"],
+  reactHooks.configs.flat.recommended,
   {
-    plugins: {
-      "react-hooks": hooksPlugin,
-    },
     settings: {
       react: {
         version: "18",
@@ -31,7 +30,6 @@ export default tseslint.config(
       "@typescript-eslint/non-nullable-type-assertion-style": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/ban-ts-comment": "off",
-      ...hooksPlugin.configs.recommended.rules,
       "react/no-unknown-property": "off",
       "react/no-unescaped-entities": "off",
       "react/prop-types": "off",
