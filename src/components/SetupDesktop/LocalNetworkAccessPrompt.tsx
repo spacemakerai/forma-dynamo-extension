@@ -34,7 +34,7 @@ export function LocalNetworkAccessPrompt() {
         <div className={styles.Description}>
           {permissionState === 'prompt' && (
             <>
-              Chrome will prompt you to allow access to devices on your local network when 
+              Your browser will prompt you to allow access to devices on your local network when 
               connecting to Dynamo Desktop. This permission is required for the Desktop connection 
               to work. Please click <strong>"Allow"</strong> when the prompt appears.
             </>
@@ -42,7 +42,7 @@ export function LocalNetworkAccessPrompt() {
           {permissionState === 'denied' && (
             <>
               Access to local network devices has been blocked. To use Desktop mode, please 
-              allow this permission in your Chrome settings (click the lock icon in the address bar, 
+              allow this permission in your browser settings (click the lock icon in the address bar, 
               then enable "Access to devices on your local network").
             </>
           )}
