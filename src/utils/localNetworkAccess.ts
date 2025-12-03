@@ -10,11 +10,11 @@
 export function getChromeVersion(): number | null {
   const userAgent = navigator.userAgent;
   const chromeMatch = userAgent.match(/Chrome\/(\d+)/);
-  
+
   if (chromeMatch && chromeMatch[1]) {
     return parseInt(chromeMatch[1], 10);
   }
-  
+
   return null;
 }
 
@@ -26,7 +26,7 @@ export function requiresLocalNetworkAccessPermission(): boolean {
   return version !== null && version >= 142;
 }
 
-export type LocalNetworkAccessState = 'granted' | 'denied' | 'prompt' | 'unsupported';
+export type LocalNetworkAccessState = "granted" | "denied" | "prompt" | "unsupported";
 
 /**
  * Query the Local Network Access permission state
@@ -35,24 +35,24 @@ export type LocalNetworkAccessState = 'granted' | 'denied' | 'prompt' | 'unsuppo
 export async function checkLocalNetworkAccessPermission(): Promise<LocalNetworkAccessState> {
   // Check if we're in Chrome >= 142
   if (!requiresLocalNetworkAccessPermission()) {
-    return 'unsupported';
+    return "unsupported";
   }
 
   // Check if the Permissions API is available
   if (!navigator.permissions || !navigator.permissions.query) {
-    return 'unsupported';
+    return "unsupported";
   }
 
   try {
     // Type assertion needed as TypeScript may not have this permission type yet
-    const result = await navigator.permissions.query({ 
-      name: 'local-network-access' as PermissionName 
+    const result = await navigator.permissions.query({
+      name: "local-network-access" as PermissionName,
     });
-    
+
     return result.state as LocalNetworkAccessState;
   } catch (error) {
-    console.warn('Failed to query local-network-access permission:', error);
-    return 'unsupported';
+    console.warn("Failed to query local-network-access permission:", error);
+    return "unsupported";
   }
 }
 
@@ -65,7 +65,7 @@ export async function shouldShowLocalNetworkAccessWarning(): Promise<boolean> {
   }
 
   const state = await checkLocalNetworkAccessPermission();
-  
+
   // Show warning if permission hasn't been granted yet (prompt or denied state)
-  return state === 'prompt' || state === 'denied';
+  return state === "prompt" || state === "denied";
 }
