@@ -2,6 +2,7 @@ import { useState } from "preact/hooks";
 import civil3dImage from "../../assets/images/civil3d.png";
 import dynamoImage from "../../assets/images/dynamo.png";
 import revitImage from "../../assets/images/revit.png";
+import { LocalNetworkAccessPrompt } from "./LocalNetworkAccessPrompt";
 import { SetupInstructions } from "./SetupInstructions";
 import styles from "./SetupWizard.module.pcss";
 
@@ -35,6 +36,7 @@ export const SetupWizard = () => {
         />
       ) : (
         <>
+          <LocalNetworkAccessPrompt />
           <div>
             <div className={styles.Heading}>
               Searching for a Dynamo instance with the DynamoFormaBeta package installed on your
