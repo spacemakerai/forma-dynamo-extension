@@ -1,31 +1,19 @@
 import { useEffect, useState } from "preact/hooks";
 import {
   checkLocalNetworkAccessPermission,
-  getChromeVersion,
   LocalNetworkAccessState,
 } from "../../utils/localNetworkAccess";
 import styles from "./LocalNetworkAccessPrompt.module.pcss";
 
 export function LocalNetworkAccessPrompt() {
   const [permissionState, setPermissionState] = useState<LocalNetworkAccessState>("unsupported");
-  const [chromeVersion, setChromeVersion] = useState<number | null>(null);
 
   useEffect(() => {
-    const version = getChromeVersion();
-    setChromeVersion(version);
-
-    if (version && version >= 142) {
-      checkLocalNetworkAccessPermission().then(setPermissionState);
-    }
+    checkLocalNetworkAccessPermission().then(setPermissionState);
   }, []);
 
   // Don't show anything if not Chrome >= 142 or permission already granted
-  if (
-    !chromeVersion ||
-    chromeVersion < 142 ||
-    permissionState === "granted" ||
-    permissionState === "unsupported"
-  ) {
+  if (permissionState === "granted" || permissionState === "unsupported") {
     return null;
   }
 

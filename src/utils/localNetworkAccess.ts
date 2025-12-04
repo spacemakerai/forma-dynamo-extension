@@ -4,10 +4,18 @@
  */
 
 /**
- * Get the Chrome major version from the user agent string
- * @returns Chrome major version number or null if not Chrome
+ * Check if the browser is Edge
+ * @returns true if Edge browser
  */
-export function getChromeVersion(): number | null {
+function isEdge(): boolean {
+  return /Edg\//.test(navigator.userAgent);
+}
+
+/**
+ * Get the Chrome major version from the user agent string
+ * @returns Chrome major version number or undefined if not Chrome
+ */
+function getChromeVersion(): number | undefined {
   const userAgent = navigator.userAgent;
   const chromeMatch = userAgent.match(/Chrome\/(\d+)/);
 
@@ -15,15 +23,15 @@ export function getChromeVersion(): number | null {
     return parseInt(chromeMatch[1], 10);
   }
 
-  return null;
+  return undefined;
 }
 
 /**
  * Check if Chrome version is >= 142 where LNA permission is required
  */
-export function requiresLocalNetworkAccessPermission(): boolean {
+function requiresLocalNetworkAccessPermission(): boolean {
   const version = getChromeVersion();
-  return version !== null && version >= 142;
+  return version != null && version >= 142;
 }
 
 export type LocalNetworkAccessState = "granted" | "denied" | "prompt" | "unsupported";
@@ -33,6 +41,11 @@ export type LocalNetworkAccessState = "granted" | "denied" | "prompt" | "unsuppo
  * @returns Permission state or 'unsupported' if the API is not available
  */
 export async function checkLocalNetworkAccessPermission(): Promise<LocalNetworkAccessState> {
+  // Edge doesn't properly support the local-network-access permission API in v142 yet.
+  if (isEdge()) {
+    return "unsupported";
+  }
+
   // Check if we're in Chrome >= 142
   if (!requiresLocalNetworkAccessPermission()) {
     return "unsupported";
@@ -54,18 +67,4 @@ export async function checkLocalNetworkAccessPermission(): Promise<LocalNetworkA
     console.warn("Failed to query local-network-access permission:", error);
     return "unsupported";
   }
-}
-
-/**
- * Check if we should show a warning to the user about the LNA permission prompt
- */
-export async function shouldShowLocalNetworkAccessWarning(): Promise<boolean> {
-  if (!requiresLocalNetworkAccessPermission()) {
-    return false;
-  }
-
-  const state = await checkLocalNetworkAccessPermission();
-
-  // Show warning if permission hasn't been granted yet (prompt or denied state)
-  return state === "prompt" || state === "denied";
 }
