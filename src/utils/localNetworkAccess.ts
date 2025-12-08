@@ -4,14 +4,6 @@
  */
 
 /**
- * Check if the browser is Edge
- * @returns true if Edge browser
- */
-function isEdge(): boolean {
-  return /Edg\//.test(navigator.userAgent);
-}
-
-/**
  * Get the Chrome major version from the user agent string
  * @returns Chrome major version number or undefined if not Chrome
  */
@@ -41,11 +33,6 @@ export type LocalNetworkAccessState = "granted" | "denied" | "prompt" | "unsuppo
  * @returns Permission state or 'unsupported' if the API is not available
  */
 export async function checkLocalNetworkAccessPermission(): Promise<LocalNetworkAccessState> {
-  // Edge doesn't properly support the local-network-access permission API in v142 yet.
-  if (isEdge()) {
-    return "unsupported";
-  }
-
   // Check if we're in Chrome >= 142
   if (!requiresLocalNetworkAccessPermission()) {
     return "unsupported";
