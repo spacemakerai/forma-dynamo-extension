@@ -60,7 +60,7 @@ importers:
         version: 9.39.1
       '@preact/preset-vite':
         specifier: ^2.10.2
-        version: 2.10.2(@babel/core@7.28.5)(preact@10.29.1)(vite@7.3.3(@types/node@24.10.1)(jiti@2.6.1))
+        version: 2.10.2(@babel/core@7.28.5)(preact@10.29.1)(vite@7.3.6(@types/node@24.10.1)(jiti@2.6.1))
       '@types/file-saver':
         specifier: ^2.0.7
         version: 2.0.7
@@ -101,8 +101,8 @@ importers:
         specifier: ^8.48.0
         version: 8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       vite:
-        specifier: ^7.3.3
-        version: 7.3.3(@types/node@24.10.1)(jiti@2.6.1)
+        specifier: ^7.3.5
+        version: 7.3.6(@types/node@24.10.1)(jiti@2.6.1)
 
 packages:
 
@@ -1736,8 +1736,8 @@ packages:
     peerDependencies:
       vite: 5.x || 6.x || 7.x
 
-  vite@7.3.3:
-    resolution: {integrity: sha512-/4XH147Ui7OGTjg3HbdWe5arnZQSbfuRzdr9Ec7TQi5I7R+ir0Rlc9GIvD4v0XZurELqA035KVXJXpR61xhiTA==}
+  vite@7.3.6:
+    resolution: {integrity: sha512-4XP60spRGjSZFf1qYH+dJIkK2znL3zQfl9KkOV9MkkRR/3Dls0dxaBsQPTloEc5BLXWPL9vsOxopxyKoMmDueg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -2121,18 +2121,18 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@preact/preset-vite@2.10.2(@babel/core@7.28.5)(preact@10.29.1)(vite@7.3.3(@types/node@24.10.1)(jiti@2.6.1))':
+  '@preact/preset-vite@2.10.2(@babel/core@7.28.5)(preact@10.29.1)(vite@7.3.6(@types/node@24.10.1)(jiti@2.6.1))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx': 7.27.1(@babel/core@7.28.5)
       '@babel/plugin-transform-react-jsx-development': 7.27.1(@babel/core@7.28.5)
-      '@prefresh/vite': 2.4.8(preact@10.29.1)(vite@7.3.3(@types/node@24.10.1)(jiti@2.6.1))
+      '@prefresh/vite': 2.4.8(preact@10.29.1)(vite@7.3.6(@types/node@24.10.1)(jiti@2.6.1))
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.28.5)
       debug: 4.4.1
       picocolors: 1.1.1
-      vite: 7.3.3(@types/node@24.10.1)(jiti@2.6.1)
-      vite-prerender-plugin: 0.5.11(vite@7.3.3(@types/node@24.10.1)(jiti@2.6.1))
+      vite: 7.3.6(@types/node@24.10.1)(jiti@2.6.1)
+      vite-prerender-plugin: 0.5.11(vite@7.3.6(@types/node@24.10.1)(jiti@2.6.1))
     transitivePeerDependencies:
       - preact
       - supports-color
@@ -2145,7 +2145,7 @@ snapshots:
 
   '@prefresh/utils@1.2.1': {}
 
-  '@prefresh/vite@2.4.8(preact@10.29.1)(vite@7.3.3(@types/node@24.10.1)(jiti@2.6.1))':
+  '@prefresh/vite@2.4.8(preact@10.29.1)(vite@7.3.6(@types/node@24.10.1)(jiti@2.6.1))':
     dependencies:
       '@babel/core': 7.28.5
       '@prefresh/babel-plugin': 0.5.2
@@ -2153,7 +2153,7 @@ snapshots:
       '@prefresh/utils': 1.2.1
       '@rollup/pluginutils': 4.2.1
       preact: 10.29.1
-      vite: 7.3.3(@types/node@24.10.1)(jiti@2.6.1)
+      vite: 7.3.6(@types/node@24.10.1)(jiti@2.6.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -3624,7 +3624,7 @@ snapshots:
 
   uuid@13.0.0: {}
 
-  vite-prerender-plugin@0.5.11(vite@7.3.3(@types/node@24.10.1)(jiti@2.6.1)):
+  vite-prerender-plugin@0.5.11(vite@7.3.6(@types/node@24.10.1)(jiti@2.6.1)):
     dependencies:
       kolorist: 1.8.0
       magic-string: 0.30.17
@@ -3632,9 +3632,9 @@ snapshots:
       simple-code-frame: 1.3.0
       source-map: 0.7.6
       stack-trace: 1.0.0-pre2
-      vite: 7.3.3(@types/node@24.10.1)(jiti@2.6.1)
+      vite: 7.3.6(@types/node@24.10.1)(jiti@2.6.1)
 
-  vite@7.3.3(@types/node@24.10.1)(jiti@2.6.1):
+  vite@7.3.6(@types/node@24.10.1)(jiti@2.6.1):
     dependencies:
       esbuild: 0.27.7
       fdir: 6.5.0(picomatch@4.0.4)
