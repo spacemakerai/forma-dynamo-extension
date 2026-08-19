@@ -20,7 +20,7 @@
     "earcut": "^3.0.2",
     "forma-elements": "^2.4.0",
     "forma-embedded-view-sdk": "0.88.0",
-    "postcss": "^8.5.6",
+    "postcss": "^8.5.18",
     "postcss-nesting": "^13.0.2",
     "preact": "^10.27.3",
     "uuid": "^14.0.0"
@@ -41,7 +41,7 @@
     "prettier-plugin-organize-imports": "^4.3.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.48.0",
-    "vite": "^7.3.3"
+    "vite": "^7.3.5"
   },
   "pnpm": {
     "overrides": {
