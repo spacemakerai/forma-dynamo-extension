@@ -4,16 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  flatted@<3.4.2: '>=3.4.2 <4'
-  minimatch@<3.1.4: '>=3.1.4 <4'
-  minimatch@>=9.0.0 <9.0.7: '>=9.0.7 <10'
-  picomatch@<2.3.2: '>=2.3.2 <3'
-  picomatch@>=4.0.0 <4.0.4: '>=4.0.4 <5'
-  rollup@<2.80.0: '>=2.80.0 <3'
-  rollup@>=3.0.0 <3.30.0: '>=3.30.0 <4'
-  rollup@>=4.0.0 <4.59.0: '>=4.59.0 <5'
-
 importers:
 
   .:
@@ -1074,7 +1064,7 @@ packages:
     resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
-      picomatch: '>=4.0.4 <5'
+      picomatch: ^3 || ^4
     peerDependenciesMeta:
       picomatch:
         optional: true
