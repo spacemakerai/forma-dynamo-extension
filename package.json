@@ -20,7 +20,7 @@
     "earcut": "^3.0.2",
     "forma-elements": "^2.4.0",
     "forma-embedded-view-sdk": "0.88.0",
-    "postcss": "^8.5.18",
+    "postcss": "^8.5.23",
     "postcss-nesting": "^13.0.2",
     "preact": "^10.27.3",
     "uuid": "^14.0.0"
