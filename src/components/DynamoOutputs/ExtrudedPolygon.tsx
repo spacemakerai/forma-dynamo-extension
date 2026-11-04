@@ -5,6 +5,7 @@ import { Forma } from "forma-embedded-view-sdk/auto";
 import { GeometryData } from "forma-embedded-view-sdk/dist/internal/scene/render";
 import { v4 } from "uuid";
 import { Visibility } from "../../icons/Visibility.tsx";
+import { getApsBaseUrl, getApsRegionHeaders } from "../../util/aps.ts";
 import { captureException } from "../../util/sentry.ts";
 import { Output } from "./types.tsx";
 
@@ -35,12 +36,12 @@ type BasicElement = {
 async function createBasicElement(elements: BasicElement[]) {
   const { accessToken } = await Forma.auth.acquireTokenOverlay();
   const res = await fetch(
-    `https://developer.api.autodesk.com/forma/basic/v1alpha/geometries/batch-create?authcontext=${Forma.getProjectId()}`,
+    `${getApsBaseUrl()}/forma/basic/v1alpha/geometries/batch-create?authcontext=${Forma.getProjectId()}`,
     {
       method: "POST",
       body: JSON.stringify(elements),
       headers: {
-        "X-Ads-Region": "EMEA",
+        ...getApsRegionHeaders(),
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
