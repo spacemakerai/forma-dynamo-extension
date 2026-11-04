@@ -1,0 +1,10 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": [
+    "See https://github.com/spacemakerai/renovate-config for various presets and configuration tips."
+  ],
+  "extends": [
+    "local>spacemakerai/renovate-config:base",
+    "local>spacemakerai/renovate-config:initial"
+  ]
+}
