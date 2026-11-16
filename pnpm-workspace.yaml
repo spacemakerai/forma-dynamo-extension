@@ -4,6 +4,7 @@ allowBuilds:
 minimumReleaseAge: 2880
 nodeLinker: hoisted
 overrides:
+  "minimatch@>=10.0.0 <11.0.1": ">=11.0.1 <12"
   "@babel/core@<7.29.6": ">=7.29.6 <8"
   "esbuild@>=0.27.3 <0.28.1": ">=0.28.1 <0.29"
   "ajv@<6.14.0": ">=6.14.0 <7"
