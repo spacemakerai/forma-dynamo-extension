@@ -37,6 +37,14 @@ export default defineConfig(
   },
   prettier,
   {
+    files: ["tests/**/*.test.mjs"],
+    languageOptions: {
+      parserOptions: {
+        projectService: false,
+      },
+    },
+  },
+  {
     ignores: ["dist/"],
   },
 );
