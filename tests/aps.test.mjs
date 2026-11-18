@@ -39,8 +39,8 @@ const legacyHost = "https://developer.api.autodesk.com";
 const regions = ["gbr", "can", "deu", "ind", "jpn", "stg.ind"];
 const regionalBaseUrl = (region) => `https://api.aps.${region}.autodesk.com`;
 
-// Header expectations (regional hosts omit X-Ads-Region, the global fallback sends EMEA) are the
-// current/preserved behavior pending platform confirmation, not a settled contract.
+// Regional hosts omit X-Ads-Region by design because it overrides hostname routing.
+// The global fallback's EMEA header is preserved legacy behavior, unchanged and unverified.
 function assertMapping(origin, baseUrl) {
   const aps = loadAps({ origin });
   const actualBaseUrl = aps.getApsBaseUrl();
@@ -66,7 +66,17 @@ for (const region of regions) {
   }
 }
 regionalCases.push(
+  { origin: "https://app.autodeskforma.com", baseUrl: regionalBaseUrl("usa") },
+  { origin: "https://local.autodeskforma.com", baseUrl: regionalBaseUrl("usa") },
+  { origin: "https://app.autodeskforma.eu", baseUrl: regionalBaseUrl("irl") },
+  { origin: "https://local.autodeskforma.eu", baseUrl: regionalBaseUrl("irl") },
+  { origin: "https://forma.aus.autodesk.com", baseUrl: regionalBaseUrl("aus") },
+  { origin: "https://local.forma.aus.autodesk.com", baseUrl: regionalBaseUrl("aus") },
+  { origin: "https://forma.stg.usa.autodesk.com", baseUrl: regionalBaseUrl("stg.usa") },
+  { origin: "https://local.forma.stg.usa.autodesk.com", baseUrl: regionalBaseUrl("stg.usa") },
   // Hostnames are case-insensitive and ports/paths/credentials are ignored.
+  { origin: "https://APP.AUTODESKFORMA.COM:8443/path?q=1#hash", baseUrl: regionalBaseUrl("usa") },
+  { origin: "https://Local.AutodeskForma.Eu:3000/", baseUrl: regionalBaseUrl("irl") },
   { origin: "https://FORMA.GBR.AUTODESK.COM", baseUrl: regionalBaseUrl("gbr") },
   { origin: "https://Local.FormaDesign.Stg.Ind.Autodesk.com", baseUrl: regionalBaseUrl("stg.ind") },
   { origin: "https://forma.can.autodesk.com:8443", baseUrl: regionalBaseUrl("can") },
@@ -76,22 +86,21 @@ regionalCases.push(
 );
 
 for (const { origin, baseUrl } of regionalCases) {
-  test(`regional hosts omit X-Ads-Region (current behavior, pending platform confirmation): ${origin}`, () => {
+  test(`regional hosts omit X-Ads-Region to avoid overriding hostname routing: ${origin}`, () => {
     assertMapping(origin, baseUrl);
   });
 }
 
-// Staging/dev origins intentionally fall back to global production (SDK selector parity). No
-// modern global staging host exists, so none is invented. stg.ind stays regional (see above).
+// Unrecognized staging/dev origins fall back to global; stg.usa and stg.ind are regional above.
 const stagingDevOrigins = [
-  "https://forma.stg.usa.autodesk.com",
+  "https://forma.stg-usa.autodesk.com",
   "https://formadesign.stg-usa.autodesk.com",
   "https://forma.test.autodesk.com",
   "https://forma.dev.autodesk.com",
 ];
 
 for (const origin of stagingDevOrigins) {
-  test(`staging/dev origins fall back to global production (SDK parity; no modern staging host): ${origin}`, () => {
+  test(`unrecognized staging/dev origins fall back to global production: ${origin}`, () => {
     assertMapping(origin, globalBaseUrl);
   });
 }
@@ -101,13 +110,19 @@ const globalFallbackOrigins = [
   "https://forma.autodesk.com",
   "https://formadesign.autodesk.com",
   "https://local.forma.autodesk.com",
-  "https://app.autodeskforma.eu",
-  "https://app.autodeskforma.com",
   "https://localhost:3000",
   // Unknown region.
   "https://forma.xyz.autodesk.com",
   "https://formadesign.usa.autodesk.com",
+  "https://formadesign.aus.autodesk.com",
+  "https://local.formadesign.aus.autodesk.com",
+  "https://formadesign.stg.usa.autodesk.com",
+  "https://local.formadesign.stg.usa.autodesk.com",
   // Non-https protocols.
+  "http://app.autodeskforma.com",
+  "http://local.autodeskforma.eu",
+  "http://forma.aus.autodesk.com",
+  "http://forma.stg.usa.autodesk.com",
   ...regions.flatMap((region) => [
     `http://forma.${region}.autodesk.com`,
     `http://local.formadesign.${region}.autodesk.com`,
@@ -115,6 +130,13 @@ const globalFallbackOrigins = [
   "ftp://forma.gbr.autodesk.com",
   "ws://forma.gbr.autodesk.com",
   // Lookalikes.
+  "https://local.app.autodeskforma.com",
+  "https://local.app.autodeskforma.eu",
+  "https://app.autodeskforma.com.evil.com",
+  "https://evil.app.autodeskforma.eu",
+  "https://forma.aus.autodesk.com.example.com",
+  "https://forma.stg.usa.autodesk.com.evil.com",
+  "https://app.autodeskforma.net",
   "https://forma.gbr.autodesk.com.evil.com",
   "https://forma.gbr.autodesk.com.example.com",
   "https://formadesign.stg.ind.autodesk.com.example.com",
@@ -140,7 +162,7 @@ const globalFallbackOrigins = [
 ];
 
 for (const origin of globalFallbackOrigins) {
-  test(`global fallback keeps X-Ads-Region: EMEA (preserved behavior, pending platform confirmation): ${JSON.stringify(origin)}`, () => {
+  test(`global fallback keeps X-Ads-Region: EMEA (preserved legacy behavior): ${JSON.stringify(origin)}`, () => {
     assertMapping(origin, globalBaseUrl);
   });
 }
@@ -162,6 +184,10 @@ for (const component of ["ExtrudedPolygon", "GroundPolygon"]) {
   for (const { origin, baseUrl, region } of [
     { origin: "https://formadesign.stg.ind.autodesk.com", baseUrl: regionalBaseUrl("stg.ind") },
     { origin: "https://forma.gbr.autodesk.com", baseUrl: regionalBaseUrl("gbr") },
+    { origin: "https://app.autodeskforma.com", baseUrl: regionalBaseUrl("usa") },
+    { origin: "https://app.autodeskforma.eu", baseUrl: regionalBaseUrl("irl") },
+    { origin: "https://forma.aus.autodesk.com", baseUrl: regionalBaseUrl("aus") },
+    { origin: "https://forma.stg.usa.autodesk.com", baseUrl: regionalBaseUrl("stg.usa") },
     { origin: "https://forma.autodesk.com", baseUrl: globalBaseUrl, region: "EMEA" },
   ]) {
     test(`${component} posts to the expected APS endpoint for ${origin}`, async () => {
@@ -210,7 +236,7 @@ for (const component of ["ExtrudedPolygon", "GroundPolygon"]) {
       assert.equal(request.options.body, JSON.stringify(elements));
       assert.equal(request.options.headers.Authorization, "Bearer user-token");
       assert.equal(request.options.headers["Content-Type"], "application/json");
-      // Header expectations are current/preserved behavior, pending platform confirmation.
+      // Regional headers are omitted by design; fallback EMEA is preserved and unverified.
       assert.equal(request.options.headers["X-Ads-Region"], region);
       assert.equal(Object.hasOwn(request.options.headers, "X-Ads-Region"), Boolean(region));
     });
