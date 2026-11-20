@@ -9,7 +9,7 @@
     "build": "cross-env VITE_SENTRY_RELEASE=$(git rev-parse --short HEAD) vite build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint --max-warnings 0",
-    "test": "pnpm typecheck && pnpm lint"
+    "test": "pnpm typecheck && pnpm lint && node --test tests/*.test.mjs"
   },
   "dependencies": {
     "@sentry/browser": "^10.27.0",
