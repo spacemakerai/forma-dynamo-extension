@@ -39,17 +39,17 @@ const legacyHost = "https://developer.api.autodesk.com";
 const regions = ["gbr", "can", "deu", "ind", "jpn", "stg.ind"];
 const regionalBaseUrl = (region) => `https://api.aps.${region}.autodesk.com`;
 
-// Regional hosts omit X-Ads-Region because it overrides hostname routing.
-// Existing production and unrecognized origins retain the legacy host and EMEA header.
+// Regional hosts omit X-Ads-Region by design because it overrides hostname routing.
+// The global fallback's EMEA header is preserved legacy behavior, unchanged and unverified.
 function assertMapping(origin, baseUrl) {
   const aps = loadAps({ origin });
   const actualBaseUrl = aps.getApsBaseUrl();
   assert.equal(actualBaseUrl, baseUrl);
+  assert.ok(!actualBaseUrl.includes("developer.api.autodesk.com"));
   const headers = aps.getApsRegionHeaders();
-  if (baseUrl === legacyHost) {
+  if (baseUrl === globalBaseUrl) {
     assert.deepEqual({ ...headers }, { "X-Ads-Region": "EMEA" });
   } else {
-    assert.ok(!actualBaseUrl.includes("developer.api.autodesk.com"));
     assert.deepEqual({ ...headers }, {});
   }
 }
@@ -66,9 +66,17 @@ for (const region of regions) {
   }
 }
 regionalCases.push(
+  { origin: "https://app.autodeskforma.com", baseUrl: regionalBaseUrl("usa") },
+  { origin: "https://local.autodeskforma.com", baseUrl: regionalBaseUrl("usa") },
+  { origin: "https://app.autodeskforma.eu", baseUrl: regionalBaseUrl("irl") },
+  { origin: "https://local.autodeskforma.eu", baseUrl: regionalBaseUrl("irl") },
+  { origin: "https://forma.aus.autodesk.com", baseUrl: regionalBaseUrl("aus") },
+  { origin: "https://local.forma.aus.autodesk.com", baseUrl: regionalBaseUrl("aus") },
   { origin: "https://forma.stg.usa.autodesk.com", baseUrl: regionalBaseUrl("stg.usa") },
   { origin: "https://local.forma.stg.usa.autodesk.com", baseUrl: regionalBaseUrl("stg.usa") },
   // Hostnames are case-insensitive and ports/paths/credentials are ignored.
+  { origin: "https://APP.AUTODESKFORMA.COM:8443/path?q=1#hash", baseUrl: regionalBaseUrl("usa") },
+  { origin: "https://Local.AutodeskForma.Eu:3000/", baseUrl: regionalBaseUrl("irl") },
   { origin: "https://FORMA.GBR.AUTODESK.COM", baseUrl: regionalBaseUrl("gbr") },
   { origin: "https://Local.FormaDesign.Stg.Ind.Autodesk.com", baseUrl: regionalBaseUrl("stg.ind") },
   { origin: "https://forma.can.autodesk.com:8443", baseUrl: regionalBaseUrl("can") },
@@ -83,24 +91,7 @@ for (const { origin, baseUrl } of regionalCases) {
   });
 }
 
-const legacyProductionOrigins = [
-  "https://app.autodeskforma.com",
-  "https://local.autodeskforma.com",
-  "https://app.autodeskforma.eu",
-  "https://local.autodeskforma.eu",
-  "https://forma.aus.autodesk.com",
-  "https://local.forma.aus.autodesk.com",
-  "https://APP.AUTODESKFORMA.COM:8443/path?q=1#hash",
-  "https://Local.AutodeskForma.Eu:3000/",
-];
-
-for (const origin of legacyProductionOrigins) {
-  test(`retained legacy production uses developer.api with X-Ads-Region: EMEA: ${origin}`, () => {
-    assertMapping(origin, legacyHost);
-  });
-}
-
-// Unrecognized staging/dev origins retain the legacy host; stg.usa and stg.ind are regional above.
+// Unrecognized staging/dev origins fall back to global; stg.usa and stg.ind are regional above.
 const stagingDevOrigins = [
   "https://forma.stg-usa.autodesk.com",
   "https://formadesign.stg-usa.autodesk.com",
@@ -109,13 +100,13 @@ const stagingDevOrigins = [
 ];
 
 for (const origin of stagingDevOrigins) {
-  test(`unrecognized staging/dev origins retain the legacy developer.api host: ${origin}`, () => {
-    assertMapping(origin, legacyHost);
+  test(`unrecognized staging/dev origins fall back to global production: ${origin}`, () => {
+    assertMapping(origin, globalBaseUrl);
   });
 }
 
-const legacyFallbackOrigins = [
-  // Non-regional Forma hosts.
+const globalFallbackOrigins = [
+  // Global and non-regional Forma hosts.
   "https://forma.autodesk.com",
   "https://formadesign.autodesk.com",
   "https://local.forma.autodesk.com",
@@ -170,26 +161,22 @@ const legacyFallbackOrigins = [
   "forma.gbr.autodesk.com",
 ];
 
-for (const origin of legacyFallbackOrigins) {
-  test(`unrecognized origins retain developer.api and X-Ads-Region: EMEA: ${JSON.stringify(origin)}`, () => {
-    assertMapping(origin, legacyHost);
+for (const origin of globalFallbackOrigins) {
+  test(`global fallback keeps X-Ads-Region: EMEA (preserved legacy behavior): ${JSON.stringify(origin)}`, () => {
+    assertMapping(origin, globalBaseUrl);
   });
 }
 
-test("APS never selects the global host or existing production regional hosts", () => {
+test("APS never selects the legacy developer.api.autodesk.com host", () => {
   const origins = [
     ...regionalCases.map((c) => c.origin),
-    ...legacyProductionOrigins,
     ...stagingDevOrigins,
-    ...legacyFallbackOrigins,
+    ...globalFallbackOrigins,
   ];
   for (const origin of origins) {
     const aps = loadAps({ origin });
-    const baseUrl = aps.getApsBaseUrl();
-    assert.notEqual(baseUrl, globalBaseUrl);
-    for (const region of ["usa", "irl", "aus"]) {
-      assert.notEqual(baseUrl, regionalBaseUrl(region));
-    }
+    assert.notEqual(aps.getApsBaseUrl(), legacyHost);
+    assert.ok(!aps.getApsBaseUrl().includes("developer.api"));
   }
 });
 
@@ -197,11 +184,11 @@ for (const component of ["ExtrudedPolygon", "GroundPolygon"]) {
   for (const { origin, baseUrl, region } of [
     { origin: "https://formadesign.stg.ind.autodesk.com", baseUrl: regionalBaseUrl("stg.ind") },
     { origin: "https://forma.gbr.autodesk.com", baseUrl: regionalBaseUrl("gbr") },
-    { origin: "https://app.autodeskforma.com", baseUrl: legacyHost, region: "EMEA" },
-    { origin: "https://app.autodeskforma.eu", baseUrl: legacyHost, region: "EMEA" },
-    { origin: "https://forma.aus.autodesk.com", baseUrl: legacyHost, region: "EMEA" },
+    { origin: "https://app.autodeskforma.com", baseUrl: regionalBaseUrl("usa") },
+    { origin: "https://app.autodeskforma.eu", baseUrl: regionalBaseUrl("irl") },
+    { origin: "https://forma.aus.autodesk.com", baseUrl: regionalBaseUrl("aus") },
     { origin: "https://forma.stg.usa.autodesk.com", baseUrl: regionalBaseUrl("stg.usa") },
-    { origin: "https://forma.autodesk.com", baseUrl: legacyHost, region: "EMEA" },
+    { origin: "https://forma.autodesk.com", baseUrl: globalBaseUrl, region: "EMEA" },
   ]) {
     test(`${component} posts to the expected APS endpoint for ${origin}`, async () => {
       let tokenRequests = 0;
@@ -249,7 +236,7 @@ for (const component of ["ExtrudedPolygon", "GroundPolygon"]) {
       assert.equal(request.options.body, JSON.stringify(elements));
       assert.equal(request.options.headers.Authorization, "Bearer user-token");
       assert.equal(request.options.headers["Content-Type"], "application/json");
-      // Regional headers are omitted by design; legacy-host requests retain EMEA.
+      // Regional headers are omitted by design; fallback EMEA is preserved and unverified.
       assert.equal(request.options.headers["X-Ads-Region"], region);
       assert.equal(Object.hasOwn(request.options.headers, "X-Ads-Region"), Boolean(region));
     });
